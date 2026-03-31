@@ -1,0 +1,78 @@
+[build]
+  publish = "pages"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# API redirects → Netlify Functions
+[[redirects]]
+  from = "/auth/register"
+  to = "/.netlify/functions/auth-register"
+  status = 200
+
+[[redirects]]
+  from = "/auth/login"
+  to = "/.netlify/functions/auth-login"
+  status = 200
+
+[[redirects]]
+  from = "/affiliate/register"
+  to = "/.netlify/functions/affiliate-register"
+  status = 200
+
+[[redirects]]
+  from = "/affiliate/admin/all"
+  to = "/.netlify/functions/affiliate-admin"
+  status = 200
+
+[[redirects]]
+  from = "/affiliate/admin/stats"
+  to = "/.netlify/functions/affiliate-stats"
+  status = 200
+
+[[redirects]]
+  from = "/affiliate/track-conversion"
+  to = "/.netlify/functions/affiliate-track"
+  status = 200
+
+[[redirects]]
+  from = "/payments/create-intent"
+  to = "/.netlify/functions/stripe-payment"
+  status = 200
+
+# SPA fallback — pages HTML
+[[redirects]]
+  from = "/dashboard"
+  to = "/dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/affiliation"
+  to = "/affiliation.html"
+  status = 200
+
+[[redirects]]
+  from = "/partenaires"
+  to = "/partenaires.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; font-src 'self' https: data:;"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"

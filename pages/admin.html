@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administration — Luxury Concierge</title>
+<style>
+  :root{--gold:#C9A84C;--gold-light:#E8C97A;--black:#080808;--dark:#0F0F0F;--dark2:#181818;--dark3:#222222;--dark4:#2A2A2A;--text:#EAE0CE;--text-muted:#857565;--white:#FFF;--sidebar:250px;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--black);color:var(--text);font-family:'Arial',sans-serif;display:flex;min-height:100vh;}
+  .sidebar{width:var(--sidebar);background:var(--dark);border-right:1px solid rgba(201,168,76,0.1);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:100;overflow-y:auto;}
+  .sl{padding:24px 20px 18px;border-bottom:1px solid rgba(201,168,76,0.08);}
+  .sl a{text-decoration:none;}
+  .sl-brand{font-size:14px;letter-spacing:4px;color:var(--gold);font-family:'Georgia',serif;display:block;}
+  .sl-sub{font-size:8px;letter-spacing:3px;color:var(--text-muted);text-transform:uppercase;margin-top:2px;display:block;}
+  .sl-admin{margin-top:8px;padding:4px 8px;background:rgba(201,168,76,0.1);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);display:inline-block;}
+  .sn{padding:12px 0;flex:1;}
+  .sn-sect{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);padding:8px 20px 4px;}
+  .sn-item{display:flex;align-items:center;gap:10px;padding:10px 20px;color:var(--text-muted);text-decoration:none;font-size:12px;transition:all 0.2s;cursor:pointer;border-left:2px solid transparent;}
+  .sn-item:hover,.sn-item.on{color:var(--white);background:rgba(201,168,76,0.05);border-left-color:var(--gold);}
+  .sn-item.on{color:var(--gold);}
+  .sn-ic{font-size:13px;width:16px;text-align:center;flex-shrink:0;}
+  .sn-badge{margin-left:auto;background:var(--gold);color:var(--black);font-size:8px;padding:2px 5px;border-radius:8px;font-weight:700;}
+  .sb-btm{padding:14px 20px;border-top:1px solid rgba(201,168,76,0.08);}
+  .logout{width:100%;background:none;border:1px solid rgba(201,168,76,0.12);color:var(--text-muted);padding:8px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+  .logout:hover{border-color:var(--gold);color:var(--gold);}
+  .main{margin-left:var(--sidebar);flex:1;min-height:100vh;}
+  .topbar{padding:16px 32px;border-bottom:1px solid rgba(201,168,76,0.08);display:flex;align-items:center;justify-content:space-between;background:rgba(15,15,15,0.95);position:sticky;top:0;z-index:50;}
+  .tb-title{font-size:16px;letter-spacing:3px;color:var(--white);font-family:'Georgia',serif;}
+  .tb-right{display:flex;gap:8px;align-items:center;}
+  .tb-btn{width:32px;height:32px;background:var(--dark3);border:1px solid rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;position:relative;}
+  .tb-dot{position:absolute;top:4px;right:4px;width:6px;height:6px;background:var(--gold);border-radius:50%;}
+  .content{padding:32px;}
+  .sv{display:none;}.sv.on{display:block;}
+
+  /* KPIs */
+  .kg{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+  .kc{background:var(--dark2);padding:20px 18px;border:1px solid rgba(201,168,76,0.06);position:relative;overflow:hidden;}
+  .kc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.25),transparent);}
+  .kc-l{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+  .kc-v{font-size:26px;font-family:'Georgia',serif;}
+  .kc-v.g{color:var(--gold);}
+  .kc-s{font-size:10px;margin-top:4px;}
+  .up{color:#2ECC71;}.dn{color:#E74C3C;}.warn{color:#E6B046;}
+
+  /* PANELS */
+  .pn{background:var(--dark2);border:1px solid rgba(201,168,76,0.06);padding:22px;margin-bottom:18px;}
+  .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid rgba(201,168,76,0.06);}
+  .pt{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+  .pa{font-size:9px;color:var(--text-muted);cursor:pointer;transition:color 0.2s;background:none;border:none;text-transform:uppercase;letter-spacing:1px;}
+  .pa:hover{color:var(--gold);}
+  .row2{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-bottom:18px;}
+  .row-eq{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+
+  /* TABLE */
+  table{width:100%;border-collapse:collapse;}
+  th{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);padding:0 0 10px;text-align:left;font-weight:normal;}
+  td{padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:12px;vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  .badge{padding:2px 7px;font-size:8px;letter-spacing:1px;text-transform:uppercase;display:inline-block;}
+  .b-ok{background:rgba(46,204,113,0.1);color:#2ECC71;}
+  .b-w{background:rgba(230,176,70,0.1);color:#E6B046;}
+  .b-err{background:rgba(231,76,60,0.1);color:#E74C3C;}
+  .b-vvip{background:rgba(201,168,76,0.12);color:var(--gold);}
+  .b-b2b{background:rgba(100,150,255,0.1);color:#6496FF;}
+  .b-aff{background:rgba(180,100,255,0.1);color:#C864FF;}
+
+  /* FORM */
+  .fg{margin-bottom:14px;}
+  .fl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:5px;}
+  .fi{width:100%;background:var(--dark3);border:1px solid rgba(201,168,76,0.1);color:var(--text);padding:10px 12px;font-size:12px;outline:none;transition:border-color 0.2s;font-family:Arial,sans-serif;}
+  .fi:focus{border-color:var(--gold);}
+  .fi::placeholder{color:var(--text-muted);}
+  .fmsg{min-height:16px;font-size:11px;}
+  .fmsg.ok{color:#2ECC71;}.fmsg.err{color:#E74C3C;}
+  .btn-g{padding:10px 22px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.2s;}
+  .btn-gold{background:var(--gold);color:var(--black);font-weight:700;}
+  .btn-gold:hover{background:var(--gold-light);}
+  .btn-out{background:transparent;border:1px solid rgba(201,168,76,0.25);color:var(--gold);}
+  .btn-out:hover{background:rgba(201,168,76,0.06);}
+  .btn-red{background:transparent;border:1px solid rgba(231,76,60,0.3);color:#E74C3C;}
+  .btn-red:hover{background:rgba(231,76,60,0.08);}
+
+  /* SEARCH */
+  .sr{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+  .si{flex:1;min-width:180px;background:var(--dark3);border:1px solid rgba(201,168,76,0.1);color:var(--text);padding:9px 12px;font-size:12px;outline:none;}
+  .si:focus{border-color:var(--gold);}
+  .si::placeholder{color:var(--text-muted);}
+
+  /* PAYMENT ROW */
+  .pay-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.03);}
+  .pay-row:last-child{border-bottom:none;}
+  .pay-l{display:flex;flex-direction:column;gap:2px;}
+  .pay-n{font-size:12px;color:var(--white);}
+  .pay-d{font-size:10px;color:var(--text-muted);}
+  .pay-r{text-align:right;}
+  .pay-a{font-size:14px;color:#2ECC71;font-family:'Georgia',serif;}
+
+  /* NOTIF */
+  .notif{padding:12px 14px;border-left:2px solid;margin-bottom:10px;display:flex;align-items:flex-start;gap:10px;}
+  .notif.warn{border-left-color:#E6B046;background:rgba(230,176,70,0.04);}
+  .notif.info{border-left-color:var(--gold);background:rgba(201,168,76,0.04);}
+  .notif.success{border-left-color:#2ECC71;background:rgba(46,204,113,0.04);}
+  .notif-text{font-size:12px;color:var(--text-muted);line-height:1.6;}
+  .notif-time{font-size:10px;color:var(--text-muted);margin-left:auto;flex-shrink:0;}
+
+  /* TOGGLE */
+  .toggle{display:flex;align-items:center;gap:10px;}
+  .tog-sw{width:38px;height:20px;background:rgba(201,168,76,0.2);border-radius:10px;padding:2px;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
+  .tog-sw.on{background:rgba(201,168,76,0.6);}
+  .tog-dot{width:16px;height:16px;background:var(--text-muted);border-radius:50%;transition:all 0.2s;}
+  .tog-sw.on .tog-dot{transform:translateX(18px);background:var(--gold);}
+  .tog-label{font-size:12px;color:var(--text-muted);}
+
+  @media(max-width:1100px){.kg{grid-template-columns:repeat(2,1fr);}.row2,.row-eq{grid-template-columns:1fr;}}
+  @media(max-width:800px){.sidebar{transform:translateX(-100%);}.main{margin-left:0;}.content{padding:16px;}.kg{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sl">
+    <a href="index.html"><span class="sl-brand">Luxury Concierge</span><span class="sl-sub">Panneau d'administration</span></a>
+    <span class="sl-admin">Admin · Accès restreint</span>
+  </div>
+  <nav class="sn">
+    <div class="sn-sect">Vue globale</div>
+    <a class="sn-item on" onclick="show('overview',this)"><span class="sn-ic">◈</span>Dashboard global</a>
+    <a class="sn-item" onclick="show('analytics',this)"><span class="sn-ic">📊</span>Analytiques</a>
+    <div class="sn-sect">Gestion membres</div>
+    <a class="sn-item" onclick="show('users',this)"><span class="sn-ic">👥</span>Tous les membres<span class="sn-badge" id="users-count">0</span></a>
+    <a class="sn-item" onclick="show('affiliates',this)"><span class="sn-ic">◉</span>Affiliés & MLM</a>
+    <a class="sn-item" onclick="show('partners',this)"><span class="sn-ic">◫</span>Partenaires B2B</a>
+    <div class="sn-sect">Transactions</div>
+    <a class="sn-item" onclick="show('payments',this)"><span class="sn-ic">€</span>Paiements<span class="sn-badge">3</span></a>
+    <a class="sn-item" onclick="show('commissions',this)"><span class="sn-ic">💰</span>Commissions MLM</a>
+    <a class="sn-item" onclick="show('payouts',this)"><span class="sn-ic">🏦</span>Virements<span class="sn-badge" style="background:#E6B046">5</span></a>
+    <div class="sn-sect">Services</div>
+    <a class="sn-item" onclick="show('requests',this)"><span class="sn-ic">📋</span>Demandes actives<span class="sn-badge">7</span></a>
+    <a class="sn-item" onclick="show('settings',this)"><span class="sn-ic">⚙</span>Paramètres</a>
+  </nav>
+  <div class="sb-btm">
+    <button class="logout" onclick="location.href='index.html'">← Retour au site</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="tb-title" id="page-h">Dashboard Administrateur</div>
+    <div class="tb-right">
+      <input class="si" placeholder="🔍 Recherche globale..." style="flex:none;width:220px">
+      <div class="tb-btn">🔔<div class="tb-dot"></div></div>
+      <div class="tb-btn">⚙</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div class="sv on" id="sv-overview">
+      <div class="kg">
+        <div class="kc"><div class="kc-l">Revenus plateforme</div><div class="kc-v g" id="ov-rev">€0</div><div class="kc-s up">↑ Ce mois</div></div>
+        <div class="kc"><div class="kc-l">Membres actifs</div><div class="kc-v" id="ov-members">0</div><div class="kc-s up">Total inscrits</div></div>
+        <div class="kc"><div class="kc-l">Demandes en cours</div><div class="kc-v" id="ov-req">7</div><div class="kc-s warn">À traiter</div></div>
+        <div class="kc"><div class="kc-l">Commissions dues</div><div class="kc-v g" id="ov-comm">€0</div><div class="kc-s warn">Virements en attente</div></div>
+      </div>
+      <div class="row2">
+        <div class="pn">
+          <div class="ph"><div class="pt">Activité récente</div><button class="pa" onclick="show('requests')">Tout voir →</button></div>
+          <table>
+            <thead><tr><th>Type</th><th>Client</th><th>Service</th><th>Montant</th><th>Statut</th></tr></thead>
+            <tbody id="ov-activity">
+              <tr><td>✈️</td><td>A. Dupont</td><td>Vol privé Paris-Monaco</td><td style="color:var(--gold)">€4 800</td><td><span class="badge b-ok">Confirmé</span></td></tr>
+              <tr><td>🏨</td><td>S. Moreau</td><td>Suite Four Seasons Dubai</td><td style="color:var(--gold)">€12 000</td><td><span class="badge b-w">En cours</span></td></tr>
+              <tr><td>🥂</td><td>R. Dubois</td><td>Gala Monaco</td><td style="color:var(--gold)">€8 500</td><td><span class="badge b-ok">Confirmé</span></td></tr>
+              <tr><td>🛥</td><td>C. Fontaine</td><td>Yacht 5 jours Med</td><td style="color:var(--gold)">€32 000</td><td><span class="badge b-w">Devis</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="pn" style="margin-bottom:16px">
+            <div class="ph"><div class="pt">Notifications</div></div>
+            <div class="notif warn"><span>⚠️</span><div class="notif-text">5 demandes de virement en attente de validation</div><span class="notif-time">Maintenant</span></div>
+            <div class="notif info"><span>ℹ️</span><div class="notif-text">3 nouveaux affiliés inscrits aujourd'hui</div><span class="notif-time">2h</span></div>
+            <div class="notif success"><span>✅</span><div class="notif-text">Paiement Stripe confirmé — €12 000</div><span class="notif-time">3h</span></div>
+            <div class="notif info"><span>📊</span><div class="notif-text">Rapport mensuel Mars 2026 disponible</div><span class="notif-time">1j</span></div>
+          </div>
+          <div class="pn">
+            <div class="ph"><div class="pt">Répartition membres</div></div>
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--text-muted)">
+              <div style="display:flex;justify-content:space-between"><span>Clients VVIP</span><span style="color:var(--gold)" id="split-vvip">—</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Partenaires B2B</span><span style="color:#6496FF" id="split-b2b">—</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Affiliés</span><span style="color:#C864FF" id="split-aff">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="sv" id="sv-users">
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px">
+        <button class="btn-g btn-out" onclick="show('affiliates')">+ Nouveau affilié</button>
+        <button class="btn-g btn-gold" onclick="show('affiliates')">+ Nouveau compte</button>
+      </div>
+      <div class="pn">
+        <div class="ph"><div class="pt">Tous les membres</div>
+          <div style="display:flex;gap:6px">
+            <button class="pa" onclick="loadUsers()">↻ Actualiser</button>
+            <button class="pa" onclick="exportUsers()">↓ Export CSV</button>
+          </div>
+        </div>
+        <div class="sr">
+          <input class="si" placeholder="🔍 Nom, email ou code..." oninput="filterUsers(this.value)">
+          <select class="si" style="flex:0 0 140px" onchange="filterUserRole(this.value)">
+            <option value="">Tous les rôles</option>
+            <option value="vvip">VVIP</option>
+            <option value="partner">Partenaires</option>
+            <option value="affiliate">Affiliés</option>
+          </select>
+          <select class="si" style="flex:0 0 140px" onchange="filterUserStatus(this.value)">
+            <option value="">Tous statuts</option>
+            <option value="Actif">Actifs</option>
+            <option value="Inactif">Inactifs</option>
+          </select>
+        </div>
+        <div id="users-table"><div style="color:var(--text-muted);text-align:center;padding:30px 0;font-size:12px">Chargement...</div></div>
+      </div>
+    </div>
+
+    <!-- AFFILIATES -->
+    <div class="sv" id="sv-affiliates">
+      <div class="row-eq">
+        <div class="pn">
+          <div class="ph"><div class="pt">Créer un compte affilié</div></div>
+          <div class="fmsg" id="aff-msg"></div>
+          <div class="fg"><label class="fl">Nom complet</label><input type="text" class="fi" id="aff-name" placeholder="Nom complet"></div>
+          <div class="fg"><label class="fl">Email</label><input type="email" class="fi" id="aff-email" placeholder="email@exemple.com"></div>
+          <div class="fg"><label class="fl">Rôle</label>
+            <select class="fi" id="aff-role">
+              <option value="affiliate">Affilié standard</option>
+              <option value="partner">Partenaire B2B</option>
+              <option value="vvip">Client VVIP</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Code sponsor (optionnel)</label><input type="text" class="fi" id="aff-sponsor" placeholder="LC-XXXXXXXX"></div>
+          <button class="btn-g btn-gold" style="width:100%" onclick="createAffiliate()">Créer le compte</button>
+        </div>
+        <div class="pn">
+          <div class="ph"><div class="pt">Statistiques réseau MLM</div></div>
+          <div id="mlm-stats"><div style="color:var(--text-muted);text-align:center;padding:20px 0;font-size:12px">Chargement...</div></div>
+        </div>
+      </div>
+      <div class="pn">
+        <div class="ph"><div class="pt">Tous les affiliés</div></div>
+        <div id="affiliates-table"></div>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="sv" id="sv-payments">
+      <div class="kg">
+        <div class="kc"><div class="kc-l">Volume total</div><div class="kc-v g">€228 400</div><div class="kc-s up">↑ Cumul 2026</div></div>
+        <div class="kc"><div class="kc-l">Mois en cours</div><div class="kc-v g">€42 800</div><div class="kc-s up">↑ +18% Mars</div></div>
+        <div class="kc"><div class="kc-l">Transactions</div><div class="kc-v">143</div><div class="kc-s up">Confirmées</div></div>
+        <div class="kc"><div class="kc-l">Taux de succès</div><div class="kc-v g">98.6%</div><div class="kc-s up">Stripe · PCI-DSS L1</div></div>
+      </div>
+      <div class="pn">
+        <div class="ph"><div class="pt">Transactions récentes</div><button class="pa">↓ Exporter</button></div>
+        <table>
+          <thead><tr><th>ID</th><th>Client</th><th>Service</th><th>Montant</th><th>Méthode</th><th>Date</th><th>Statut</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--text-muted);font-size:10px">TXN-001892</td><td>Alexandre D.</td><td>Vol privé</td><td style="color:var(--gold)">€4 800</td><td style="color:var(--text-muted)">Carte</td><td style="color:var(--text-muted)">30 Mar 2026</td><td><span class="badge b-ok">Succès</span></td></tr>
+            <tr><td style="color:var(--text-muted);font-size:10px">TXN-001891</td><td>Sophie M.</td><td>Suite FS Dubai</td><td style="color:var(--gold)">€12 000</td><td style="color:var(--text-muted)">Virement</td><td style="color:var(--text-muted)">29 Mar 2026</td><td><span class="badge b-ok">Succès</span></td></tr>
+            <tr><td style="color:var(--text-muted);font-size:10px">TXN-001890</td><td>Romain D.</td><td>Gala Monaco</td><td style="color:var(--gold)">€8 500</td><td style="color:var(--text-muted)">Carte</td><td style="color:var(--text-muted)">28 Mar 2026</td><td><span class="badge b-ok">Succès</span></td></tr>
+            <tr><td style="color:var(--text-muted);font-size:10px">TXN-001889</td><td>Claire F.</td><td>Yacht charter</td><td style="color:var(--gold)">€32 000</td><td style="color:var(--text-muted)">Virement</td><td style="color:var(--text-muted)">27 Mar 2026</td><td><span class="badge b-w">En attente</span></td></tr>
+            <tr><td style="color:var(--text-muted);font-size:10px">TXN-001888</td><td>Thomas V.</td><td>Conciergerie</td><td style="color:var(--gold)">€990</td><td style="color:var(--text-muted)">Carte</td><td style="color:var(--text-muted)">26 Mar 2026</td><td><span class="badge b-ok">Succès</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAYOUTS -->
+    <div class="sv" id="sv-payouts">
+      <div class="pn">
+        <div class="ph"><div class="pt">Demandes de virement en attente</div><span style="font-size:10px;color:#E6B046">5 en attente</span></div>
+        <div id="payouts-list">
+          <div class="pay-row"><div class="pay-l"><div class="pay-n">Sophie Moreau</div><div class="pay-d">Demandé le 28 Mar 2026 · IBAN: FR76 ****</div></div><div class="pay-r"><div class="pay-a">€1 140</div><span class="badge b-w">En attente</span></div><div style="display:flex;gap:6px;margin-left:16px"><button class="btn-g btn-gold" style="padding:6px 12px;font-size:9px" onclick="approveVirement(this,'Sophie Moreau')">Valider</button><button class="btn-g btn-red" style="padding:6px 12px;font-size:9px">Refuser</button></div></div>
+          <div class="pay-row"><div class="pay-l"><div class="pay-n">Romain Dubois</div><div class="pay-d">Demandé le 27 Mar 2026 · IBAN: FR76 ****</div></div><div class="pay-r"><div class="pay-a">€864</div><span class="badge b-w">En attente</span></div><div style="display:flex;gap:6px;margin-left:16px"><button class="btn-g btn-gold" style="padding:6px 12px;font-size:9px" onclick="approveVirement(this,'Romain Dubois')">Valider</button><button class="btn-g btn-red" style="padding:6px 12px;font-size:9px">Refuser</button></div></div>
+          <div class="pay-row"><div class="pay-l"><div class="pay-n">Pierre Vidal</div><div class="pay-d">Demandé le 26 Mar 2026 · IBAN: FR76 ****</div></div><div class="pay-r"><div class="pay-a">€792</div><span class="badge b-w">En attente</span></div><div style="display:flex;gap:6px;margin-left:16px"><button class="btn-g btn-gold" style="padding:6px 12px;font-size:9px" onclick="approveVirement(this,'Pierre Vidal')">Valider</button><button class="btn-g btn-red" style="padding:6px 12px;font-size:9px">Refuser</button></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REQUESTS -->
+    <div class="sv" id="sv-requests">
+      <div class="kg" style="grid-template-columns:repeat(4,1fr)">
+        <div class="kc"><div class="kc-l">En attente</div><div class="kc-v warn">7</div></div>
+        <div class="kc"><div class="kc-l">En cours</div><div class="kc-v" style="color:#6496FF">4</div></div>
+        <div class="kc"><div class="kc-l">Confirmées</div><div class="kc-v" style="color:#2ECC71">28</div></div>
+        <div class="kc"><div class="kc-l">Ce mois</div><div class="kc-v">39</div></div>
+      </div>
+      <div class="pn">
+        <div class="ph"><div class="pt">Demandes de services — Toutes</div></div>
+        <table>
+          <thead><tr><th>#</th><th>Client</th><th>Type</th><th>Détails</th><th>Date</th><th>Priorité</th><th>Statut</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--text-muted)">#4892</td><td>A. Dupont</td><td>✈️ Vol privé</td><td style="color:var(--text-muted)">Paris → Monaco · 4 pax</td><td style="color:var(--text-muted)">14 Avr</td><td><span class="badge b-err">Critique</span></td><td><span class="badge b-w">En cours</span></td><td><button class="btn-g btn-out" style="padding:4px 8px;font-size:8px" onclick="alert('Demande #4892 confirmée !')">Confirmer</button></td></tr>
+            <tr><td style="color:var(--text-muted)">#4891</td><td>S. Moreau</td><td>🏨 Hôtel</td><td style="color:var(--text-muted)">Suite FS Dubai · 5 nuits</td><td style="color:var(--text-muted)">1 Mai</td><td><span class="badge b-w">Urgente</span></td><td><span class="badge b-ok">Confirmé</span></td><td><button class="btn-g btn-out" style="padding:4px 8px;font-size:8px">Détails</button></td></tr>
+            <tr><td style="color:var(--text-muted)">#4890</td><td>R. Dubois</td><td>🥂 Événement</td><td style="color:var(--text-muted)">Dîner privé · 12 pers</td><td style="color:var(--text-muted)">20 Avr</td><td><span class="badge b-b2b">Standard</span></td><td><span class="badge b-w">Devis</span></td><td><button class="btn-g btn-gold" style="padding:4px 8px;font-size:8px" onclick="alert('Devis envoyé au client.')">Devis</button></td></tr>
+            <tr><td style="color:var(--text-muted)">#4889</td><td>C. Fontaine</td><td>🛥 Yacht</td><td style="color:var(--text-muted)">Charter · Méditerranée</td><td style="color:var(--text-muted)">5 Mai</td><td><span class="badge b-w">Urgente</span></td><td><span class="badge b-w">En attente</span></td><td><button class="btn-g btn-out" style="padding:4px 8px;font-size:8px" onclick="alert('Demande assignée.')">Assigner</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="sv" id="sv-settings">
+      <div class="row-eq">
+        <div class="pn">
+          <div class="ph"><div class="pt">Configuration plateforme</div></div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="fg"><label class="fl">Nom de la plateforme</label><input type="text" class="fi" value="Luxury Concierge"></div>
+            <div class="fg"><label class="fl">Email support</label><input type="email" class="fi" value="support@luxuryconcierge.com"></div>
+            <div class="fg"><label class="fl">Téléphone VVIP Hotline</label><input type="tel" class="fi" value="+33 1 40 00 00 00"></div>
+            <div class="fg"><label class="fl">Frais de plateforme (%)</label><input type="number" class="fi" value="15"></div>
+            <button class="btn-g btn-gold">Sauvegarder</button>
+          </div>
+        </div>
+        <div class="pn">
+          <div class="ph"><div class="pt">Paramètres MLM</div></div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="fg"><label class="fl">Commission Niveau 1 (%)</label><input type="number" class="fi" value="12"></div>
+            <div class="fg"><label class="fl">Commission Niveau 2 (%)</label><input type="number" class="fi" value="7"></div>
+            <div class="fg"><label class="fl">Commission Niveau 3 (%)</label><input type="number" class="fi" value="4"></div>
+            <div class="fg"><label class="fl">Commission Niveau 4 (%)</label><input type="number" class="fi" value="2"></div>
+            <div class="fg"><label class="fl">Commission Niveau 5 (%)</label><input type="number" class="fi" value="1"></div>
+            <div class="fg"><label class="fl">Minimum virement (€)</label><input type="number" class="fi" value="50"></div>
+            <button class="btn-g btn-gold">Mettre à jour</button>
+          </div>
+        </div>
+      </div>
+      <div class="pn">
+        <div class="ph"><div class="pt">Fonctionnalités actives</div></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="toggle"><div class="tog-sw on" onclick="this.classList.toggle('on')"><div class="tog-dot"></div></div><div class="tog-label">Paiements Stripe activés</div></div>
+          <div class="toggle"><div class="tog-sw on" onclick="this.classList.toggle('on')"><div class="tog-dot"></div></div><div class="tog-label">Programme d'affiliation actif</div></div>
+          <div class="toggle"><div class="tog-sw on" onclick="this.classList.toggle('on')"><div class="tog-dot"></div></div><div class="tog-label">Chatbot IA activé</div></div>
+          <div class="toggle"><div class="tog-sw" onclick="this.classList.toggle('on')"><div class="tog-dot"></div></div><div class="tog-label">Mode maintenance</div></div>
+          <div class="toggle"><div class="tog-sw on" onclick="this.classList.toggle('on')"><div class="tog-dot"></div></div><div class="tog-label">Notifications email automatiques</div></div>
+          <div class="toggle"><div class="tog-sw on" onclick="this.classList.toggle('on')"><div class="tog-dot"></div></div><div class="tog-label">API intégrations B2B actives</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="sv" id="sv-analytics">
+      <div class="kg">
+        <div class="kc"><div class="kc-l">Visites mensuelles</div><div class="kc-v">14 820</div><div class="kc-s up">↑ +22%</div></div>
+        <div class="kc"><div class="kc-l">Taux de conversion</div><div class="kc-v g">3.2%</div><div class="kc-s up">↑ +0.4%</div></div>
+        <div class="kc"><div class="kc-l">Valeur moyenne commande</div><div class="kc-v g">€1 597</div><div class="kc-s up">↑ +8%</div></div>
+        <div class="kc"><div class="kc-l">NPS clients</div><div class="kc-v g">+78</div><div class="kc-s up">Excellent</div></div>
+      </div>
+      <div class="row2">
+        <div class="pn">
+          <div class="ph"><div class="pt">Services les plus demandés</div></div>
+          <table>
+            <thead><tr><th>Service</th><th>Demandes</th><th>Revenu</th><th>Part</th></tr></thead>
+            <tbody>
+              <tr><td>✈️ Voyages & Transferts</td><td>42</td><td style="color:var(--gold)">€89 400</td><td style="color:var(--text-muted)">39%</td></tr>
+              <tr><td>🏨 Hôtels & Séjours</td><td>31</td><td style="color:var(--gold)">€64 800</td><td style="color:var(--text-muted)">28%</td></tr>
+              <tr><td>🥂 Événements Privés</td><td>24</td><td style="color:var(--gold)">€46 200</td><td style="color:var(--text-muted)">20%</td></tr>
+              <tr><td>🛥 Yachts & Jets</td><td>12</td><td style="color:var(--gold)">€28 000</td><td style="color:var(--text-muted)">12%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pn">
+          <div class="ph"><div class="pt">Top affiliés du mois</div></div>
+          <div style="display:flex;flex-direction:column;gap:10px" id="top-affiliates">
+            <div style="display:flex;justify-content:space-between;font-size:12px"><span>1. Sophie Moreau</span><span style="color:var(--gold)">€1 140</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px"><span>2. Romain Dubois</span><span style="color:var(--gold)">€864</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px"><span>3. Pierre Vidal</span><span style="color:var(--gold)">€792</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px"><span>4. Emma Martin</span><span style="color:var(--gold)">€612</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px"><span>5. Julien Klein</span><span style="color:var(--gold)">€448</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMISSIONS -->
+    <div class="sv" id="sv-commissions">
+      <div class="pn">
+        <div class="ph"><div class="pt">Distribution commissions MLM</div></div>
+        <table>
+          <thead><tr><th>Affilié</th><th>Niveau</th><th>Source</th><th>Transaction</th><th>Commission</th><th>Statut</th></tr></thead>
+          <tbody>
+            <tr><td>Sophie Moreau</td><td><span class="badge" style="background:rgba(201,168,76,0.12);color:var(--gold)">N1</span></td><td style="color:var(--text-muted)">A. Dupont</td><td style="color:var(--text-muted)">Vol privé €4 800</td><td style="color:#2ECC71">€576</td><td><span class="badge b-ok">Validé</span></td></tr>
+            <tr><td>Sophie Moreau</td><td><span class="badge" style="background:rgba(201,168,76,0.12);color:var(--gold)">N1</span></td><td style="color:var(--text-muted)">S. Martin</td><td style="color:var(--text-muted)">Suite hôtel €12 000</td><td style="color:#2ECC71">€1 440</td><td><span class="badge b-ok">Validé</span></td></tr>
+            <tr><td>Romain Dubois</td><td><span class="badge" style="background:rgba(100,150,255,0.1);color:#6496FF">N2</span></td><td style="color:var(--text-muted)">P. Vidal</td><td style="color:var(--text-muted)">Conciergerie €990</td><td style="color:#2ECC71">€69</td><td><span class="badge b-w">En attente</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const API_BASE=window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'?'http://localhost:3000':'';
+
+function show(id,el){
+  document.querySelectorAll('.sv').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sv-'+id).classList.add('on');
+  document.querySelectorAll('.sn-item').forEach(n=>n.classList.remove('on'));
+  if(el)el.classList.add('on');
+  const t={overview:'Dashboard Administrateur',users:'Gestion Membres',affiliates:'Affiliés & MLM',partners:'Partenaires B2B',payments:'Paiements',payouts:'Virements',requests:'Demandes de services',settings:'Paramètres',analytics:'Analytiques',commissions:'Commissions MLM'};
+  document.getElementById('page-h').textContent=t[id]||id;
+  if(id==='users')loadUsers();
+  if(id==='affiliates')loadAffiliates();
+}
+
+const DEMO_USERS=[
+  {name:'Alexandre Dupont',email:'alex@demo.com',code:'LC-DEMO1234',role:'vvip',volume:28000,status:'Actif'},
+  {name:'Sophie Moreau',email:'sophie@demo.com',code:'LC-S0PH1E',role:'affiliate',volume:9500,status:'Actif'},
+  {name:'Romain Dubois',email:'romain@demo.com',code:'LC-R0MA1N',role:'partner',volume:7200,status:'Actif'},
+  {name:'Pierre Vidal',email:'pierre@demo.com',code:'LC-P1ERR3',role:'affiliate',volume:6600,status:'Actif'},
+  {name:'Claire Fontaine',email:'claire@demo.com',code:'LC-CL41RF',role:'affiliate',volume:4800,status:'Actif'},
+  {name:'Thomas Vincent',email:'thomas@demo.com',code:'LC-TH0M4S',role:'vvip',volume:2100,status:'Actif'},
+  {name:'Emma Martin',email:'emma@demo.com',code:'LC-EMM4MA',role:'affiliate',volume:2900,status:'Actif'},
+  {name:'Julien Klein',email:'julien@demo.com',code:'LC-JUL1NK',role:'partner',volume:3200,status:'Inactif'},
+  {name:'Ana Rosa',email:'ana@demo.com',code:'LC-AN4ROS',role:'affiliate',volume:900,status:'Actif'},
+  {name:'Lucas Bernard',email:'lucas@demo.com',code:'LC-LUC4SB',role:'affiliate',volume:600,status:'Actif'},
+];
+
+let allUsers=[];
+async function loadUsers(){
+  try{
+    const r=await fetch(`${API_BASE}/affiliate/admin/all`);
+    const d=await r.json();
+    allUsers=(d.affiliates||DEMO_USERS);
+  }catch{allUsers=DEMO_USERS;}
+  renderUsers(allUsers);
+  updateStats();
+  document.getElementById('users-count').textContent=allUsers.length;
+}
+
+function updateStats(){
+  const vvip=allUsers.filter(u=>u.role==='vvip').length;
+  const b2b=allUsers.filter(u=>u.role==='partner').length;
+  const aff=allUsers.filter(u=>u.role==='affiliate').length;
+  document.getElementById('ov-members').textContent=allUsers.length;
+  document.getElementById('ov-rev').textContent='€'+allUsers.reduce((s,u)=>s+(u.volume||0),0).toLocaleString();
+  document.getElementById('ov-comm').textContent='€'+Math.round(allUsers.reduce((s,u)=>s+(u.volume||0),0)*0.15).toLocaleString();
+  if(document.getElementById('split-vvip'))document.getElementById('split-vvip').textContent=vvip;
+  if(document.getElementById('split-b2b'))document.getElementById('split-b2b').textContent=b2b;
+  if(document.getElementById('split-aff'))document.getElementById('split-aff').textContent=aff;
+}
+
+function renderUsers(list){
+  document.getElementById('users-table').innerHTML=`<table>
+    <thead><tr><th>Membre</th><th>Code</th><th>Rôle</th><th>Volume</th><th>Statut</th><th>Actions</th></tr></thead>
+    <tbody>${list.map(u=>`<tr>
+      <td><div style="font-size:12px;color:var(--white)">${u.name}</div><div style="font-size:10px;color:var(--text-muted)">${u.email}</div></td>
+      <td style="color:var(--gold);font-size:10px;letter-spacing:1px">${u.code}</td>
+      <td><span class="badge ${u.role==='vvip'?'b-vvip':u.role==='partner'?'b-b2b':'b-aff'}">${u.role==='vvip'?'VVIP':u.role==='partner'?'B2B':'Affilié'}</span></td>
+      <td style="color:var(--gold)">€${(u.volume||0).toLocaleString()}</td>
+      <td><span class="badge ${u.status==='Actif'?'b-ok':'b-w'}">${u.status||'Actif'}</span></td>
+      <td><button class="btn-g btn-out" style="padding:4px 8px;font-size:8px" onclick="alert('Profil de ${u.name}')">Voir</button></td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+function filterUsers(q){renderUsers(q?allUsers.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.email.toLowerCase().includes(q.toLowerCase())):allUsers);}
+function filterUserRole(r){renderUsers(r?allUsers.filter(u=>u.role===r):allUsers);}
+function filterUserStatus(s){renderUsers(s?allUsers.filter(u=>u.status===s):allUsers);}
+function exportUsers(){
+  const csv='Nom,Email,Code,Rôle,Volume,Statut\n'+allUsers.map(u=>`${u.name},${u.email},${u.code},${u.role},€${u.volume||0},${u.status}`).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv,'+encodeURIComponent(csv);a.download='membres_luxury_concierge.csv';a.click();
+}
+
+async function loadAffiliates(){
+  try{const r=await fetch(`${API_BASE}/affiliate/admin/all`);const d=await r.json();renderAffiliates(d.affiliates||DEMO_USERS);}
+  catch{renderAffiliates(DEMO_USERS);}
+  document.getElementById('mlm-stats').innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--text-muted)">
+      <div>✦ Affiliés actifs : <span style="color:var(--white)">${DEMO_USERS.filter(u=>u.status==='Actif').length}</span></div>
+      <div>✦ Réseau total 5N : <span style="color:var(--white)">47 membres</span></div>
+      <div>✦ Commissions distribuées : <span style="color:var(--gold)">€${DEMO_USERS.reduce((s,u)=>s+(u.volume||0),0)*0.12|0}</span></div>
+      <div>✦ Taux de rétention : <span style="color:#2ECC71">87%</span></div>
+    </div>`;
+}
+
+function renderAffiliates(list){
+  document.getElementById('affiliates-table').innerHTML=`<table>
+    <thead><tr><th>Affilié</th><th>Code</th><th>Rôle</th><th>Volume</th><th>Statut</th></tr></thead>
+    <tbody>${list.map(u=>`<tr>
+      <td><div style="font-size:12px;color:var(--white)">${u.name}</div><div style="font-size:10px;color:var(--text-muted)">${u.email}</div></td>
+      <td style="color:var(--gold);font-size:10px">${u.code}</td>
+      <td><span class="badge ${u.role==='vvip'?'b-vvip':u.role==='partner'?'b-b2b':'b-aff'}">${u.role==='vvip'?'VVIP':u.role==='partner'?'B2B':'Affilié'}</span></td>
+      <td style="color:var(--gold)">€${(u.volume||0).toLocaleString()}</td>
+      <td><span class="badge ${u.status==='Actif'?'b-ok':'b-w'}">${u.status||'Actif'}</span></td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+async function createAffiliate(){
+  const n=document.getElementById('aff-name').value.trim();
+  const e=document.getElementById('aff-email').value.trim();
+  const role=document.getElementById('aff-role').value;
+  const sponsor=document.getElementById('aff-sponsor').value.trim();
+  const msg=document.getElementById('aff-msg');
+  if(!n||!e){msg.className='fmsg err';msg.textContent='Nom et email requis.';return;}
+  msg.className='fmsg';msg.textContent='Création...';
+  try{
+    const r=await fetch(`${API_BASE}/affiliate/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,role,referralCode:sponsor||null,isAdminCreate:true})});
+    const d=await r.json();
+    if(r.ok){msg.className='fmsg ok';msg.textContent=`✦ Compte créé ! Code: ${d.code}`;document.getElementById('aff-name').value='';document.getElementById('aff-email').value='';}
+    else{msg.className='fmsg err';msg.textContent=d.error||'Erreur.';}
+  }catch{
+    const code='LC-'+Math.random().toString(36).substr(2,8).toUpperCase();
+    msg.className='fmsg ok';msg.textContent=`✦ Compte créé (démo) ! Code: ${code}`;
+    document.getElementById('aff-name').value='';document.getElementById('aff-email').value='';
+  }
+}
+
+function approveVirement(btn,name){
+  btn.closest('.pay-row').querySelector('.badge').className='badge b-ok';
+  btn.closest('.pay-row').querySelector('.badge').textContent='Validé';
+  btn.textContent='Validé ✓';btn.disabled=true;
+  alert(`Virement approuvé pour ${name}. Traitement SEPA initié.`);
+}
+
+loadUsers();
+</script>
+</body>
+</html>
