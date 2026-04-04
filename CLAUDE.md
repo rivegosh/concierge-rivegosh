@@ -1,8 +1,8 @@
-# Concierge Rive Gosh
+# Rive Gosh
 
 ## Project Overview
 
-WordPress + WooCommerce marketplace migration. Rebranding "Top VIP Driver" (VTC/luxury transport booking platform) to "Concierge Rive Gosh."
+WordPress + WooCommerce marketplace migration. Rebranding "Top VIP Driver" (VTC/luxury transport booking platform) to "Rive Gosh."
 
 **Business:** B2B/B2C luxury concierge platform with 5-level MLM affiliate system for VTC (chauffeur) drivers across France and the US.
 
@@ -24,9 +24,9 @@ WordPress + WooCommerce marketplace migration. Rebranding "Top VIP Driver" (VTC/
 
 ## Current State (2026-03-31)
 
-**Phase:** Pre-migration audit complete. Waiting on business decisions.
+**Phase:** Daniel setting up site on Hostinger. Domain: rivegosh.com. Brand: Rive Gosh.
 
-**Critical blocker:** The September 2025 SQL dump is incomplete — missing all core WordPress options. See [#1](https://github.com/rivegosh/concierge-rivegosh/issues/1).
+**Status:** Daniel is handling hosting setup and plugin activation directly. Domain rivegosh.com registered on Namecheap (created 10 Feb 2026), transferring to Hostinger.
 
 **What's in this repo now:** A static HTML/Netlify prototype (NOT the WordPress site). This will likely be replaced with WordPress code or kept as a separate reference.
 
@@ -46,7 +46,7 @@ WordPress + WooCommerce marketplace migration. Rebranding "Top VIP Driver" (VTC/
 | Theme | Colibri WP (v1.0.144) |
 | Compliance | Complianz GDPR Premium |
 | i18n | GTranslate (FR/EN) |
-| Hosting | TBD (previously Hostinger) |
+| Hosting | Hostinger (confirmed 4 Apr 2026) |
 
 ---
 
@@ -73,7 +73,7 @@ WordPress + WooCommerce marketplace migration. Rebranding "Top VIP Driver" (VTC/
 |-------|--------|-------|--------|
 | VTC Booking | vtc.udaantechnologies.com | Entox (child) | Pre-April 2025 |
 | Top VIP Driver | topvipdriver.com | Colibri WP | April–Sept 2025 |
-| Concierge Rive Gosh | TBD | TBD | Now |
+| Rive Gosh | rivegosh.com | TBD | Now |
 
 ---
 
