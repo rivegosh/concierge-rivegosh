@@ -100,14 +100,16 @@ Every new issue gets: milestone assignment + priority label (P0/P1/P2) + categor
 
 ## Open Decisions
 
-Track in GitHub issues with `decision-needed` label.
+Track in GitHub issues with `decision-needed` label. See [Master Index #34](https://github.com/rivegosh/concierge-rivegosh/issues/34) for full list.
 
-1. New domain name — [#3](https://github.com/rivegosh/concierge-rivegosh/issues/3)
-2. Hosting provider — [#3](https://github.com/rivegosh/concierge-rivegosh/issues/3)
-3. Hostinger panel access for fresh DB dump — [#1](https://github.com/rivegosh/concierge-rivegosh/issues/1)
-4. Plugin license keys/transfers — [#7](https://github.com/rivegosh/concierge-rivegosh/issues/7)
-5. Stripe account ownership — [#8](https://github.com/rivegosh/concierge-rivegosh/issues/8)
-6. Media recovery (2.8GB stripped) — [#2](https://github.com/rivegosh/concierge-rivegosh/issues/2)
+**Blocking launch (Daniel must decide):**
+1. Stripe account ownership — [#23](https://github.com/rivegosh/concierge-rivegosh/issues/23) ← most critical
+2. Grace Vincent offboard method — [#22](https://github.com/rivegosh/concierge-rivegosh/issues/22)
+3. Amelia vs OVA booking system — [#19](https://github.com/rivegosh/concierge-rivegosh/issues/19)
+4. Real business address for WooCommerce store settings
+5. Real SMTP mailbox (currently `name@rivegosh-concierge.com` placeholder) — [#25](https://github.com/rivegosh/concierge-rivegosh/issues/25)
+
+**Resolved (archived):** domain (#3 → rivegosh-concierge.com), hosting (#3 → Hostinger confirmed Apr 2026), admin email (#17 → daniel@rivegosh.com ✅)
 
 ---
 
