@@ -1,5 +1,5 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-14 | **Session:** Brand Assets + WordPress Installation + Gold Color Fix
+**Date:** 2026-04-14 20:12 | **Session:** Brand + Gold Fix + P1 Sweep
 
 ---
 
@@ -9,33 +9,40 @@ ssh -p 65002 -i ~/.ssh/id_ed25519 u100747640@145.79.20.24
 WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
 ```
 
-## Site State (verified 2026-04-14)
-- WordPress 6.9.4 | WooCommerce 10.6.2 | Colibri WP 1.0.162 | Elementor 4.0.2
-- **56 active plugins** / 6 inactive / 2 must-use
+## Site State (verified 2026-04-14 20:12)
+- WordPress 6.9.4 | WooCommerce 10.6.2 | Colibri WP 1.0.162 (parent) + rivegosh-child (active)
+- **57 active plugins** / 6 inactive / 2 must-use
 - **Coming Soon: OFF** ✅ — site publicly visible
 - Admin email: daniel@rivegosh.com ✅
-- DB: 298MB | Uploads: 3.7GB | Disk total: 17GB
+- Timezone: Europe/Paris ✅
+- GTranslate: ACTIVE ✅ (FR/EN and 4 other languages)
+- WC store email: daniel@rivegosh.com ✅
+- Child theme: rivegosh-child active ✅
 
 ## Done This Session
-- Generated 11 PNG brand asset variants → `brand-assets/` committed + pushed
-- Uploaded 6 logos to WordPress media library (IDs: 73790–73795)
-- Set `custom_logo` ID 73790 (Rive Gosh Concierge stacked, header)
-- Set `site_icon` ID 73792 (RG favicon-512)
-- Set WooCommerce email header to `logo-email.png`
-- Written 17 Elementor global colors to kit ID 19 via WP-CLI
-- Written 3 Elementor typography tokens (Cormorant Garamond + Inter)
-- Flushed Elementor CSS cache — all changes live
+- Generated 11 PNG brand assets → `brand-assets/` committed
+- Uploaded 6 logos to WP media (IDs 73790–73795), set custom_logo + site_icon
+- Fixed Colibri header post 61861 → logo IMAGE (not text) for desktop + mobile
+- Brand CSS in post 69149: logo 49px, 30px left padding, 14px nav padding, dark overlay
+- Written 17 Elementor global colors (kit ID 19) + 3 typography tokens
 - Turned Coming Soon OFF (both Hostinger + WooCommerce)
-- Updated Master Index #34, issue #15, issue #40 (closed), issue #41
-- Issued #36–#39 assigned to Phase 2 milestone
-- Fixed Colibri header: post 61861 updated — logo image now shows (desktop + mobile)
-- Added brand CSS to post 69149: logo 30% smaller, 30px left padding, 14px nav padding, dark overlay
-- **Fixed wrong gold sitewide (#42 CLOSED):**
-  - `#f79007` → `#CCC593`: 4 replacements (Colibri Color 2 palette)
-  - `#D6B579` / `#d6b579` → `#CCC593`: 16 replacements (Elementor page data)
-  - Total: 21 replacements, 0 remaining. LiteSpeed + Elementor caches purged.
+- **Fixed gold sitewide (#42 CLOSED):**
+  - Root cause: Colibri stores theme in FILESYSTEM file, not just DB
+  - File: `wp-content/uploads/colibri/c-5894288-4d442e60-12716623-3de27865`
+  - Replaced `f79007` → `CCC593` (DB: 4 hits, file: 77 hits)
+  - Replaced `D6B579` → `CCC593` (DB: 16 hits, file: 1 hit + RGB)
+  - Replaced `D69C32` → `CCC593` (file: 1 hit + RGB)
+  - Also fixed `theme.css` static file (19 hits)
+  - Browser verified: 23 headings all `rgb(204, 197, 147)` = `#CCC593` ✅
+- **P1 sweep:**
+  - GTranslate activated (#18 CLOSED) ✅
+  - Timezone → Europe/Paris (#28 CLOSED) ✅
+  - WC onboarding email → daniel@rivegosh.com (#27 CLOSED) ✅
+  - Child theme scaffolded + activated (#36 CLOSED) ✅
+  - topvipdriver.com → rivegosh-concierge.com: 678 replacements (#5 CLOSED) ✅
+  - system360vip.com + udaantechnologies.com: already clean
 
-## Launch Readiness: 50% — Going live ~2 days
+## Launch Readiness: 65% — Going live ~2 days
 
 ### 🔴 P0 — Blocked on Daniel's decision
 | Issue | Problem |
@@ -43,36 +50,39 @@ WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
 | [#22](https://github.com/rivegosh/concierge-rivegosh/issues/22) | Grace Vincent still admin |
 | [#23](https://github.com/rivegosh/concierge-rivegosh/issues/23) | Stripe account ownership unknown |
 | [#19](https://github.com/rivegosh/concierge-rivegosh/issues/19) | Amelia AND OVA both active — booking conflict |
+| [#24](https://github.com/rivegosh/concierge-rivegosh/issues/24) | PayPal configured with Udaan Technologies — needs correct PayPal email |
 
-### 🟠 P1 — Ready to fix NOW (no decisions needed)
+### 🟠 P1 — Remaining (no decisions needed)
 | Issue | Fix |
 |-------|-----|
-| [#18](https://github.com/rivegosh/concierge-rivegosh/issues/18) | GTranslate inactive: `wp plugin activate gtranslate` |
-| [#28](https://github.com/rivegosh/concierge-rivegosh/issues/28) | Timezone empty: `wp option update timezone_string Europe/Paris` |
-| [#27](https://github.com/rivegosh/concierge-rivegosh/issues/27) | WC onboarding store_email = Grace's email |
-| [#24](https://github.com/rivegosh/concierge-rivegosh/issues/24) | PayPal config → Udaan Technologies email |
-| [#36](https://github.com/rivegosh/concierge-rivegosh/issues/36) | Child theme scaffold (needed for WC/WCFM CSS) |
+| [#5 done] | topvipdriver.com replaced ✅ |
+| [#14](https://github.com/rivegosh/concierge-rivegosh/issues/14) | GA4 ID empty — need GA4 property ID from Daniel |
 
 ## Next Session: Start Here
-1. **Verify in browser:** Open rivegosh-concierge.com — confirm logo shows, champagne gold `#CCC593` is used everywhere (not orange), favicon in tab
-2. **Quick P1 fixes** (no decisions): activate GTranslate (#18) + fix timezone (#28) + fix WC email (#27)
-3. **Child theme scaffold** (#36): `wp scaffold child-theme rivegosh-child --parent_theme=colibri-wp`
-4. **Await Daniel:** Stripe (#23) + Grace offboard (#22) + Amelia vs OVA (#19)
+1. **Await Daniel decisions:** Stripe (#23), Grace offboard (#22), Amelia vs OVA (#19), PayPal email (#24)
+2. **GA4 (#14):** Ask Daniel for GA4 Measurement ID — 5 min fix once we have it
+3. **Phase 2:** WooCommerce dark theme CSS (#37), WCFM dark theme CSS (#38) — now safe with child theme
+4. **Domain migration:** When rivegosh.com DNS points to Hostinger, run:
+   `wp search-replace 'rivegosh-concierge.com' 'rivegosh.com' --all-tables`
 
 ## Key Decisions Still Pending (Daniel)
 1. Stripe account — whose is it? (→ #23) ← most critical before launch
 2. Grace Vincent offboard — how? (→ #22)
 3. Amelia vs OVA — which booking system wins? (→ #19)
-4. Real business address for WooCommerce
+4. PayPal — which email/account? (→ #24)
 5. Real SMTP mailbox (→ #25)
+6. GA4 Measurement ID (→ #14)
+7. Real business address for WooCommerce
 
-## Colibri Architecture Notes (critical for future CSS work)
+## CRITICAL: Colibri Architecture (must know for any color/style work)
+- **Colibri stores theme data in a FILESYSTEM JSON file**, not just wp_options
+- Active file: `wp-content/uploads/colibri/c-5894288-4d442e60-12716623-3de27865`
+- `colibri_page_builder_use_fs` option = `c-5894288-4d442e60-12716623-3de27865` (current file ID)
+- `wp search-replace` does NOT touch this file — must use `sed -i` directly on the server
+- Three gold colors were hardcoded there: f79007, D6B579, D69C32 — all replaced with CCC593
+- Backup files exist in same dir with `.bkp` suffix — do not confuse with active file
 - **Post 61861** = Colibri header template (pre-compiled HTML with token system)
-  - Tokens: `[colibri_custom_logo_url]`, `[colibri_site_title]`, `[colibri_home_url]`
-  - Desktop logo: style-608 / h5 selector | Mobile: style-5 / h15 selector
-  - **Edit post content directly via `wp post update 61861` — theme mods DON'T re-render it**
-- **Post 69149** = WordPress Additional CSS (`custom_css_post_id`)
-  - Contains WCFM menu CSS + Rive Gosh brand CSS block
-  - Target selectors: `[data-colibri-id="61861-hN"]` for header column/row padding
-- **Colibri Color slots**: Color 2 was `#f79007` (now `#CCC593`). Generates `has-colibri-color-2-*` classes sitewide.
+- **Post 69149** = WordPress Additional CSS (brand CSS block) — linked to `rivegosh-child` theme mods
+- **Colibri Color slots**: Color 1 = primary, Color 2 was orange (now CCC593 champagne gold)
 - **Elementor kit ID 19**: `_elementor_page_settings` post meta stores global color + typography tokens
+- **Child theme**: `rivegosh-child` (parent: colibri-wp) — put CSS overrides in child theme functions.php
