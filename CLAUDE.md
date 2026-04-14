@@ -117,9 +117,10 @@ Track in GitHub issues with `decision-needed` label. See [Master Index #34](http
 
 - All work tracked as GitHub issues
 - Issue labels: P0-critical, P1-high, P2-medium, P3-low, migration, security, rebranding, decision-needed
-- DU estimates on every issue
 - **Master Index: [#34](https://github.com/rivegosh/concierge-rivegosh/issues/34)** — pinned, always read first
 - WordPress migration uses WP-CLI for search-replace (never raw SQL on serialized data)
+- **REWRITE issues, never comment.** New findings → edit the issue body directly (`gh issue edit`). Comments = noise. The body = current truth. Comments only for external stakeholders (e.g., Daniel decision requests).
+- **PNG only for all logos** — no SVG, no Safe SVG plugin. PNG-24 with transparency for site; PNG with dark background baked in for email.
 
 ---
 
