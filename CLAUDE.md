@@ -7,7 +7,7 @@ WordPress + WooCommerce marketplace migration. Rebranding "Top VIP Driver" (VTC/
 **Business:** B2B/B2C luxury concierge platform with 5-level MLM affiliate system for VTC (chauffeur) drivers across France and the US.
 
 **Repo:** https://github.com/rivegosh/concierge-rivegosh
-**Master Index:** https://github.com/rivegosh/concierge-rivegosh/issues/2
+**Master Index:** https://github.com/rivegosh/concierge-rivegosh/issues/34
 
 ---
 
@@ -15,10 +15,20 @@ WordPress + WooCommerce marketplace migration. Rebranding "Top VIP Driver" (VTC/
 
 **GitHub IS the project manager.** Everything lives in GitHub:
 - Issues for all work, decisions, and tracking
+- Milestones act as project folders (Phase 1/2/3/4, Ongoing)
 - CLAUDE.md for AI project context (this file)
-- Master Index issue (#2) is the roadmap
+- **[Master Index #34](https://github.com/rivegosh/concierge-rivegosh/issues/34)** is the pinned Table of Contents — the "Issue Zero"
 
 **No loose .md files** — if it's not in GitHub issues or CLAUDE.md, it doesn't exist.
+
+### Issue Zero Convention (applies to all projects)
+
+Every project has ONE pinned issue that serves as the Master Index / Table of Contents. Update it whenever:
+- A new milestone is created
+- A P0/P1 issue is filed
+- A phase completes
+
+Every new issue gets: milestone assignment + priority label (P0/P1/P2) + category label.
 
 ---
 
@@ -28,7 +38,7 @@ WordPress + WooCommerce marketplace migration. Rebranding "Top VIP Driver" (VTC/
 
 **Status:** Daniel is handling hosting setup and plugin activation directly. Domain rivegosh.com registered on Namecheap (created 10 Feb 2026), transferring to Hostinger.
 
-**What's in this repo now:** A static HTML/Netlify prototype (NOT the WordPress site). This will likely be replaced with WordPress code or kept as a separate reference.
+**What's in this repo now:** CLAUDE.md + HANDOVER.md only. The Netlify prototype was deleted (commit 6294c48). The live site runs on Hostinger — this repo is the AI working context and project governance layer, not a code repo.
 
 ---
 
@@ -106,5 +116,65 @@ Track in GitHub issues with `decision-needed` label.
 - All work tracked as GitHub issues
 - Issue labels: P0-critical, P1-high, P2-medium, P3-low, migration, security, rebranding, decision-needed
 - DU estimates on every issue
-- Master Index ([#2](https://github.com/rivegosh/concierge-rivegosh/issues/2)) is the roadmap — keep updated
+- **Master Index: [#34](https://github.com/rivegosh/concierge-rivegosh/issues/34)** — pinned, always read first
 - WordPress migration uses WP-CLI for search-replace (never raw SQL on serialized data)
+
+---
+
+## Status Line (MANDATORY — Every Task Completion)
+
+Every reply at task completion MUST end with a `---` separator followed by this status line:
+
+```
+CC Engaged: [#NNN Title](https://github.com/rivegosh/concierge-rivegosh/issues/NNN) | Status: X% complete
+CC Queue: [queued items with full GitHub URLs]
+Open Loops: [untracked ideas]
+Coming: [planned items]
+MCPs: Chi-GW [✅/❌] | Chrome [✅/❌] | SSH [✅/❌]
+X/Y complete | Z% confident
+DD.MM HH:MM | ~Xk tokens | ~$X.XX
+```
+
+**Rules:**
+- CC Engaged MUST have a full clickable GitHub issue URL — never bare `#123`
+- SSH status reflects whether Hostinger SSH was used this session
+- Get time with: `date "+%d.%m %H:%M"`
+- This is NON-NEGOTIABLE. No exceptions.
+
+---
+
+## Methodology — Phases for WordPress Work
+
+This is a WordPress migration project, not a TypeScript codebase. Foundry phases map as follows:
+
+| Phase | What it means here | Tool |
+|-------|--------------------|------|
+| **ASSAY** (audit) | ORR — operational readiness review | SSH + WP-CLI |
+| **PLAN** | Issue triage — P0/P1/P2, milestones, decisions | `gh issue` |
+| **HAMMER** (build) | WP-CLI operations, config fixes, search-replace | SSH |
+| **TEMPER** (verify) | Visual check + SSH confirmation of change | Browser / SSH |
+| **HOTFIX** | Emergency WP fix (site down, payment broken) | SSH immediate |
+
+**WP-CLI reference commands:**
+```bash
+SSH="ssh -p 65002 -i ~/.ssh/id_ed25519 u100747640@145.79.20.24"
+WP="wp --path=/home/u100747640/domains/rivegosh-concierge.com/public_html"
+
+$SSH "$WP option get <key>"          # Read config
+$SSH "$WP option update <key> <val>" # Change config
+$SSH "$WP plugin activate <slug>"    # Activate plugin
+$SSH "$WP search-replace 'old' 'new' --dry-run"  # ALWAYS dry-run first
+$SSH "$WP plugin list --status=active --format=csv"
+```
+
+**Rule:** Always `--dry-run` before any `search-replace`. Never use raw SQL on serialized data.
+
+---
+
+## Starting a Session
+
+1. Read this file
+2. Read [Master Index #34](https://github.com/rivegosh/concierge-rivegosh/issues/34) — the full project overview
+3. Read `HANDOVER.md` — what's in flight right now
+4. `gh issue list --repo rivegosh/concierge-rivegosh --milestone "Phase 1 - Launch Blockers"` — current P0/P1 work
+5. Search before creating: `gh issue list --repo rivegosh/concierge-rivegosh --search "keyword" --state all`
