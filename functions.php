@@ -21,7 +21,7 @@ function rivegosh_mobile_logo_fixed() {
 	@media (max-width: 991px) {
 		.rg-fixed-logo {
 			position: fixed;
-			top: 8px;
+			top: 18px;
 			left: 50%;
 			transform: translateX(-50%);
 			z-index: 9998;
@@ -40,7 +40,7 @@ function rivegosh_mobile_logo_fixed() {
 			padding: 0;
 		}
 		.rg-fixed-logo img {
-			height: 45px;
+			height: 55px;
 			width: auto;
 			display: block;
 		}
@@ -508,8 +508,10 @@ html.colibri-wp-theme body .h-navigation_sticky .h-logo__alt-image { display: no
     border-right: none !important;
     border-bottom: none !important;
   }
-  /* MOBILE LOGO: Colibri's logo column is hidden — replaced by .rg-fixed-logo overlay.
-     display:none prevents AOS from animating it and Colibri sticky from repositioning it. */
+  /* MOBILE LOGO: Colibri's logo column hidden — replaced by .rg-fixed-logo overlay.
+     Uses high-specificity selectors to beat the .h-section.h-navigation scope rules above. */
+  #colibri .h-section.h-navigation .style-local-61861-h4-outer,
+  #colibri .h-section.h-navigation .style-local-61866-h4-outer,
   .style-local-61861-h4-outer,
   .style-local-61866-h4-outer { display: none !important; visibility: hidden !important; }
 
