@@ -515,6 +515,34 @@ html.colibri-wp-theme body .h-navigation_sticky .h-logo__alt-image { display: no
   .style-local-61861-h4-outer,
   .style-local-61866-h4-outer { display: none !important; visibility: hidden !important; }
 
+  /* ============ MOBILE FORM PADDING v1 — 7px edge breathing room ============ */
+  /* Ultimate Member forms (login, register, profile) */
+  .um {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+    box-sizing: border-box !important;
+  }
+  /* WooCommerce forms (checkout, my account, edit address) */
+  .woocommerce form,
+  .woocommerce-page .entry-content .woocommerce,
+  .woocommerce-account .woocommerce {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+    box-sizing: border-box !important;
+  }
+  /* Bootstrap/generic inputs: prevent overflow, ensure box model is sane */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="search"],
+  select,
+  textarea {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
 }
   /* Outer span wrappers — wider (less margin) */
   .style-local-61861-h30-outer,
