@@ -179,5 +179,23 @@ $SSH "$WP plugin list --status=active --format=csv"
 1. Read this file
 2. Read [Master Index #34](https://github.com/rivegosh/concierge-rivegosh/issues/34) — the full project overview
 3. Read `HANDOVER.md` — what's in flight right now
-4. `gh issue list --repo rivegosh/concierge-rivegosh --milestone "Phase 1 - Launch Blockers"` — current P0/P1 work
-5. Search before creating: `gh issue list --repo rivegosh/concierge-rivegosh --search "keyword" --state all`
+4. **Read [KB #49](https://github.com/rivegosh/concierge-rivegosh/issues/49) — WordPress/Colibri Knowledge Base** — REQUIRED before ANY header/CSS/mobile/Colibri work
+5. `gh issue list --repo rivegosh/concierge-rivegosh --milestone "Phase 1 - Launch Blockers"` — current P0/P1 work
+6. Search before creating: `gh issue list --repo rivegosh/concierge-rivegosh --search "keyword" --state all`
+
+---
+
+## WordPress Knowledge Base — MANDATORY REFERENCE
+
+**[Issue #49](https://github.com/rivegosh/concierge-rivegosh/issues/49)** is the canonical knowledge base for this WordPress/Colibri/WooCommerce stack. It contains hard-won debugging patterns covering:
+
+- Colibri theme architecture (filesystem storage, column taxonomy, dual-logo bug)
+- Absolute positioning math inside Colibri headers (the inherited padding stack)
+- CSS deploy workflow (late-CSS pattern, LiteSpeed cache invalidation, PHP lint)
+- MCP Chrome debug workflow (viewport=0 trap, competing rule inspection)
+- Complianz GDPR banner config
+- WP-CLI reference
+- Python re.sub patch deploy pattern
+- Anti-patterns (what NOT to do)
+
+**Before any CSS/header/mobile/Colibri work:** read Issue #49 first. When you discover a new pattern worth preserving, **edit Issue #49's body** (not comments — per the "rewrite issues, never comment" convention).
