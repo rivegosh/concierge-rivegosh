@@ -752,38 +752,59 @@ setTimeout(nuke, 500); setTimeout(nuke, 1500);
 })();
 	</script>
 	<script id="rivegosh-logo-aos-kill" data-no-optimize="1">
-	/* RG: Lock nav logo — centered, no AOS animation, inline style override */
+	/* RG: Lock nav logo — centered, no AOS, MutationObserver guards against Colibri sticky reset */
 	(function() {
 		var SELS = '.style-local-61861-h4-outer, .style-local-61866-h4-outer';
-		function fix() {
-			if (!window.matchMedia('(max-width: 991px)').matches) return;
-			document.querySelectorAll(SELS).forEach(function(el) {
-				/* Force position via inline style — beats any stylesheet rule */
-				el.style.setProperty('position', 'absolute', 'important');
-				el.style.setProperty('left', '50%', 'important');
-				el.style.setProperty('top', '3px', 'important');
-				el.style.setProperty('transform', 'translateX(-50%)', 'important');
-				el.style.setProperty('opacity', '1', 'important');
-				el.style.setProperty('animation', 'none', 'important');
-				el.style.setProperty('max-width', '60%', 'important');
-				/* Strip AOS from outer and children */
-				el.removeAttribute('data-aos');
-				el.removeAttribute('data-aos-delay');
-				el.removeAttribute('data-aos-duration');
-				el.classList.remove('aos-init', 'aos-animate');
-				el.querySelectorAll('[data-aos], .aos-init, .aos-animate').forEach(function(c) {
-					c.removeAttribute('data-aos');
-					c.classList.remove('aos-init', 'aos-animate');
-					c.style.removeProperty('transform');
-					c.style.removeProperty('opacity');
-				});
+		var isMobile = window.matchMedia('(max-width: 991px)').matches;
+		if (!isMobile) return;
+		var busy = false;
+
+		function freeze(el) {
+			el.style.setProperty('position', 'absolute', 'important');
+			el.style.setProperty('left', '50%', 'important');
+			el.style.setProperty('top', '3px', 'important');
+			el.style.setProperty('transform', 'translateX(-50%)', 'important');
+			el.style.setProperty('opacity', '1', 'important');
+			el.style.setProperty('animation', 'none', 'important');
+			el.style.setProperty('max-width', '60%', 'important');
+			el.removeAttribute('data-aos');
+			el.classList.remove('aos-init', 'aos-animate');
+			el.querySelectorAll('[data-aos], .aos-init, .aos-animate').forEach(function(c) {
+				c.removeAttribute('data-aos');
+				c.classList.remove('aos-init', 'aos-animate');
+				c.style.removeProperty('transform');
+				c.style.removeProperty('opacity');
 			});
 		}
+
+		function fix() {
+			busy = true;
+			document.querySelectorAll(SELS).forEach(freeze);
+			busy = false;
+		}
+
+		function needsRefix(el) {
+			/* Only refire if Colibri has overridden our position */
+			return el.style.getPropertyValue('position') !== 'absolute' ||
+				   el.style.getPropertyValue('left') !== '50%';
+		}
+
+		function setupObserver() {
+			document.querySelectorAll(SELS).forEach(function(logo) {
+				new MutationObserver(function() {
+					if (busy) return;
+					if (needsRefix(logo)) requestAnimationFrame(fix);
+				}).observe(logo, { attributes: true, attributeFilter: ['style', 'class'] });
+			});
+		}
+
+		/* Run immediately, on DOMContentLoaded, on window.load (after LiteSpeed deferred scripts) */
 		fix();
-		document.addEventListener('DOMContentLoaded', fix);
-		setTimeout(fix, 50);
-		setTimeout(fix, 250);
-		setTimeout(fix, 800);
+		document.addEventListener('DOMContentLoaded', function() { fix(); setupObserver(); });
+		window.addEventListener('load', function() { fix(); setupObserver(); });
+		setTimeout(fix, 100);
+		setTimeout(fix, 600);
+		setTimeout(fix, 1500);
 	})();
 	</script>
 	<?php
