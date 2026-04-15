@@ -1,0 +1,141 @@
+@media (max-width: 768px) {
+    .wcfm_page .wcfm_menu {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+#wcfm_menu_toggle {
+    display: block !important;
+}
+
+/* ============================================
+   RIVE GOSH BRAND — Header Logo & Nav (2026-04-14)
+   ============================================ */
+#colibri .style-608-image,
+#colibri .style-5-image { max-height: 49px !important; }
+#colibri .h-navigation_sticky .style-608-image,
+#colibri .h-navigation_sticky .style-5-image { max-height: 49px !important; }
+#colibri [data-colibri-id="61861-h4"] .style-608-image,
+#colibri [data-colibri-id="61861-h4"] .style-5-image { max-height: 56px !important; }
+
+[data-colibri-id="61861-h4"] { padding-left: 48px !important; }
+[data-colibri-id="61861-h2"] { padding-top: 22px !important; padding-bottom: 22px !important; }
+[data-colibri-id="61861-h2"]::before { content: ""; position: absolute; inset: 0; background: rgba(26, 26, 26, 0.45); pointer-events: none; z-index: 0; }
+[data-colibri-id="61861-h4"], [data-colibri-id="61861-h6"], [data-colibri-id="61861-h8"] { position: relative; z-index: 1; }
+
+[data-colibri-id="61866-h4"] { padding-left: 48px !important; }
+[data-colibri-id="61866-h2"] { padding-top: 22px !important; padding-bottom: 22px !important; }
+[data-colibri-id="61866-h2"]::before { content: ""; position: absolute; inset: 0; background: rgba(26, 26, 26, 0.45); pointer-events: none; z-index: 0; }
+[data-colibri-id="61866-h4"], [data-colibri-id="61866-h6"], [data-colibri-id="61866-h8"] { position: relative; z-index: 1; }
+
+/* UX FIXES #43 #44 #45 */
+[data-colibri-id="61866-h25"] h2, [data-colibri-id="61866-h25"] h1 { font-family: 'Cormorant Garamond', serif !important; font-size: 48px !important; font-weight: 300 !important; letter-spacing: 0.15em !important; text-transform: uppercase !important; }
+[data-colibri-id="61866-h25"] { padding-bottom: 60px !important; min-height: 300px !important; }
+@media (max-width: 768px) {
+  [data-colibri-id="61866-h25"] { min-height: 260px !important; padding-bottom: 40px !important; }
+  [data-colibri-id="61866-h25"] h2, [data-colibri-id="61866-h25"] h1 { font-size: 28px !important; letter-spacing: 0.08em !important; }
+  .h-hamburger-button { align-self: center !important; margin-top: 0 !important; top: 50% !important; transform: translateY(-50%) !important; }
+}
+.gtranslate_wrapper { display: none !important; }
+
+/* NAV v15 */
+[data-colibri-id="61861-h8"], [data-colibri-id="61866-h8"] { position: absolute !important; inset: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; pointer-events: none !important; z-index: 1 !important; }
+[data-colibri-id="61861-h8"] *, [data-colibri-id="61866-h8"] * { pointer-events: all !important; }
+[data-colibri-id="61861-h4"], [data-colibri-id="61866-h4"] { z-index: 3 !important; position: relative !important; }
+#colibri .style-9 > div > .colibri-menu-container > ul.colibri-menu > li:not(.menu-item-gtranslate) > a,
+#colibri .style-9 > div > .colibri-menu-container > ul.colibri-menu > li:not(.menu-item-gtranslate) > a span,
+#colibri .h-menu-horizontal .colibri-menu > li:not(.menu-item-gtranslate) > a,
+#colibri .h-menu-horizontal .colibri-menu > li:not(.menu-item-gtranslate) > a span { font-family: 'Cormorant Garamond', serif !important; font-size: 16px !important; letter-spacing: 0.175em !important; text-transform: uppercase !important; color: rgba(204, 197, 147, 0.90) !important; }
+#colibri .colibri-menu { position: static !important; gap: 40px !important; justify-content: center !important; display: flex !important; align-items: center !important; }
+#colibri .sub-menu, #colibri .colibri-menu li > ul { background: rgba(8, 8, 8, 0.25) !important; backdrop-filter: blur(28px) saturate(180%) !important; -webkit-backdrop-filter: blur(28px) saturate(180%) !important; border: 1px solid rgba(204, 197, 147, 0.30) !important; border-radius: 2px !important; box-shadow: none !important; width: 220px !important; min-width: 220px !important; max-width: 220px !important; padding: 4px 0 !important; left: 50% !important; transform: translateX(-50%) !important; }
+#colibri .sub-menu li, #colibri .colibri-menu li > ul li { background: transparent !important; padding: 0 !important; }
+#colibri .sub-menu li:hover, #colibri .colibri-menu li > ul li:hover { background: transparent !important; }
+#colibri .sub-menu a, #colibri .colibri-menu li > ul a { font-family: 'Inter', sans-serif !important; font-size: 12px !important; line-height: 1.25 !important; letter-spacing: 0.06em !important; text-transform: uppercase !important; color: rgba(204, 197, 147, 0.85) !important; padding: 10px 5px 10px 8px !important; display: block !important; background: transparent !important; border-left: 2px solid transparent !important; white-space: normal !important; word-break: normal !important; transition: color 0.12s ease, background 0.12s ease !important; }
+#colibri .sub-menu a:hover, #colibri .colibri-menu li > ul a:hover { color: rgba(204, 197, 147, 1) !important; background: rgba(204, 197, 147, 0.03) !important; border-left-color: rgba(204, 197, 147, 0.55) !important; }
+#colibri .sub-menu .current-menu-item > a, #colibri .colibri-menu li > ul .current-menu-item > a { color: rgba(204, 197, 147, 1) !important; border-left-color: rgb(204, 197, 147) !important; }
+#colibri .h-menu-horizontal .svg-inline--fa, #colibri .colibri-menu > li > a .svg-inline--fa, #colibri .colibri-menu > li > a .fa-angle-down, #colibri .colibri-menu > li > a svg { display: none !important; }
+#colibri .sub-menu .svg-inline--fa, #colibri .colibri-menu li > ul svg { display: inline-block !important; color: rgba(204, 197, 147, 0.5) !important; width: 10px !important; }
+#colibri .h-menu-accordion > div > .colibri-menu-container, #colibri .h-mobile-nav, #colibri .h-navigation_mobile_menu { background: rgba(8, 8, 8, 0.95) !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important; border-top: 1px solid rgba(204, 197, 147, 0.15) !important; }
+#colibri .h-menu-accordion a, #colibri .h-mobile-nav a { font-family: 'Inter', sans-serif !important; font-size: 12px !important; line-height: 1.25 !important; letter-spacing: 0.06em !important; text-transform: uppercase !important; color: rgba(204, 197, 147, 0.85) !important; border-bottom: 1px solid rgba(204, 197, 147, 0.08) !important; padding: 14px 20px !important; }
+#colibri .h-menu-accordion a:hover, #colibri .h-mobile-nav a:hover { color: rgb(204, 197, 147) !important; background: rgba(204, 197, 147, 0.05) !important; }
+#colibri .h-menu-accordion .arrow-wrapper svg, #colibri .h-menu-accordion .arrow-wrapper { color: rgba(204, 197, 147, 0.5) !important; }
+
+/* GTRANSLATE v15 */
+li.menu-item-gtranslate { position: fixed !important; top: 14px !important; right: 20px !important; left: auto !important; bottom: auto !important; transform: none !important; z-index: 9998 !important; }
+body.admin-bar li.menu-item-gtranslate { top: 46px !important; }
+li.menu-item-gtranslate img, li.menu-item-gtranslate .gt-current-lang img, .gt_white_content img { display: none !important; }
+li.menu-item-gtranslate a, li.menu-item-gtranslate .gt-current-lang, li.menu-item-gtranslate span.notranslate { font-family: 'Inter', sans-serif !important; font-size: 14px !important; line-height: 1 !important; letter-spacing: 0.14em !important; text-transform: uppercase !important; color: rgba(255, 255, 255, 0.80) !important; background: transparent !important; border: none !important; cursor: pointer !important; text-decoration: none !important; padding: 2px 4px !important; display: inline-block !important; transform: scale(0.6) !important; transform-origin: top right !important; }
+.gt_black_overlay { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+.gt_white_content { position: fixed !important; top: 36px !important; right: 20px !important; left: auto !important; bottom: auto !important; width: max-content !important; max-width: none !important; min-width: 0 !important; height: auto !important; max-height: none !important; background: rgba(8, 8, 8, 0.25) !important; backdrop-filter: blur(28px) saturate(180%) !important; -webkit-backdrop-filter: blur(28px) saturate(180%) !important; border: 1px solid rgba(204, 197, 147, 0.30) !important; border-radius: 2px !important; box-shadow: none !important; padding: 4px 0 !important; margin: 0 !important; z-index: 9999 !important; transform: none !important; }
+body.admin-bar .gt_white_content { top: 60px !important; }
+.gt_white_content a.glink, .gt_white_content a.glink.nturl, .gt_white_content a.nturl { font-family: 'Inter', sans-serif !important; font-size: 14px !important; line-height: 1.25 !important; letter-spacing: 0.06em !important; text-transform: uppercase !important; color: rgba(204, 197, 147, 0.85) !important; padding: 3px 7px 3px 0px !important; display: block !important; border-left: 1px solid transparent !important; background: transparent !important; text-decoration: none !important; transition: color 0.12s ease, background 0.12s ease !important; white-space: nowrap !important; word-break: normal !important; zoom: 0.75 !important; }
+.gt_white_content a.glink[data-gt-lang="ar"], .gt_white_content a.nturl[data-gt-lang="ar"] { font-size: 18px !important; letter-spacing: 0 !important; text-transform: none !important; zoom: 1 !important; }
+.gt_white_content br { display: none !important; }
+.gt_white_content, .gt_white_content > div { font-size: 0 !important; line-height: 0 !important; letter-spacing: 0 !important; }
+.gt_white_content a { margin: 0 !important; }
+.gt_white_content a.glink:hover, .gt_white_content a.glink.nturl:hover, .gt_white_content a.nturl:hover { color: rgba(204, 197, 147, 1) !important; background: rgba(204, 197, 147, 0.05) !important; border-left-color: rgba(204, 197, 147, 0.55) !important; }
+.gt_white_content a.gt-current-lang, .gt_white_content a[data-gt-lang].gt-current-lang { color: rgba(204, 197, 147, 1) !important; border-left-color: rgb(204, 197, 147) !important; }
+
+/* ============================================
+   HERO GRAPHICS v2 — Heading replacement (2026-04-15)
+   ============================================ */
+[data-colibri-id="61861-h28"] { display: none !important; }
+.rg-cycling-wrap { text-align:center!important;width:100%!important;margin:0 0 16px 0!important;height:72px!important;overflow:hidden!important;position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important; }
+.rg-cycling-line { display:flex!important;align-items:center!important;justify-content:center!important;opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s ease;position:absolute!important;left:0!important;right:0!important;top:0!important;bottom:0!important; }
+.rg-cycling-line.rg-visible { opacity:1!important;transform:translateY(0)!important; }
+.rg-cycling-line.rg-exit { opacity:0!important;transform:translateY(-12px)!important;transition:opacity .35s ease,transform .35s ease!important; }
+.rg-cycling-line::before,.rg-cycling-line::after { display:none!important; }
+.rg-cycling-word { font-family:'Cormorant Garamond',serif!important;font-size:46px!important;font-weight:300!important;letter-spacing:.15em!important;text-transform:uppercase!important;color:rgba(240,235,225,.92)!important;white-space:nowrap!important; }
+.rg-cycling-word::before { content:"PREMIUM "!important; }
+#colibri [data-colibri-id="61861-h29"] .h-x-container-inner { align-items:stretch!important; }
+#colibri .style-local-61861-h30-outer,#colibri .style-local-61861-h31-outer,#colibri .style-local-61861-h32-outer { display:flex!important; }
+#colibri [data-colibri-id="61861-h30"],#colibri [data-colibri-id="61861-h31"],#colibri [data-colibri-id="61861-h32"] { flex:1!important;align-self:stretch!important;display:flex!important;align-items:center!important;justify-content:center!important;height:48px!important;min-height:48px!important;max-height:48px!important;overflow:hidden!important; }
+@media(max-width:768px){
+  .rg-cycling-wrap{height:52px!important;margin:0 0 10px 0!important;}
+  .rg-cycling-word{font-size:26px!important;}
+  #colibri [data-colibri-id="61861-h29"] .h-x-container-inner{flex-direction:column!important;}
+  #colibri [data-colibri-id="61861-h30"],#colibri [data-colibri-id="61861-h31"],#colibri [data-colibri-id="61861-h32"]{order:1!important;}
+  .rg-cycling-wrap{order:2!important;}
+}
+
+/* ============================================
+   RIVE GOSH SITE REDESIGN — Dark Luxury
+   ============================================ */
+
+/* Kill drop shadows globally */
+#colibri [data-colibri-id^="61860-c"] { box-shadow: none !important; }
+
+/* Kill ALL Colibri parallax texture layers on homepage (JS-injected) */
+[data-colibri-id^="61860-"] .background-layer { display: none !important; }
+
+/* Kill texture background-image on ROW CONTAINERS only (not card columns) */
+[data-colibri-id^="61860-"].h-row-container,
+[data-colibri-id^="61860-"] .h-row-container { background-image: none !important; }
+
+/* SERVICE CARDS SECTION (c2) */
+#colibri [data-colibri-id="61860-c2"] { background-color: #0a0a0a !important; }
+#colibri [data-colibri-id="61860-c4"],
+#colibri [data-colibri-id="61860-c9"],
+#colibri [data-colibri-id="61860-c14"] { background: rgba(255, 252, 245, 0.07) !important; border: 1px solid rgba(204, 197, 147, 0.25) !important; border-radius: 2px !important; box-shadow: none !important; }
+#colibri [data-colibri-id="61860-c4"] .h-svg-icon,
+#colibri [data-colibri-id="61860-c9"] .h-svg-icon,
+#colibri [data-colibri-id="61860-c14"] .h-svg-icon { background: transparent !important; border: 1px solid rgba(204, 197, 147, 0.60) !important; }
+#colibri [data-colibri-id="61860-c4"] p,
+#colibri [data-colibri-id="61860-c9"] p,
+#colibri [data-colibri-id="61860-c14"] p { color: rgba(220, 215, 200, 0.75) !important; }
+
+/* VIP/PREMIUM SECTION (c86) */
+#colibri [data-colibri-id="61860-c86"] { background-color: #0a0a0a !important; background-image: none !important; }
+#colibri [data-colibri-id="61860-c86"] .h-column__inner { background: rgba(255, 252, 245, 0.05) !important; border: 1px solid rgba(204, 197, 147, 0.20) !important; border-radius: 2px !important; box-shadow: none !important; }
+#colibri [data-colibri-id="61860-c86"] .h-svg-icon { background: transparent !important; border: 1px solid rgba(204, 197, 147, 0.55) !important; }
+#colibri [data-colibri-id="61860-c86"] p,
+#colibri [data-colibri-id="61860-c86"] li { color: rgba(220, 215, 200, 0.75) !important; }
+#colibri [data-colibri-id="61860-c86"] h2,
+#colibri [data-colibri-id="61860-c86"] h3,
+#colibri [data-colibri-id="61860-c86"] h4 { color: rgba(204, 197, 147, 0.90) !important; }
+
+/* PREMIUM SERVICES SECTION (c38) — same dark treatment */
+#colibri [data-colibri-id="61860-c38"] { background-color: #0a0a0a !important; }
+#colibri [data-colibri-id="61860-c38"] .h-svg-icon { background: transparent !important; border: 1px solid rgba(204, 197, 147, 0.45) !important; }
+

@@ -1,5 +1,5 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-14 20:12 | **Session:** Brand + Gold Fix + P1 Sweep
+**Date:** 2026-04-15 11:00 | **Session:** Nav Centering + GTranslate Separation
 
 ---
 
@@ -42,7 +42,32 @@ WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
   - topvipdriver.com → rivegosh-concierge.com: 678 replacements (#5 CLOSED) ✅
   - system360vip.com + udaantechnologies.com: already clean
 
-## Launch Readiness: 65% — Going live ~2 days
+- **Glassmorphic nav (#48 CLOSED — v12 final):**
+  - 3 main items: 14px Cormorant Garamond, 40px gap, centered full-screen (h8 absolute overlay technique)
+  - ENGLISH: Inter 11px, `position: absolute; right: 48px` pinned to header row right
+  - Panels: rgba(8,8,8,0.25) + blur(28px) saturate(180%), 1px gold border, 220px wide, centered under trigger
+  - Items: Inter 12px, `padding: 10px 5px 10px 8px`, word-wrap at spaces (no mid-word breaks)
+  - Hover: `rgba(204,197,147,0.03)` tint + gold left-border accent
+  - Mobile: rgba(8,8,8,0.95) + blur, Inter 12px
+  - **Colibri h8 structure**: h3=row-container, h4=logo, h6=spacer, h8=nav column, h9=h-menu
+  - CSS in WP Additional CSS post 69149
+- **UX issues filed (#43–#47) + CSS fixes applied:**
+  - #43 ✅ Monoton → Cormorant Garamond on interior hero heading
+  - #44 ✅ 200px dead space removed (padding-bottom: 60px)
+  - #45 ✅ Mobile: hero height 260px, hamburger centered, heading 28px
+  - #46 ✅ GTranslate fixed to bottom, body padding-bottom added
+  - #47 Queued (Phase 2): homepage marquee text run-on
+- **Cookie consent fixed:** domain mismatch was causing banner to reappear — changed from www.rivegosh-concierge.com to .rivegosh-concierge.com; LiteSpeed configured to bypass cache for cmplz_ cookie holders
+- **Header padding + logo sizing unified (#CSS DONE):**
+  - Homepage logo: 56px (15% bigger than 49px interior)
+  - Interior logo: 49px (all pages via post 61866)
+  - Both headers: 48px left padding, 22px top/bottom padding
+  - Both headers: dark overlay rgba(26,26,26,0.45) applied
+  - CSS in post 69149, selectors: `[data-colibri-id="61861-*"]` + `[data-colibri-id="61866-*"]`
+  - Browser-verified: computed styles confirmed exact px values on both pages
+  - Fonts replaced sitewide: Cormorant Garamond (headings, 287x) + Inter (body, 125x)
+
+## Launch Readiness: 68% — Going live ~2 days
 
 ### 🔴 P0 — Blocked on Daniel's decision
 | Issue | Problem |
