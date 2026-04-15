@@ -67,6 +67,13 @@ WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
   - Browser-verified: computed styles confirmed exact px values on both pages
   - Fonts replaced sitewide: Cormorant Garamond (headings, 287x) + Inter (body, 125x)
 
+## Sticky Nav Fixes (2026-04-15 — v10/v11/v12 in functions.php)
+- **v10** `rivegosh_nav_v10_fixes` (priority 999999): dark `::before` bg, 14px equal top/bottom padding, logo column min-width 100px, dropdown rgba(10,10,10,0.92)
+- **v11** `rivegosh_nav_v11_fixes` (priority 999999): force `.h-logo__image` + `.h-logo__alt-image` display:block in h4 (Colibri JS hides both in sticky mode)
+- **v12** `rivegosh_nav_v12_logo` (priority 999999): sticky-scoped fix — hides `.h-logo__image`, shows only `.h-logo__alt-image` with `#colibri .h-navigation_sticky` selector for correct specificity
+- **h2 background**: direct `background: rgba(10,10,10,0.88) !important` on h2 in v11 beats Colibri JS `background: white` inline override
+- All deployed via `wp_head` priority 999999 to guarantee post-Colibri source order
+
 ## Launch Readiness: 68% — Going live ~2 days
 
 ### 🔴 P0 — Blocked on Daniel's decision
