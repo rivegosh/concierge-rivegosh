@@ -257,7 +257,7 @@ html.colibri-wp-theme body .h-navigation_sticky .h-logo__alt-image { display: no
     position: absolute !important;
     left: 50% !important;
     right: auto !important;
-    top: 10px !important;
+    top: 3px !important;
     transform: translateX(-50%) !important;
     width: auto !important;
     max-width: 55% !important;
@@ -752,19 +752,25 @@ setTimeout(nuke, 500); setTimeout(nuke, 1500);
 })();
 	</script>
 	<script id="rivegosh-logo-aos-kill" data-no-optimize="1">
-	/* RG: Strip AOS from nav logo so it never animates off-center on mobile */
+	/* RG: Lock nav logo — centered, no AOS animation, inline style override */
 	(function() {
 		var SELS = '.style-local-61861-h4-outer, .style-local-61866-h4-outer';
 		function fix() {
 			if (!window.matchMedia('(max-width: 991px)').matches) return;
 			document.querySelectorAll(SELS).forEach(function(el) {
+				/* Force position via inline style — beats any stylesheet rule */
+				el.style.setProperty('position', 'absolute', 'important');
+				el.style.setProperty('left', '50%', 'important');
+				el.style.setProperty('top', '3px', 'important');
+				el.style.setProperty('transform', 'translateX(-50%)', 'important');
+				el.style.setProperty('opacity', '1', 'important');
+				el.style.setProperty('animation', 'none', 'important');
+				el.style.setProperty('max-width', '60%', 'important');
+				/* Strip AOS from outer and children */
 				el.removeAttribute('data-aos');
 				el.removeAttribute('data-aos-delay');
 				el.removeAttribute('data-aos-duration');
 				el.classList.remove('aos-init', 'aos-animate');
-				el.style.setProperty('transform', 'translateX(-50%)', 'important');
-				el.style.setProperty('opacity', '1', 'important');
-				el.style.setProperty('animation', 'none', 'important');
 				el.querySelectorAll('[data-aos], .aos-init, .aos-animate').forEach(function(c) {
 					c.removeAttribute('data-aos');
 					c.classList.remove('aos-init', 'aos-animate');
@@ -775,9 +781,9 @@ setTimeout(nuke, 500); setTimeout(nuke, 1500);
 		}
 		fix();
 		document.addEventListener('DOMContentLoaded', fix);
-		setTimeout(fix, 100);
-		setTimeout(fix, 500);
-		setTimeout(fix, 1200);
+		setTimeout(fix, 50);
+		setTimeout(fix, 250);
+		setTimeout(fix, 800);
 	})();
 	</script>
 	<?php
@@ -812,6 +818,7 @@ function rivegosh_custom_drawer_v43() {
     }
     if (empty($vip_kids)) {
         $vip_kids = [
+            ['title' => 'Home',         'url' => '/'],
             ['title' => 'Login',        'url' => '/login-2/'],
             ['title' => 'Register',     'url' => '/register/'],
             ['title' => 'Account',      'url' => '/account/'],
@@ -912,6 +919,7 @@ function rivegosh_custom_drawer_v43() {
     <aside id="rg-drawer" aria-hidden="true" role="dialog" aria-label="Main menu">
       <button id="rg-drawer-close" type="button" aria-label="Close menu">&times;</button>
       <nav class="rg-nav">
+        <a href="<?php echo esc_url(home_url('/')); ?>">Home</a>
         <?php foreach ($vip_kids as $k): ?>
           <a href="<?php echo esc_url($k['url']); ?>"><?php echo esc_html($k['title']); ?></a>
         <?php endforeach; ?>
