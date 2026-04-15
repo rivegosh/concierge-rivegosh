@@ -751,60 +751,145 @@ document.addEventListener('cmplz_cookie_banner_data', nuke);
 setTimeout(nuke, 500); setTimeout(nuke, 1500);
 })();
 	</script>
-	<script id="rivegosh-logo-aos-kill" data-no-optimize="1">
-	/* RG: Lock nav logo — centered, no AOS, MutationObserver guards against Colibri sticky reset */
+	<script id="rivegosh-logo-fix" data-no-optimize="1">
+	/* RG: Mobile header fix v2 — flex centering + multi-target observer + AOS lock */
 	(function() {
-		var SELS = '.style-local-61861-h4-outer, .style-local-61866-h4-outer';
-		var isMobile = window.matchMedia('(max-width: 991px)').matches;
-		if (!isMobile) return;
+		if (!window.matchMedia('(max-width: 991px)').matches) return;
 		var busy = false;
 
-		function freeze(el) {
-			el.style.setProperty('position', 'absolute', 'important');
-			el.style.setProperty('left', '50%', 'important');
-			el.style.setProperty('top', '3px', 'important');
-			el.style.setProperty('transform', 'translateX(-50%)', 'important');
-			el.style.setProperty('opacity', '1', 'important');
-			el.style.setProperty('animation', 'none', 'important');
-			el.style.setProperty('max-width', '60%', 'important');
-			el.removeAttribute('data-aos');
-			el.classList.remove('aos-init', 'aos-animate');
-			el.querySelectorAll('[data-aos], .aos-init, .aos-animate').forEach(function(c) {
-				c.removeAttribute('data-aos');
-				c.classList.remove('aos-init', 'aos-animate');
-				c.style.removeProperty('transform');
-				c.style.removeProperty('opacity');
-			});
-		}
-
-		function fix() {
+		function fixHeader() {
 			busy = true;
-			document.querySelectorAll(SELS).forEach(freeze);
+
+			/* H3 ROW: ensure flex context survives Colibri sticky re-init */
+			document.querySelectorAll(
+				'.style-local-61861-h3, .style-local-61866-h3'
+			).forEach(function(row) {
+				row.style.setProperty('display', 'flex', 'important');
+				row.style.setProperty('flex-direction', 'row', 'important');
+				row.style.setProperty('align-items', 'center', 'important');
+				row.style.setProperty('position', 'relative', 'important');
+				row.style.setProperty('min-height', '56px', 'important');
+				row.style.setProperty('overflow', 'visible', 'important');
+			});
+
+			/* BURGER: absolute, pinned top-left — removed from flex flow */
+			document.querySelectorAll(
+				'.style-local-61861-h8-outer, .style-local-61866-h8-outer'
+			).forEach(function(el) {
+				el.style.setProperty('position', 'absolute', 'important');
+				el.style.setProperty('top', '0', 'important');
+				el.style.setProperty('left', '0', 'important');
+				el.style.setProperty('width', '44px', 'important');
+				el.style.setProperty('height', '56px', 'important');
+				el.style.setProperty('display', 'flex', 'important');
+				el.style.setProperty('align-items', 'center', 'important');
+				el.style.setProperty('justify-content', 'flex-start', 'important');
+				el.style.setProperty('z-index', '100', 'important');
+				el.style.setProperty('margin', '0', 'important');
+				el.style.setProperty('padding', '0', 'important');
+			});
+
+			/* LOGO (h4-outer): flex centering — burger is absolute so logo fills full row */
+			document.querySelectorAll(
+				'.style-local-61861-h4-outer, .style-local-61866-h4-outer'
+			).forEach(function(el) {
+				el.style.setProperty('position', 'relative', 'important');
+				el.style.setProperty('left', 'auto', 'important');
+				el.style.setProperty('right', 'auto', 'important');
+				el.style.setProperty('top', 'auto', 'important');
+				el.style.setProperty('transform', 'none', 'important');
+				el.style.setProperty('flex', '1 1 auto', 'important');
+				el.style.setProperty('display', 'flex', 'important');
+				el.style.setProperty('justify-content', 'center', 'important');
+				el.style.setProperty('align-items', 'center', 'important');
+				el.style.setProperty('max-width', 'none', 'important');
+				el.style.setProperty('width', 'auto', 'important');
+				el.style.setProperty('margin', '0', 'important');
+				el.style.setProperty('padding', '0', 'important');
+				el.style.setProperty('z-index', '50', 'important');
+				el.style.setProperty('opacity', '1', 'important');
+				el.style.setProperty('animation', 'none', 'important');
+				el.removeAttribute('data-aos');
+				el.classList.remove('aos-init', 'aos-animate');
+				/* Kill AOS on children — use setProperty !important to LOCK, not just remove */
+				el.querySelectorAll('[data-aos], .aos-init, .aos-animate').forEach(function(c) {
+					c.removeAttribute('data-aos');
+					c.classList.remove('aos-init', 'aos-animate');
+					c.style.setProperty('transform', 'none', 'important');
+					c.style.setProperty('opacity', '1', 'important');
+					c.style.setProperty('animation', 'none', 'important');
+					c.style.setProperty('transition', 'none', 'important');
+				});
+			});
+
+			/* Also lock h5 (the actual logo img wrapper — has data-aos="fadeInUp") */
+			document.querySelectorAll(
+				'.style-local-61861-h5, .style-local-61866-h5'
+			).forEach(function(el) {
+				el.removeAttribute('data-aos');
+				el.classList.remove('aos-init', 'aos-animate');
+				el.style.setProperty('transform', 'none', 'important');
+				el.style.setProperty('opacity', '1', 'important');
+				el.style.setProperty('animation', 'none', 'important');
+				el.style.setProperty('transition', 'none', 'important');
+			});
+
 			busy = false;
 		}
 
 		function needsRefix(el) {
-			/* Only refire if Colibri has overridden our position */
-			return el.style.getPropertyValue('position') !== 'absolute' ||
-				   el.style.getPropertyValue('left') !== '50%';
+			return el.style.getPropertyValue('flex') !== '1 1 auto';
 		}
 
 		function setupObserver() {
-			document.querySelectorAll(SELS).forEach(function(logo) {
+			/* Watch h4-outer (logo column) */
+			document.querySelectorAll(
+				'.style-local-61861-h4-outer, .style-local-61866-h4-outer'
+			).forEach(function(logo) {
 				new MutationObserver(function() {
 					if (busy) return;
-					if (needsRefix(logo)) requestAnimationFrame(fix);
+					if (needsRefix(logo)) requestAnimationFrame(fixHeader);
 				}).observe(logo, { attributes: true, attributeFilter: ['style', 'class'] });
+			});
+
+			/* Watch h3 row — Colibri sticky modifies the parent row, not h4-outer directly */
+			document.querySelectorAll(
+				'.style-local-61861-h3, .style-local-61866-h3'
+			).forEach(function(row) {
+				new MutationObserver(function(mutations) {
+					if (busy) return;
+					requestAnimationFrame(fixHeader);
+				}).observe(row, { attributes: true, attributeFilter: ['style', 'class'] });
+			});
+
+			/* Watch nav section for h-navigation_sticky class being added by Colibri sticky JS */
+			document.querySelectorAll('.h-section.h-navigation').forEach(function(section) {
+				new MutationObserver(function() {
+					if (busy) return;
+					/* Delay slightly — let Colibri finish its sticky layout before we override */
+					setTimeout(function() { if (!busy) fixHeader(); }, 30);
+				}).observe(section, { attributes: true, attributeFilter: ['class', 'style'] });
+			});
+
+			/* Watch h5 (AOS target) — re-lock when AOS tries to animate it */
+			document.querySelectorAll(
+				'.style-local-61861-h5, .style-local-61866-h5'
+			).forEach(function(logoInner) {
+				new MutationObserver(function() {
+					if (busy) return;
+					logoInner.style.setProperty('transform', 'none', 'important');
+					logoInner.style.setProperty('opacity', '1', 'important');
+				}).observe(logoInner, { attributes: true, attributeFilter: ['style', 'class'] });
 			});
 		}
 
-		/* Run immediately, on DOMContentLoaded, on window.load (after LiteSpeed deferred scripts) */
-		fix();
-		document.addEventListener('DOMContentLoaded', function() { fix(); setupObserver(); });
-		window.addEventListener('load', function() { fix(); setupObserver(); });
-		setTimeout(fix, 100);
-		setTimeout(fix, 600);
-		setTimeout(fix, 1500);
+		fixHeader();
+		document.addEventListener('DOMContentLoaded', function() { fixHeader(); setupObserver(); });
+		window.addEventListener('load', function() { fixHeader(); setupObserver(); });
+		setTimeout(fixHeader, 100);
+		setTimeout(fixHeader, 700);
+		setTimeout(fixHeader, 1800);
+		setTimeout(fixHeader, 3000);
 	})();
 	</script>
 	<?php
