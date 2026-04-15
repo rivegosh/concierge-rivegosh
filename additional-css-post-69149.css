@@ -275,3 +275,66 @@ body.admin-bar .gt_white_content { top: 60px !important; }
   stroke: rgba(204, 197, 147, 0.90) !important;
 }
 
+
+/* ============================================
+   RIVE GOSH v7 — Hero cards wider + centered text (2026-04-15)
+   Cards +30% width, icon left-pinned, font 13px
+   Container expanded, cards lowered, centering improved
+   ============================================ */
+
+/* Expand h29 outer — remove padding so inner has full h27 width */
+#colibri [data-colibri-id="61861-h29"] {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-top: 60px !important;
+}
+
+/* Inner: reset negative margins, center the row */
+#colibri [data-colibri-id="61861-h29"] .h-x-container-inner {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  justify-content: center !important;
+  gap: 24px !important;
+  width: 100% !important;
+  flex-wrap: nowrap !important;
+}
+
+/* Cards: +30% wider, font 13px */
+#colibri [data-colibri-id="61861-h30"],
+#colibri [data-colibri-id="61861-h31"],
+#colibri [data-colibri-id="61861-h32"] {
+  min-width: 380px !important;
+  max-width: 440px !important;
+  flex: 1 1 380px !important;
+  font-size: 13px !important;
+  position: relative !important;
+}
+
+/* Icon: pinned 12px from left edge */
+#colibri [data-colibri-id="61861-h30"] .h-button__icon,
+#colibri [data-colibri-id="61861-h31"] .h-button__icon,
+#colibri [data-colibri-id="61861-h32"] .h-button__icon {
+  position: absolute !important;
+  left: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+/* Cycling text — ensure it shows */
+.rg-cycling-wrap {
+  display: block !important;
+}
+
+
+/* ============================================
+   RIVE GOSH v8/v9 — Label centering (2026-04-15)
+   NOTE: v9 final fix is in functions.php (rivegosh_hero_label_center_css)
+   Colibri's inline <style> loads AFTER Additional CSS so same-specificity
+   !important rules lose on source order. functions.php priority 999999 wins.
+   Active selector: a[h30/h31/h32].h-button > span:not(.h-svg-icon) { margin: 0 auto }
+   ============================================ */
+#colibri a[data-colibri-id="61861-h30"].h-button,
+#colibri a[data-colibri-id="61861-h31"].h-button,
+#colibri a[data-colibri-id="61861-h32"].h-button {
+  justify-content: center !important;
+}
