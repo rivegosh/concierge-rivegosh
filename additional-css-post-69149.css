@@ -139,3 +139,139 @@ body.admin-bar .gt_white_content { top: 60px !important; }
 #colibri [data-colibri-id="61860-c38"] { background-color: #0a0a0a !important; }
 #colibri [data-colibri-id="61860-c38"] .h-svg-icon { background: transparent !important; border: 1px solid rgba(204, 197, 147, 0.45) !important; }
 
+
+/* ============================================
+   RIVE GOSH v4 FIXES — 2026-04-15
+   ============================================ */
+
+/* === HERO CTA BUTTONS — wider, uniform height, tighter gap, half-shadow === */
+[data-colibri-id="61861-h29"] {
+  gap: 16px !important;
+  padding: 0 32px !important;
+}
+[data-colibri-id="61861-h30"],
+[data-colibri-id="61861-h31"],
+[data-colibri-id="61861-h32"] {
+  max-width: 580px !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  max-height: 52px !important;
+  overflow: hidden !important;
+  padding: 0 16px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+}
+
+/* === CONTENT CARDS — white background, warm charcoal text === */
+#colibri [data-colibri-id="61860-c4"],
+#colibri [data-colibri-id="61860-c9"],
+#colibri [data-colibri-id="61860-c14"] {
+  background: #ffffff !important;
+  border: 1px solid rgba(196,178,118,0.18) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+#colibri [data-colibri-id="61860-c4"] *,
+#colibri [data-colibri-id="61860-c9"] *,
+#colibri [data-colibri-id="61860-c14"] * {
+  color: rgba(55,45,35,0.85) !important;
+}
+
+/* === ICON CIRCLES — solid champagne gold, white icon === */
+#colibri [data-colibri-id="61860-c4"] .h-svg-icon,
+#colibri [data-colibri-id="61860-c9"] .h-svg-icon,
+#colibri [data-colibri-id="61860-c14"] .h-svg-icon {
+  background: rgb(196,178,118) !important;
+  border: 2px solid rgba(255,255,255,0.50) !important;
+  border-radius: 50% !important;
+}
+#colibri [data-colibri-id="61860-c4"] .h-svg-icon *,
+#colibri [data-colibri-id="61860-c9"] .h-svg-icon *,
+#colibri [data-colibri-id="61860-c14"] .h-svg-icon * {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* === SECTION BREATHING ROOM === */
+#colibri [data-colibri-id="61860-c2"] {
+  padding-bottom: 100px !important;
+}
+
+/* === CYCLING ANIMATION v3 — sequential two-word reveal === */
+@keyframes rgWordEnter {
+  from { opacity:0; transform:translateY(14px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes rgWordExit {
+  from { opacity:1; transform:translateY(0); }
+  to { opacity:0; transform:translateY(-14px); }
+}
+.rg-cycling-line {
+  opacity:1 !important;
+  transform:none !important;
+  transition:none !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:0.35em !important;
+}
+.rg-cycling-line.rg-visible { opacity:1 !important; transform:none !important; }
+.rg-cycling-line.rg-exit { opacity:1 !important; transform:none !important; transition:none !important; }
+.rg-word-1,.rg-word-2 {
+  font-family:'Cormorant Garamond',serif !important;
+  font-size:46px !important;
+  font-weight:300 !important;
+  letter-spacing:0.15em !important;
+  text-transform:uppercase !important;
+  color:rgba(240,235,225,0.92) !important;
+  white-space:nowrap !important;
+  display:inline-block !important;
+  opacity:0;
+  transform:translateY(14px);
+  animation:none;
+}
+.rg-cycling-line.rg-visible .rg-word-1 {
+  animation:rgWordEnter 0.40s ease forwards;
+}
+.rg-cycling-line.rg-visible .rg-word-2 {
+  animation:rgWordEnter 0.40s ease 0.30s forwards;
+}
+.rg-cycling-line.rg-exit .rg-word-1,
+.rg-cycling-line.rg-exit .rg-word-2 {
+  animation:rgWordExit 0.30s ease forwards;
+}
+
+
+/* ============================================
+   RIVE GOSH v5 — Card text fix (2026-04-15)
+   H4 headings = warm charcoal, P body = dark readable
+   ============================================ */
+
+#colibri [data-colibri-id="61860-c4"] h4,
+#colibri [data-colibri-id="61860-c9"] h4,
+#colibri [data-colibri-id="61860-c14"] h4 {
+  color: rgba(30,25,20,0.90) !important;
+  font-family: 'Cormorant Garamond', serif !important;
+}
+
+#colibri [data-colibri-id="61860-c4"] p,
+#colibri [data-colibri-id="61860-c9"] p,
+#colibri [data-colibri-id="61860-c14"] p {
+  color: rgba(55,45,35,0.80) !important;
+}
+
+
+/* ============================================
+   RIVE GOSH v6 — Grid card icons (2026-04-15)
+   Section 61860-c38: champagne gold icon color + border
+   ============================================ */
+
+#colibri [data-colibri-id="61860-c38"] .h-icon__icon {
+  border: 1.5px solid rgba(204, 197, 147, 0.75) !important;
+  color: rgba(204, 197, 147, 0.90) !important;
+}
+#colibri [data-colibri-id="61860-c38"] .h-icon__icon svg,
+#colibri [data-colibri-id="61860-c38"] .h-icon__icon svg * {
+  color: rgba(204, 197, 147, 0.90) !important;
+  fill: rgba(204, 197, 147, 0.90) !important;
+  stroke: rgba(204, 197, 147, 0.90) !important;
+}
+

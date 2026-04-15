@@ -1021,3 +1021,57 @@ function rivegosh_custom_drawer_v43() {
 }
 // ===== RG DRAWER v43 END =====
 
+// ===== HERO GRAPHICS v3 — Sequential two-word cycling =====
+add_action( 'wp_footer', 'rivegosh_cycling_hero_js', 99999 );
+function rivegosh_cycling_hero_js() { ?>
+<script id="rg-cycling-js">
+(function(){
+  var pairs=[
+    ['PREMIUM','TRANSFERS'],
+    ['PREMIUM','CHAUFFEUR'],
+    ['PREMIUM','EXPERIENCES'],
+    ['PREMIUM','CONCIERGE'],
+    ['PREMIUM','ARRIVALS']
+  ];
+  var idx=0,lines=[];
+  function build(){
+    var wrap=document.createElement('div');
+    wrap.className='rg-cycling-wrap';
+    pairs.forEach(function(p,i){
+      var line=document.createElement('div');
+      line.className='rg-cycling-line'+(i===0?' rg-visible':'');
+      var w1=document.createElement('span');
+      w1.className='rg-word-1';
+      w1.textContent=p[0];
+      var w2=document.createElement('span');
+      w2.className='rg-word-2';
+      w2.textContent=p[1];
+      line.appendChild(w1);
+      line.appendChild(w2);
+      wrap.appendChild(line);
+    });
+    return wrap;
+  }
+  function inject(){
+    var anchor=document.querySelector('[data-colibri-id="61861-h29"]');
+    if(!anchor||document.querySelector('.rg-cycling-wrap'))return;
+    anchor.parentNode.insertBefore(build(),anchor);
+    lines=Array.from(document.querySelectorAll('.rg-cycling-line'));
+    setInterval(function(){
+      lines[idx].classList.remove('rg-visible');
+      lines[idx].classList.add('rg-exit');
+      idx=(idx+1)%lines.length;
+      lines[idx].classList.remove('rg-exit');
+      lines[idx].classList.add('rg-visible');
+      setTimeout(function(){
+        lines.forEach(function(l){l.classList.remove('rg-exit');});
+      },400);
+    },2800);
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',inject);}
+  else{inject();}
+})();
+</script>
+<?php }
+// ===== HERO GRAPHICS v3 END =====
+
