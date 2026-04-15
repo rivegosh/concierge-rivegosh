@@ -177,7 +177,6 @@ html.colibri-wp-theme body .h-navigation_sticky .h-logo__alt-image { display: no
   .style-local-61861-h3 .h-row{ position: relative !important; }/* H8 = BURGER — yanked out of flex flow,
   pinned top-left */
   .style-local-61861-h8-outer,
-  pinned top-left */
   .style-local-61866-h8-outer{
     position: absolute !important;
     top: 8px !important;
@@ -230,7 +229,6 @@ html.colibri-wp-theme body .h-navigation_sticky .h-logo__alt-image { display: no
   no diagonal */
   .style-local-61861-h4-outer,
   .style-local-61861-h4-outer *,
-  no diagonal */
   .style-local-61866-h4-outer,
   .style-local-61866-h4-outer *{
     animation: none !important;
@@ -752,6 +750,35 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 document.addEventListener('cmplz_cookie_banner_data', nuke);
 setTimeout(nuke, 500); setTimeout(nuke, 1500);
 })();
+	</script>
+	<script id="rivegosh-logo-aos-kill" data-no-optimize="1">
+	/* RG: Strip AOS from nav logo so it never animates off-center on mobile */
+	(function() {
+		var SELS = '.style-local-61861-h4-outer, .style-local-61866-h4-outer';
+		function fix() {
+			if (!window.matchMedia('(max-width: 991px)').matches) return;
+			document.querySelectorAll(SELS).forEach(function(el) {
+				el.removeAttribute('data-aos');
+				el.removeAttribute('data-aos-delay');
+				el.removeAttribute('data-aos-duration');
+				el.classList.remove('aos-init', 'aos-animate');
+				el.style.setProperty('transform', 'translateX(-50%)', 'important');
+				el.style.setProperty('opacity', '1', 'important');
+				el.style.setProperty('animation', 'none', 'important');
+				el.querySelectorAll('[data-aos], .aos-init, .aos-animate').forEach(function(c) {
+					c.removeAttribute('data-aos');
+					c.classList.remove('aos-init', 'aos-animate');
+					c.style.removeProperty('transform');
+					c.style.removeProperty('opacity');
+				});
+			});
+		}
+		fix();
+		document.addEventListener('DOMContentLoaded', fix);
+		setTimeout(fix, 100);
+		setTimeout(fix, 500);
+		setTimeout(fix, 1200);
+	})();
 	</script>
 	<?php
 }
