@@ -1151,7 +1151,13 @@ body.page-id-54773 .woocommerce-MyAccount-navigation { display: none !important;
   }
 }
 /* Hide ugly WC "Hello [name] (not [name]? Log out)" greeting */
-body.page-id-73404 .woocommerce-MyAccount-content > p:first-child { display: none !important; }
+/* Hide WC "Hello X (not X? Log out)" greeting + dashboard description on portal pages */
+body.page-id-73404 .woocommerce-MyAccount-content > p:first-child,
+body.page-id-73404 .woocommerce-MyAccount-content > p:first-of-type,
+body.page-id-73404 .woocommerce-MyAccount-content > p:nth-of-type(2),
+body.page-id-16 .woocommerce-MyAccount-content > p:first-child,
+body.page-id-16 .woocommerce-MyAccount-content > p:first-of-type,
+body.page-id-16 .woocommerce-MyAccount-content > p:nth-of-type(2) { display: none !important; }
 /* Style WC dashboard paragraphs + links dark */
 .woocommerce-MyAccount-content p,
 .woocommerce-MyAccount-content td,
@@ -1291,7 +1297,227 @@ body.page-id-61943 .h-accordion,
 body.page-id-61943 .h-accordion-item,
 body.page-id-61943 .expand-trigger,
 body.page-id-61943 .contract-trigger { background: transparent !important; }
-/* ===== PHASE 6 END ===== 2026-04-16 */
+/* ============================================================
+   PHASE 7: AMELIA CUSTOMER PANEL — DARK EMBEDDED TREATMENT
+   /booking-vip/ (page 54773) — Amelia v9.3 Vue customer panel
+   Target: make the panel feel natively embedded in the dark portal
+   ============================================================ */
+
+/* --- PUSH UP: panel hugs the hero image base --- */
+body.page-id-54773 .am-cap__wrapper {
+  margin-top: 0 !important;
+}
+
+/* --- WRAPPER: remove white box-shadow, match dark bg --- */
+body.page-id-54773 .amelia-v2-booking,
+body.page-id-54773 .am-cap__wrapper {
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* --- SIDEBAR: navy → dark --- */
+body.page-id-54773 .am-fs-sb {
+  background: #111 !important;
+  border-right: 1px solid rgba(204,197,147,0.08) !important;
+}
+/* Sidebar pages (Rod Andrews, Appointments, Events, Packages) */
+body.page-id-54773 .am-fs-sb__page {
+  color: rgba(255,255,255,0.7) !important;
+}
+body.page-id-54773 .am-fs-sb__page:hover,
+body.page-id-54773 .am-fs-sb__page[style*="background"] {
+  background: rgba(204,197,147,0.08) !important;
+  color: #CCC593 !important;
+}
+/* Active sidebar page highlight */
+body.page-id-54773 .am-fs-sb__page-wrapper .am-fs-sb__page:nth-child(1) {
+  color: #CCC593 !important;
+}
+body.page-id-54773 .am-fs-sb__page-heading {
+  color: rgba(255,255,255,0.4) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 10px !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+body.page-id-54773 .am-fs-sb__page-divider {
+  background: rgba(204,197,147,0.1) !important;
+}
+body.page-id-54773 .am-fs-sb__page-icon,
+body.page-id-54773 .am-fs-sb [class*="am-icon"] {
+  color: rgba(204,197,147,0.5) !important;
+}
+body.page-id-54773 .am-fs-sb__page:hover [class*="am-icon"] {
+  color: #CCC593 !important;
+}
+body.page-id-54773 .am-fs-sb__footer {
+  display: none !important;
+}
+
+/* --- MAIN CONTENT: white → dark --- */
+body.page-id-54773 .am-fs__main {
+  background: #0c0c0c !important;
+  color: rgba(255,255,255,0.8) !important;
+  border-left: 1px solid rgba(204,197,147,0.06) !important;
+}
+
+/* --- HEADER BAR --- */
+body.page-id-54773 .am-caph {
+  background: rgba(255,255,255,0.02) !important;
+  border-bottom: 1px solid rgba(204,197,147,0.08) !important;
+}
+body.page-id-54773 .am-caph__text {
+  color: #CCC593 !important;
+  font-family: 'Cormorant Garamond', 'Georgia', serif !important;
+}
+body.page-id-54773 .am-caph__main [class*="am-icon"] {
+  color: rgba(204,197,147,0.5) !important;
+}
+
+/* --- TIMEZONE / DROPDOWN TEXT --- */
+body.page-id-54773 .am-ctz { color: rgba(255,255,255,0.5) !important; }
+body.page-id-54773 .am-ctz [class*="am-icon"] { color: rgba(204,197,147,0.4) !important; }
+
+/* --- FILTER BAR + DATE PICKER --- */
+body.page-id-54773 .am-capf {
+  border-bottom: 1px solid rgba(204,197,147,0.06) !important;
+}
+body.page-id-54773 .am-capf__menu-btn {
+  background: #CCC593 !important;
+  border-color: #CCC593 !important;
+  color: #0c0c0c !important;
+}
+body.page-id-54773 .am-capf__menu-btn:hover {
+  background: #fff !important;
+  border-color: #fff !important;
+}
+body.page-id-54773 .am-date-picker__input,
+body.page-id-54773 .am-date-picker__input-start,
+body.page-id-54773 .am-date-picker__input-end {
+  color: rgba(255,255,255,0.7) !important;
+  background: transparent !important;
+}
+body.page-id-54773 .am-capf__menu-datepicker,
+body.page-id-54773 .am-date-picker__wrapper {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(204,197,147,0.15) !important;
+  border-radius: 4px !important;
+}
+/* Element UI select (timezone dropdown) */
+body.page-id-54773 .el-select__wrapper,
+body.page-id-54773 .el-input__wrapper {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(204,197,147,0.15) !important;
+  box-shadow: none !important;
+  color: rgba(255,255,255,0.7) !important;
+}
+body.page-id-54773 .el-select__wrapper input,
+body.page-id-54773 .el-input__inner,
+body.page-id-54773 .el-select__selected-item,
+body.page-id-54773 .el-select__placeholder {
+  color: rgba(255,255,255,0.7) !important;
+}
+
+/* --- EMPTY STATE (No appointments found) --- */
+body.page-id-54773 .am-ces {
+  background: transparent !important;
+}
+body.page-id-54773 .am-ces__heading {
+  color: rgba(255,255,255,0.8) !important;
+  font-family: 'Cormorant Garamond', 'Georgia', serif !important;
+}
+body.page-id-54773 .am-ces__text {
+  color: rgba(255,255,255,0.45) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+/* Tone down the empty state illustration */
+body.page-id-54773 .am-ces__img-holder {
+  opacity: 0.4 !important;
+  filter: grayscale(0.5) !important;
+}
+
+/* --- BUTTONS --- */
+body.page-id-54773 .am-button--primary,
+body.page-id-54773 .am-button--primary.am-button--filled {
+  background: #CCC593 !important;
+  border-color: #CCC593 !important;
+  color: #0c0c0c !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+}
+body.page-id-54773 .am-button--primary:hover {
+  background: #fff !important;
+  border-color: #fff !important;
+}
+
+/* --- SLIDE POPUP / MOBILE MENU --- */
+body.page-id-54773 .am-slide-popup__block {
+  background: #111 !important;
+  border: 1px solid rgba(204,197,147,0.1) !important;
+}
+body.page-id-54773 .am-msd__item {
+  color: rgba(255,255,255,0.7) !important;
+}
+body.page-id-54773 .am-msd__item:hover {
+  background: rgba(204,197,147,0.06) !important;
+  color: #CCC593 !important;
+}
+body.page-id-54773 .am-msd__item-divider {
+  background: rgba(204,197,147,0.08) !important;
+}
+
+/* --- GLOBAL TEXT inside Amelia on this page --- */
+body.page-id-54773 .amelia-v2-booking p,
+body.page-id-54773 .amelia-v2-booking span:not([class*="am-icon"]),
+body.page-id-54773 .amelia-v2-booking label {
+  color: rgba(255,255,255,0.7) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+body.page-id-54773 .amelia-v2-booking a {
+  color: #CCC593 !important;
+}
+
+/* --- INPUT FIELDS inside panel --- */
+body.page-id-54773 .amelia-v2-booking input[type="text"],
+body.page-id-54773 .amelia-v2-booking input[type="email"],
+body.page-id-54773 .amelia-v2-booking input[type="password"],
+body.page-id-54773 .amelia-v2-booking input[type="tel"],
+body.page-id-54773 .amelia-v2-booking textarea,
+body.page-id-54773 .amelia-v2-booking select {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(204,197,147,0.2) !important;
+  color: #fff !important;
+  border-radius: 2px !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* --- DESKTOP: scale up 10%, tighter to portal sidebar --- */
+@media (min-width: 992px) {
+  body.page-id-54773 .amelia-v2-booking {
+    padding-left: 120px !important;
+    transform: scale(1.1) !important;
+    transform-origin: top left !important;
+  }
+}
+/* --- Kill ALL Colibri padding in the Amelia section + pull up under hero arrow --- */
+body.page-id-54773 .style-local-54773-c9,
+body.page-id-54773 .style-local-54773-c9 .h-row-container,
+body.page-id-54773 .style-local-54773-c9 .h-column__inner,
+body.page-id-54773 .style-local-54773-c9 .h-column-container {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+body.page-id-54773 .style-local-54773-c8 {
+  margin-bottom: 0 !important;
+}
+body.page-id-54773 .style-local-54773-c9 {
+  margin-top: -75px !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* ===== PHASE 7 END ===== 2026-04-16 */
 
 </style>
 
