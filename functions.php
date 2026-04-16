@@ -1857,7 +1857,7 @@ function rivegosh_custom_drawer_v43() {
             ['title' => 'Register',     'url' => '/register/',    'vis' => 'guest'],
             ['title' => 'Account',      'url' => '/account/',     'vis' => 'member'],
             ['title' => 'Reservations', 'url' => '/booking-vip/', 'vis' => 'member'],
-            ['title' => 'Invoices',     'url' => '/my-orders/',   'vis' => 'member'],
+            ['title' => 'Invoices',     'url' => '/my-orders/orders/', 'vis' => 'member'],
             ['title' => 'Members',      'url' => '/members/',     'vis' => 'member'],
             ['title' => 'FAQ',          'url' => '/faq-2/',       'vis' => 'all'],
         ];
@@ -2412,7 +2412,7 @@ function rivegosh_portal_sidebar_v2() {
     ['sep' => true,                                                        'vis' => 'member'],
     ['label' => 'ACCOUNT',       'url' => '/account/',     'id' => 73404, 'vis' => 'member'],
     ['label' => 'RESERVATIONS',  'url' => '/booking-vip/', 'id' => 54773, 'vis' => 'member'],
-    ['label' => 'INVOICES',      'url' => '/my-orders/',   'id' => 16,    'vis' => 'member'],
+    ['label' => 'INVOICES',      'url' => '/my-orders/orders/', 'id' => 16,    'vis' => 'member'],
     ['label' => 'MEMBERS',       'url' => '/members/',     'id' => 73402, 'vis' => 'member'],
     ['label' => 'FAQ',          'url' => '/faq-2/',       'id' => 61943, 'vis' => 'all'],
     ['sep' => true,                                                        'vis' => 'member'],
