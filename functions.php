@@ -772,8 +772,9 @@ body.h-offcanvas-opened [class*="gt_switcher"] {
 body.page-id-73400,
 body.page-id-73401 { background: #0c0c0c !important; }
 
-/* UM outer wrapper */
-.um { max-width: 480px !important; margin: 0 auto !important; }
+/* UM outer wrapper — scoped to login + register pages only */
+body.page-id-73400 .um,
+body.page-id-73401 .um { max-width: 480px !important; margin: 0 auto !important; }
 
 /* UM form fields */
 .um-field-label label,
@@ -838,9 +839,9 @@ body.page-id-73401 { background: #0c0c0c !important; }
 /* Amelia headings */
 .amelia-app-wrapper h1, .amelia-app-wrapper h2,
 .amelia-app-wrapper h3, .amelia-app-wrapper h4 { color: #CCC593 !important; font-family: 'Cormorant Garamond', 'Georgia', serif !important; }
-/* Amelia body text */
-.amelia-app-wrapper p, .amelia-app-wrapper label,
-.amelia-app-wrapper span, .amelia-app-wrapper div { color: rgba(255,255,255,0.8) !important; }
+/* Amelia body text — avoid div (too broad, breaks status chips/error states) */
+.amelia-app-wrapper p,
+.amelia-app-wrapper label { color: rgba(255,255,255,0.8) !important; }
 /* Amelia inputs */
 .amelia-app-wrapper input[type="text"],
 .amelia-app-wrapper input[type="email"],
@@ -1330,17 +1331,18 @@ function rivegosh_contextual_hero_text() {
   ];
   $id  = get_the_ID();
   if (!isset($map[$id])) return;
-  $text = esc_js($map[$id]);
+  // Use <br> for line breaks — textContent ignores \n, innerHTML renders <br>
+  $html = nl2br( esc_html($map[$id]) );
   ?>
   <script id="rg-hero-text">
   (function(){
-    var newText = <?php echo json_encode($map[$id]); ?>;
+    var newHtml = <?php echo json_encode($html); ?>;
     function swap(){
       var heroes = document.querySelectorAll('.h-section.h-hero h1, .h-section.h-hero h2, .h-section.h-hero h3, .h-section.h-hero h4, .h-section.h-hero h5, .h-section.h-hero .h-heading, .h-section.h-hero [class*="h-heading"]');
       heroes.forEach(function(el){
         var t = el.textContent.trim().toUpperCase();
         if(t.includes('DESTINATION') || t.includes('YOUR ')){
-          el.textContent = newText;
+          el.innerHTML = newHtml;
         }
       });
     }
