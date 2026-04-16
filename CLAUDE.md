@@ -1,5 +1,15 @@
 # Rive Gosh
 
+## NON-NEGOTIABLE: KB #49 FIRST
+
+**Before ANY design or design-tech work on this site, read [Issue #49](https://github.com/rivegosh/concierge-rivegosh/issues/49) in full.**
+
+"Design or design-tech work" means anything involving: CSS, header, nav, logo, sticky behavior, Colibri theme, mobile layout, fonts, colors, brand assets, GTranslate positioning, WooCommerce styling, LiteSpeed cache, or any visual element on the site.
+
+This rule has no exceptions. Skipping it has repeatedly caused regressions. Read #49, then begin.
+
+---
+
 ## Project Overview
 
 WordPress + WooCommerce marketplace migration. Rebranding "Top VIP Driver" (VTC/luxury transport booking platform) to "Rive Gosh."
