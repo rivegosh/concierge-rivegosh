@@ -754,6 +754,76 @@ body.h-offcanvas-opened [class*="gt_switcher"] {
 .style-local-61872-f2 a:hover { color: #fff !important; }
 #footer1,
 .style-local-61872-f2 { color: rgba(204,197,147,0.55) !important; }
+/* Hide Colibri footer entirely — replaced by #rg-footer-bar injected via PHP */
+.page-footer,
+[data-colibri-id="61872-f1"],
+.style-local-61872-f1 { display: none !important; }
+/* Our custom footer bar: pure text, fixed to viewport bottom, zero background */
+#rg-footer-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 9000;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(204,197,147,0.5);
+  white-space: nowrap;
+  pointer-events: none;
+  background: none !important;
+}
+#rg-footer-bar a {
+  color: rgba(204,197,147,0.5) !important;
+  text-decoration: none !important;
+  pointer-events: auto;
+}
+#rg-footer-bar a:hover { color: #CCC593 !important; }
+#rg-footer-bar .rg-fb-sep { margin: 0 16px; opacity: 0.3; }
+@media (max-width: 991px) {
+  #rg-footer-bar { font-size: 10px; bottom: 12px; }
+}
+
+/* ============================================================
+   HERO TEXT: desktop reduce ~50% + line-height 1.25
+   Mobile untouched (user confirmed mobile is perfect)
+   ============================================================ */
+@media (min-width: 992px) {
+  .h-section.h-hero h1,
+  .h-section.h-hero h2,
+  .h-section.h-hero h3,
+  .h-section.h-hero .h-heading,
+  .h-section.h-hero [class*="h-heading"] {
+    font-size: 32px !important;
+    line-height: 1.25 !important;
+  }
+}
+
+/* ============================================================
+   HERO ARROW: champagne gold + mobile center
+   ============================================================ */
+.h-scroll-to__outer svg,
+.h-down-arrow svg,
+.move-down-bounce svg {
+  color: #CCC593 !important;
+  stroke: #CCC593 !important;
+  fill: #CCC593 !important;
+}
+/* Some Colibri arrows use border/pseudo instead of SVG */
+.h-scroll-to__outer i,
+.h-down-arrow i,
+.move-down-bounce i { color: #CCC593 !important; }
+/* Mobile: center the arrow horizontally */
+@media (max-width: 991px) {
+  .h-scroll-to__outer,
+  .h-down-arrow {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    right: auto !important;
+    position: absolute !important;
+  }
+}
 
 /* ============ DRAWER: HIDE ON DESKTOP ============ */
 /* #rg-drawer HTML is always emitted — only CSS is media-gated → leaks on desktop. Kill it. */
@@ -788,9 +858,22 @@ body.page-id-73401 .um { max-width: 480px !important; margin: 0 auto !important;
   border-radius: 2px !important;
   color: #fff !important;
   font-family: 'Inter', sans-serif !important;
-  padding: 12px 14px !important;
+  font-size: 15px !important;
+  padding: 14px 14px !important;
 }
 .um-field-input input:focus { border-color: #CCC593 !important; outline: none !important; }
+/* Eye icon wrapper for UM password fields */
+.rg-pw-wrap { position: relative !important; display: block !important; }
+.rg-pw-wrap input { padding-right: 44px !important; width: 100% !important; box-sizing: border-box !important; }
+.rg-pw-toggle {
+  position: absolute !important; right: 12px !important; top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: none !important; border: none !important; cursor: pointer !important;
+  padding: 4px !important; color: rgba(204,197,147,0.5) !important;
+  display: flex !important; align-items: center !important;
+}
+.rg-pw-toggle:hover { color: #CCC593 !important; }
+.rg-pw-toggle svg { width: 18px !important; height: 18px !important; display: block !important; }
 
 /* UM submit button — override UM inline styles via high-specificity */
 .um .um-button,
@@ -829,6 +912,11 @@ body.page-id-73401 .um { max-width: 480px !important; margin: 0 auto !important;
 /* Main Amelia section bg */
 [data-colibri-id="54773-c9"],
 .style-local-54773-c9 { background-color: #0c0c0c !important; }
+/* Column inners: c4 = shortcode/empty column, c6 = text/dashboard panel */
+[data-colibri-id="54773-c4"],
+.style-local-54773-c4,
+[data-colibri-id="54773-c6"],
+.style-local-54773-c6 { background-color: #0c0c0c !important; color: rgba(255,255,255,0.8) !important; }
 
 /* Amelia v2 customer panel — login gate + general UI */
 .amelia-app-wrapper,
@@ -924,19 +1012,28 @@ body.page-id-73401 .um { max-width: 480px !important; margin: 0 auto !important;
    ============================================================ */
 
 /* --- Page-level dark background --- */
+body.page-id-54773,
 body.page-id-73404,
 body.page-id-73402,
 body.page-id-61943 { background: #0c0c0c !important; }
 
-/* Kill white Colibri section backgrounds on all four pages */
+/* Kill white Colibri section backgrounds on all portal pages */
 body.page-id-16 .h-section,
+body.page-id-54773 .h-section,
 body.page-id-73404 .h-section,
 body.page-id-73402 .h-section,
 body.page-id-61943 .h-section { background-color: #0c0c0c !important; }
 
+body.page-id-54773 .site-content,
 body.page-id-73404 .site-content,
 body.page-id-73402 .site-content,
 body.page-id-61943 .site-content { background: #0c0c0c !important; }
+
+/* FAQ direct section override — beats Colibri style-994 global class */
+.style-local-61943-c2 { background-color: #0c0c0c !important; background: #0c0c0c !important; }
+/* Booking VIP direct overrides — catches any remaining white wrappers */
+body.page-id-54773 .h-row-container { background: #0c0c0c !important; }
+body.page-id-54773 .content { background: #0c0c0c !important; }
 
 /* ===================
    WC MY ACCOUNT (16) — Guest state: Login + Register forms
@@ -976,7 +1073,8 @@ body.page-id-61943 .site-content { background: #0c0c0c !important; }
   border-radius: 1px !important;
   color: #fff !important;
   font-family: 'Inter', sans-serif !important;
-  padding: 12px 16px !important;
+  font-size: 15px !important;
+  padding: 14px 16px !important;
 }
 .woocommerce-account input:focus,
 .woocommerce-account select:focus,
@@ -1009,6 +1107,75 @@ body.page-id-61943 .site-content { background: #0c0c0c !important; }
 .woocommerce-account .woocommerce-privacy-policy-text a { color: rgba(204,197,147,0.5) !important; }
 .woocommerce-account .woocommerce-form-login__rememberme span { color: rgba(255,255,255,0.45) !important; font-size: 11px !important; }
 .woocommerce-account input[type="checkbox"] { accent-color: #CCC593; }
+/* PROXIMITY RULE: login button further from last field than fields are from each other */
+.woocommerce-account .woocommerce-form-login p.form-row:not(.woocommerce-form-row--wide) {
+  margin-top: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+}
+/* WC HTML order: Remember Me FIRST, button SECOND — use order to flip: button left, Remember Me right */
+.woocommerce-account .woocommerce-form-login input[name="login"],
+.woocommerce-account .woocommerce-form-login button[name="login"],
+.woocommerce-account .woocommerce-form-login .woocommerce-Button { order: 1 !important; }
+.woocommerce-account .woocommerce-form-login .woocommerce-form-login__rememberme {
+  order: 2 !important;
+  margin-left: auto !important;
+  padding-left: 20px !important;
+  white-space: nowrap !important;
+}
+/* WC REGISTER form on /my-orders/ — hide it; replaced with UM redirect panel via JS */
+body.page-id-16 .woocommerce-form-register { display: none !important; }
+/* Push login+register content right of portal sidebar (sidebar ends at ~210px from left) */
+@media (min-width: 992px) {
+  body.page-id-16:not(.woocommerce-logged-in) #customer_login,
+  body.page-id-16 #customer_login {
+    padding-left: 200px !important;
+  }
+  /* Narrow the Create Account (right) column — less wasted space */
+  body.page-id-16 .u-column1.col-1 { width: 52% !important; }
+  body.page-id-16 .u-column2.col-2 { width: 38% !important; }
+}
+/* WC My Account sidebar nav — hidden on all portal pages (we use our own sidebar) */
+body.page-id-73404 .woocommerce-MyAccount-navigation,
+body.page-id-16 .woocommerce-MyAccount-navigation,
+body.page-id-73402 .woocommerce-MyAccount-navigation,
+body.page-id-54773 .woocommerce-MyAccount-navigation { display: none !important; }
+/* WC dashboard content: dark treatment + push right of portal sidebar */
+@media (min-width: 992px) {
+  body.page-id-73404 .woocommerce-MyAccount-content,
+  body.page-id-16 .woocommerce-MyAccount-content {
+    padding-left: 200px !important;
+    width: 100% !important;
+    float: none !important;
+  }
+}
+/* Hide ugly WC "Hello [name] (not [name]? Log out)" greeting */
+body.page-id-73404 .woocommerce-MyAccount-content > p:first-child { display: none !important; }
+/* Style WC dashboard paragraphs + links dark */
+.woocommerce-MyAccount-content p,
+.woocommerce-MyAccount-content td,
+.woocommerce-MyAccount-content th,
+.woocommerce-MyAccount-content label {
+  color: rgba(255,255,255,0.75) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+}
+.woocommerce-MyAccount-content a { color: #CCC593 !important; }
+.woocommerce-MyAccount-content table { border-color: rgba(204,197,147,0.1) !important; width: 100% !important; }
+.woocommerce-MyAccount-content table thead th {
+  color: rgba(204,197,147,0.6) !important;
+  font-size: 11px !important; letter-spacing: 0.08em !important; text-transform: uppercase !important;
+  border-bottom: 1px solid rgba(204,197,147,0.15) !important;
+  background: transparent !important;
+}
+.woocommerce-MyAccount-content table tbody td { border-bottom: 1px solid rgba(255,255,255,0.04) !important; }
+/* WC "no orders" message */
+.woocommerce-MyAccount-content .woocommerce-Message {
+  background: rgba(255,255,255,0.03) !important;
+  border-top: 2px solid #CCC593 !important;
+  color: rgba(255,255,255,0.65) !important;
+}
 
 /* ===================
    UM ACCOUNT page (73404) — profile dark treatment
@@ -1072,6 +1239,58 @@ body.page-id-61943 .h-text,
 body.page-id-61943 p,
 body.page-id-61943 .h-accordion-content { color: rgba(255,255,255,0.8) !important; }
 body.page-id-61943 .h-accordion-title { color: rgba(204,197,147,0.9) !important; border-bottom: 1px solid rgba(204,197,147,0.12) !important; }
+/* Kill Colibri accordion grey (#eeeeee) — actual widget classes */
+body.page-id-61943 .h-accordion-item-title {
+  background: rgba(255,255,255,0.04) !important;
+  border-bottom: 1px solid rgba(204,197,147,0.15) !important;
+  color: rgba(204,197,147,0.9) !important;
+  font-size: 13px !important;
+  font-family: 'Inter', sans-serif !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+body.page-id-61943 .h-accordion-item-content {
+  background: transparent !important;
+  color: rgba(255,255,255,0.8) !important;
+  font-size: 13px !important;
+  font-family: 'Inter', sans-serif !important;
+}
+body.page-id-61943 .h-accordion-item-content p,
+body.page-id-61943 .h-accordion-item-content li { font-size: 13px !important; line-height: 1.6 !important; }
+/* Accordion +/- toggle buttons → cognac (override Colibri blue) */
+body.page-id-61943 .h-accordion-item-title button,
+body.page-id-61943 .h-accordion-item-title .expand-icon,
+body.page-id-61943 .h-accordion-item-title .contract-icon,
+body.page-id-61943 .h-accordion-item-title svg,
+body.page-id-61943 .h-accordion-item-title svg path,
+body.page-id-61943 .h-accordion-item-title svg circle,
+body.page-id-61943 .h-accordion-item-title svg line,
+body.page-id-61943 .expand-trigger button,
+body.page-id-61943 .contract-trigger button {
+  color: #CCC593 !important;
+  fill: #CCC593 !important;
+  stroke: #CCC593 !important;
+  border-color: #CCC593 !important;
+  background: transparent !important;
+}
+/* Q&A proximity — answer hugs its question, gap before next Q */
+body.page-id-61943 .h-accordion-item { margin-bottom: 2px !important; }
+body.page-id-61943 .h-accordion-item-content { padding-top: 6px !important; padding-bottom: 10px !important; }
+body.page-id-61943 .h-accordion-item-content p { margin-top: 0 !important; margin-bottom: 6px !important; }
+body.page-id-61943 .h-accordion-item-content p:last-child { margin-bottom: 0 !important; }
+/* Booking page (54773): hide ugly Colibri card section (stripe texture + empty columns) */
+body.page-id-54773 [data-colibri-id="54773-c2"],
+body.page-id-54773 .style-local-54773-c2 { display: none !important; }
+/* Hide Colibri "Shortcode is empty" placeholder bar */
+body.page-id-54773 .shortcode-placeholder-preview { display: none !important; }
+/* WC register form hidden on page 16 — replaced with UM redirect panel (see rivegosh_wc_register_replace) */
+/* Kill any column inner whites on FAQ */
+body.page-id-61943 .h-column__inner { background: transparent !important; }
+/* Accordion container */
+body.page-id-61943 .h-accordion,
+body.page-id-61943 .h-accordion-item,
+body.page-id-61943 .expand-trigger,
+body.page-id-61943 .contract-trigger { background: transparent !important; }
 /* ===== PHASE 6 END ===== 2026-04-16 */
 
 </style>
@@ -1242,7 +1461,7 @@ function rivegosh_custom_drawer_v43() {
             ['title' => 'Login',        'url' => '/login-2/',     'vis' => 'guest'],
             ['title' => 'Register',     'url' => '/register/',    'vis' => 'guest'],
             ['title' => 'Account',      'url' => '/account/',     'vis' => 'member'],
-            ['title' => 'My Orders',    'url' => '/my-account/',  'vis' => 'member'],
+            ['title' => 'My Orders',    'url' => '/my-orders/',   'vis' => 'member'],
             ['title' => 'Members',      'url' => '/members/',     'vis' => 'member'],
             ['title' => 'Your Booking', 'url' => '/booking-vip/', 'vis' => 'member'],
             ['title' => 'FAQ',          'url' => '/faq-2/',       'vis' => 'all'],
@@ -1348,7 +1567,7 @@ function rivegosh_custom_drawer_v43() {
           if (!isset($k['vis'])) {
             $u = $k['url'];
             $is_auth  = (strpos($u,'/login')!==false || strpos($u,'/register')!==false);
-            $is_mbr   = (strpos($u,'/account')!==false || strpos($u,'/my-account')!==false || strpos($u,'/members')!==false || strpos($u,'/booking-vip')!==false);
+            $is_mbr   = (strpos($u,'/account')!==false || strpos($u,'/my-orders')!==false || strpos($u,'/members')!==false || strpos($u,'/booking-vip')!==false);
             if ($is_auth && $rg_logged_in)  continue;
             if ($is_mbr  && !$rg_logged_in) continue;
           }
@@ -1485,6 +1704,7 @@ function rivegosh_contextual_hero_text() {
     16    => "YOUR\nPRIVATE SPACE",
     54773 => "YOUR EXCLUSIVE\nITINERARY",
     73402 => "YOUR\nMEMBER SPACE",
+    61943 => "FREQUENTLY ASKED\nQUESTIONS",
   ];
   $id  = get_the_ID();
   if (!isset($map[$id])) return;
@@ -1508,6 +1728,28 @@ function rivegosh_contextual_hero_text() {
   })();
   </script>
   <?php
+  // On FAQ page: hide the content-area "Frequently asked questions" heading — it moved to hero
+  if ($id === 61943): ?>
+  <script id="rg-faq-hide-heading">
+  (function(){
+    function hideContentHeading(){
+      var allH = document.querySelectorAll('.h-section:not(.h-hero):not(.h-navigation) h1, .h-section:not(.h-hero):not(.h-navigation) h2, .h-section:not(.h-hero):not(.h-navigation) h3');
+      allH.forEach(function(el){
+        var t = el.textContent.trim().toUpperCase();
+        if(t.includes('FREQUENTLY') || t.includes('ASKED') || t.includes('QUESTIONS')){
+          el.style.setProperty('display','none','important');
+          // Also hide the parent widget wrapper so gap doesn't remain
+          var p = el.closest('[class*="style-local"]') || el.parentElement;
+          if(p && p !== document.body){ p.style.setProperty('display','none','important'); }
+        }
+      });
+    }
+    if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',hideContentHeading); }
+    else { hideContentHeading(); }
+  })();
+  </script>
+  <?php endif; ?>
+  <?php
 }
 // ===== PHASE 4 END =====
 
@@ -1517,11 +1759,237 @@ function rivegosh_contextual_hero_text() {
 add_action('template_redirect', 'rivegosh_register_logged_in_redirect');
 function rivegosh_register_logged_in_redirect() {
   if ( is_user_logged_in() && is_page('register') ) {
-    wp_safe_redirect( home_url('/my-account/') );
+    wp_safe_redirect( home_url('/my-orders/') );
     exit;
   }
 }
 // ===== REGISTER PAGE REDIRECT END =====
+
+// ===== AMELIA SSO: auto-link new UM registrations to Amelia customer records =====
+// GitHub: growthpigs/lifemodo#554
+// When a user registers via UM, we:
+// 1. Assign the wpamelia-customer WP role (so Amelia recognizes them)
+// 2. Create an amelia_users record with externalId = WP user ID
+// This enables Amelia's native WP SSO — no second login form ever shown.
+add_action('um_registration_complete', 'rivegosh_amelia_sso_link', 5, 2);
+function rivegosh_amelia_sso_link($user_id, $args) {
+  // 1. Assign WP role
+  $user = new WP_User($user_id);
+  $user->add_role('wpamelia-customer');
+
+  // 2. Create Amelia customer record linked to this WP user
+  global $wpdb;
+  $table = $wpdb->prefix . 'amelia_users';
+  // Only create if no record exists yet (prevent duplicates)
+  $exists = $wpdb->get_var($wpdb->prepare(
+    "SELECT id FROM {$table} WHERE externalId = %d AND type = 'customer'", $user_id
+  ));
+  if (!$exists) {
+    $wp_user = get_userdata($user_id);
+    $wpdb->insert($table, [
+      'status'     => 'visible',
+      'type'       => 'customer',
+      'externalId' => $user_id,
+      'firstName'  => $wp_user->first_name ?: $wp_user->display_name,
+      'lastName'   => $wp_user->last_name ?: '',
+      'email'      => $wp_user->user_email,
+    ]);
+  }
+}
+// ===== AMELIA SSO END =====
+
+// ===== UM POST-LOGIN + POST-REGISTRATION REDIRECTS =====
+// After login → My Orders portal. After registration → Account page.
+add_filter('um_login_redirect_url', 'rivegosh_um_login_redirect', 10, 3);
+function rivegosh_um_login_redirect($url, $user_id, $redirect_to) {
+  return home_url('/my-orders/');
+}
+
+add_action('um_registration_complete', 'rivegosh_um_after_register', 10, 2);
+function rivegosh_um_after_register($user_id, $args) {
+  wp_safe_redirect( home_url('/account/') );
+  exit;
+}
+// ===== UM REDIRECTS END =====
+
+// ===== UM PROFILE PAGE: REDIRECT AWAY =====
+// /user/username/ is UM's public profile — not needed for a concierge service.
+add_action('template_redirect', 'rivegosh_um_profile_redirect', 5);
+function rivegosh_um_profile_redirect() {
+  if ( !function_exists('um_is_core_page') ) return;
+  if ( um_is_core_page('user') ) {
+    if ( is_user_logged_in() ) {
+      wp_safe_redirect( home_url('/my-orders/') );
+    } else {
+      wp_safe_redirect( home_url('/login-2/') );
+    }
+    exit;
+  }
+}
+// ===== UM PROFILE PAGE REDIRECT END =====
+
+// ===== /my-account/ → /my-orders/ 301 REDIRECT =====
+// Slug changed from my-account to my-orders. Redirect old bookmarks/WC internal links.
+add_action('template_redirect', 'rivegosh_myaccount_slug_redirect', 1);
+function rivegosh_myaccount_slug_redirect() {
+  $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+  // Only redirect paths that literally start with /my-account (not /my-orders which is now canonical)
+  if ( preg_match('#^/my-account(/|$)#', $uri) ) {
+    $new = preg_replace('#^/my-account#', '/my-orders', $uri);
+    wp_redirect( home_url($new), 301 );
+    exit;
+  }
+}
+// ===== /my-account/ REDIRECT END =====
+
+// ===== PORTAL PAGES: REDIRECT LOGGED-OUT USERS TO MY ORDERS LOGIN PAGE =====
+// Account (73404), Members (73402), Your Booking (54773) have no guest content.
+// All redirect → /my-orders/ (page 16) which shows Login (left) + Create Account (right).
+add_action('template_redirect', 'rivegosh_portal_guest_redirect');
+function rivegosh_portal_guest_redirect() {
+  if ( is_user_logged_in() ) return;
+  $id = get_the_ID();
+  if ( in_array( $id, [73404, 73402, 54773] ) ) {
+    wp_safe_redirect( home_url('/my-orders/') );
+    exit;
+  }
+}
+// ===== PORTAL GUEST REDIRECT END =====
+
+// ===== WC MY ACCOUNT: REPLACE REGISTER FORM WITH UM REDIRECT PANEL =====
+// WC's register form (email+password only) conflicts with UM's full register form.
+// On /my-account/ we hide the WC form (CSS above) and inject a styled panel → /register/.
+// Both WC login + register forms replaced with clean redirect panels → /login-2/ and /register/
+add_action('wp_footer', 'rivegosh_wc_register_replace', 99999);
+function rivegosh_wc_register_replace() {
+  if ( !is_page(16) || is_user_logged_in() ) return;
+  ?>
+  <style id="rg-register-panel-css">
+  .rg-auth-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    padding: 32px 0;
+  }
+  .rg-auth-panel h2.rg-panel-title {
+    color: #CCC593 !important;
+    font-family: 'Cormorant Garamond', 'Georgia', serif !important;
+    font-size: 24px !important;
+    letter-spacing: 0.04em !important;
+    margin-bottom: 16px !important;
+  }
+  .rg-auth-panel p {
+    color: rgba(255,255,255,0.65) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    line-height: 1.7 !important;
+    margin-bottom: 28px !important;
+  }
+  .rg-auth-panel a.rg-panel-btn {
+    display: inline-block;
+    background: #CCC593 !important;
+    color: #0c0c0c !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    padding: 14px 32px !important;
+    border-radius: 1px;
+    transition: background 0.2s;
+    align-self: flex-start;
+  }
+  .rg-auth-panel a.rg-panel-btn:hover { background: #fff !important; }
+  .rg-auth-panel .rg-panel-note {
+    margin-top: 16px !important;
+    font-size: 11px !important;
+    color: rgba(255,255,255,0.3) !important;
+  }
+  </style>
+  <script id="rg-register-panel-js">
+  (function(){
+    function injectPanels(){
+      var wrap = document.querySelector('#customer_login');
+      if (!wrap) return;
+
+      // Hide all WC forms inside
+      wrap.querySelectorAll('form').forEach(function(f){ f.style.setProperty('display','none','important'); });
+      // Also hide WC headings
+      wrap.querySelectorAll('h2').forEach(function(h){ h.style.setProperty('display','none','important'); });
+
+      // Left column: Log In panel
+      var col1 = wrap.querySelector('.u-column1');
+      if (col1) {
+        var loginPanel = document.createElement('div');
+        loginPanel.className = 'rg-auth-panel';
+        loginPanel.innerHTML = [
+          '<h2 class="rg-panel-title">Log In</h2>',
+          '<p>Access your VIP Customer portal — bookings, membership, exclusive services.</p>',
+          '<a href="/login-2/" class="rg-panel-btn">Log In</a>',
+          '<span class="rg-panel-note">Existing members only</span>'
+        ].join('');
+        col1.appendChild(loginPanel);
+      }
+
+      // Right column: Create Account panel
+      var col2 = wrap.querySelector('.u-column2');
+      if (col2) {
+        var registerPanel = document.createElement('div');
+        registerPanel.className = 'rg-auth-panel';
+        registerPanel.innerHTML = [
+          '<h2 class="rg-panel-title">Create Account</h2>',
+          '<p>Join the Rive Gosh private circle. Full VIP profile — takes under a minute.</p>',
+          '<a href="/register/" class="rg-panel-btn">Create Account</a>',
+          '<span class="rg-panel-note">Username &middot; Name &middot; Email &middot; Password</span>'
+        ].join('');
+        col2.appendChild(registerPanel);
+      }
+    }
+    if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',injectPanels); }
+    else { injectPanels(); }
+  })();
+  </script>
+  <?php
+}
+// ===== WC REGISTER REPLACE END =====
+
+// ===== TOP NAV: FIX VIP CUSTOMER LINK FOR LOGGED-OUT USERS =====
+// Colibri sets "VIP CUSTOMER" header link → /register/ — confusing for guests.
+// For logged-out users, intercept and point it to /login-2/ (UM portal login page).
+add_action('wp_footer', 'rivegosh_fix_nav_for_guests', 99999);
+function rivegosh_fix_nav_for_guests() {
+  if ( is_user_logged_in() ) return;
+  ?>
+  <script id="rg-nav-guest-fix">
+  (function(){
+    // Change all /register/ links in the Colibri top nav → /login-2/
+    // Sidebar REGISTER link is inside #rg-portal-sidebar, not .h-navigation — so it stays.
+    var navLinks = document.querySelectorAll('.h-navigation a[href*="/register/"]');
+    navLinks.forEach(function(a){ a.href = '/login-2/'; });
+    // Also fix the Colibri offcanvas/drawer nav links
+    var offLinks = document.querySelectorAll('.h-offcanvas-panel a[href*="/register/"]');
+    offLinks.forEach(function(a){ a.href = '/login-2/'; });
+  })();
+  </script>
+  <?php
+}
+// ===== TOP NAV FIX END =====
+
+// ===== FOOTER BAR: custom fixed footer, replaces hidden Colibri footer =====
+add_action('wp_footer', 'rivegosh_footer_bar', 99999);
+function rivegosh_footer_bar() {
+  $terms_url = home_url('/terms-et-conditions-generales-privacy-policy-cookies-eu-us/');
+  ?>
+  <div id="rg-footer-bar">
+    <a href="<?php echo esc_url($terms_url); ?>">Terms &amp; Conditions, Privacy Policy, Cookies</a>
+    <span class="rg-fb-sep">|</span>
+    <span>&copy; Rive Gosh 2026</span>
+  </div>
+  <?php
+}
+// ===== FOOTER BAR END =====
 
 // ===== PORTAL SIDEBAR v2 — gutter-positioned VIP customer nav, desktop only =====
 // ⚠️  CURRENT WORK — DO NOT MODIFY — Last updated: 2026-04-16 by CC session (Chi/Sonnet)
@@ -1536,22 +2004,24 @@ function rivegosh_register_logged_in_redirect() {
 // Registered LAST at 99999 — CSS loads after all other 99999-priority styles (KB#49 §20).
 add_action('wp_footer', 'rivegosh_portal_sidebar_v2', 99999);
 function rivegosh_portal_sidebar_v2() {
-  $portal_ids = [73400, 73401, 73404, 73402, 54773, 61943];
+  $portal_ids = [73400, 73401, 73404, 73402, 54773, 61943, 16];
   $current_id = get_the_ID();
   if (!in_array($current_id, $portal_ids)) return;
-  // Suppress on all WooCommerce account endpoints (KB#49 §19)
-  if (function_exists('is_account_page') && is_account_page()) return;
 
-  // All 7 items always shown — same as header VIP Customer dropdown (design continuity)
+  // Visibility-gated nav: guests see auth links, members see portal links
+  $rg_logged_in = is_user_logged_in();
   $nav = [
-    ['label' => 'LOGIN',        'url' => '/login-2/',     'id' => 73400],
-    ['label' => 'REGISTER',     'url' => '/register/',    'id' => 73401],
-    'separator',
-    ['label' => 'ACCOUNT',      'url' => '/account/',     'id' => 73404],
-    ['label' => 'MY ORDERS',    'url' => '/my-account/',  'id' => 16],
-    ['label' => 'MEMBERS',      'url' => '/members/',     'id' => 73402],
-    ['label' => 'YOUR BOOKING', 'url' => '/booking-vip/', 'id' => 54773],
-    ['label' => 'FAQ',          'url' => '/faq-2/',       'id' => 61943],
+    ['label' => 'HOME',         'url' => '/',             'id' => 0,     'vis' => 'all'],
+    ['label' => 'LOGIN',        'url' => '/login-2/',     'id' => 73400, 'vis' => 'guest'],
+    ['label' => 'REGISTER',     'url' => '/register/',    'id' => 73401, 'vis' => 'guest'],
+    ['sep' => true,                                                        'vis' => 'member'],
+    ['label' => 'ACCOUNT',      'url' => '/account/',     'id' => 73404, 'vis' => 'member'],
+    ['label' => 'MY ORDERS',    'url' => '/my-orders/',   'id' => 16,    'vis' => 'member'],
+    ['label' => 'MEMBERS',      'url' => '/members/',     'id' => 73402, 'vis' => 'member'],
+    ['label' => 'YOUR BOOKING', 'url' => '/booking-vip/', 'id' => 54773, 'vis' => 'member'],
+    ['label' => 'FAQ',          'url' => '/faq-2/',       'id' => 61943, 'vis' => 'all'],
+    ['sep' => true,                                                        'vis' => 'member'],
+    ['label' => 'LOG OUT',      'url' => wp_logout_url( home_url('/') ),   'id' => 0,     'vis' => 'member', 'logout' => true],
   ];
   ?>
   <style id="rg-portal-sidebar-css">
@@ -1562,9 +2032,9 @@ function rivegosh_portal_sidebar_v2() {
      ============================================================ */
   #rg-portal-sidebar {
     position: fixed;
-    left: 24px; /* JS overrides with measured gutter center position */
+    left: 44px; /* JS overrides: aligns with logo left edge */
     top: 0;     /* JS sets from header offsetHeight */
-    width: 160px;
+    width: 140px;
     height: 100vh; /* JS corrects to 100vh minus header */
     background: transparent; /* floats on dark page bg — no box */
     z-index: 1000; /* above content, below GTranslate(9999), below drawer(99998) — KB#49 §21 */
@@ -1578,13 +2048,13 @@ function rivegosh_portal_sidebar_v2() {
   }
   #rg-portal-sidebar::-webkit-scrollbar { display: none; }
 
-  /* "VIP CUSTOMER" section label */
+  /* "VIP CUSTOMER" section label — bold, same size as nav links */
   #rg-portal-sidebar .rg-ps-label {
-    color: rgba(204,197,147,0.45);
+    color: rgba(204,197,147,0.85);
     font-family: 'Inter', sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 0 0 12px 2px;
     display: block;
@@ -1615,6 +2085,7 @@ function rivegosh_portal_sidebar_v2() {
     letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none !important;
+    white-space: nowrap !important;
     transition: color 0.18s, border-color 0.18s;
     border-left: 2px solid transparent;
     line-height: 1.3;
@@ -1628,6 +2099,15 @@ function rivegosh_portal_sidebar_v2() {
     color: #CCC593 !important;
     border-left: 2px solid #CCC593 !important;
     padding-left: 6px !important;
+  }
+  #rg-portal-sidebar a.rg-ps-logout {
+    color: rgba(255,255,255,0.3) !important;
+    font-size: 11px !important;
+    letter-spacing: 0.08em !important;
+  }
+  #rg-portal-sidebar a.rg-ps-logout:hover {
+    color: rgba(255,80,80,0.7) !important;
+    border-left-color: transparent !important;
   }
 
   /* Mobile: hide completely — no layout impact */
@@ -1662,12 +2142,17 @@ function rivegosh_portal_sidebar_v2() {
     <span class="rg-ps-label">VIP CUSTOMER</span>
     <div class="rg-ps-divider"></div>
     <?php foreach ($nav as $item):
-      if ($item === 'separator'): ?>
-      <div class="rg-ps-sep"></div>
+      $vis = isset($item['vis']) ? $item['vis'] : 'all';
+      if ($vis === 'guest'  && $rg_logged_in)  continue;
+      if ($vis === 'member' && !$rg_logged_in) continue;
+      if (!empty($item['sep'])): ?>
+        <div class="rg-ps-sep"></div>
     <?php continue; endif;
       $active = ($item['id'] === $current_id);
+      $is_logout = !empty($item['logout']);
+      $classes = $active ? 'rg-ps-active' : ( $is_logout ? 'rg-ps-logout' : '' );
     ?>
-      <a href="<?php echo esc_url(home_url($item['url'])); ?>"<?php echo $active ? ' class="rg-ps-active"' : ''; ?>><?php echo esc_html($item['label']); ?></a>
+      <a href="<?php echo esc_url($is_logout ? $item['url'] : home_url($item['url'])); ?>"<?php echo $classes ? ' class="' . esc_attr($classes) . '"' : ''; ?>><?php echo esc_html($item['label']); ?></a>
     <?php endforeach; ?>
   </nav>
 
@@ -1675,7 +2160,7 @@ function rivegosh_portal_sidebar_v2() {
   (function(){
     var sb = document.getElementById('rg-portal-sidebar');
     if (!sb) return;
-    var SB_W = 160;
+    var SB_W = 140;
 
     function positionSidebar() {
       if (window.innerWidth < 992) { sb.style.display = 'none'; return; }
@@ -1691,20 +2176,11 @@ function rivegosh_portal_sidebar_v2() {
       sb.style.top = topOffset + 'px';
       sb.style.height = 'calc(100vh - ' + topOffset + 'px)';
 
-      // Gutter position: measure the main content's left edge
-      // Try multiple selectors in priority order
-      var content = document.querySelector('.site-content')
-                 || document.querySelector('.um')
-                 || document.querySelector('.um-form')
-                 || document.querySelector('.h-row-container');
-
-      var leftPos = 24; // fallback
-      if (content) {
-        var contentLeft = content.getBoundingClientRect().left;
-        if (contentLeft > SB_W + 32) {
-          // Centre the sidebar in the available gutter
-          leftPos = Math.round((contentLeft - SB_W) / 2);
-        }
+      // Align sidebar left edge with the left edge of the Rive Gosh logo "R"
+      var logoImg = document.querySelector('.h-section.h-navigation img');
+      var leftPos = 44; // fallback
+      if (logoImg) {
+        leftPos = Math.round(logoImg.getBoundingClientRect().left);
       }
       sb.style.left = leftPos + 'px';
     }
@@ -1721,3 +2197,55 @@ function rivegosh_portal_sidebar_v2() {
   <?php
 }
 // ===== PORTAL SIDEBAR v2 END ===== (2026-04-16 — DO NOT MODIFY without reading #56)
+
+// ===== EYE ICON: password visibility toggle for UM + WC portal forms =====
+add_action('wp_footer', 'rivegosh_password_eye_icon', 99999);
+function rivegosh_password_eye_icon() {
+  // Only run on portal pages
+  $portal_ids = [73400, 73401, 73404, 16, 73402, 54773, 61943];
+  if ( !is_page($portal_ids) ) return;
+  ?>
+  <script id="rg-pw-eye">
+  (function(){
+    var EYE_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    var EYE_SHUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+
+    function wrapField(input) {
+      if (input.parentNode && input.parentNode.classList.contains('rg-pw-wrap')) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'rg-pw-wrap';
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'rg-pw-toggle';
+      btn.setAttribute('aria-label', 'Toggle password visibility');
+      btn.innerHTML = EYE_OPEN;
+      wrap.appendChild(btn);
+
+      btn.addEventListener('click', function(){
+        var visible = input.type === 'text';
+        input.type = visible ? 'password' : 'text';
+        btn.innerHTML = visible ? EYE_OPEN : EYE_SHUT;
+        btn.style.color = visible ? '' : '#CCC593';
+      });
+    }
+
+    function init() {
+      var fields = document.querySelectorAll('input[type="password"]');
+      fields.forEach(wrapField);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+    // Also catch dynamically injected forms (UM lazy-loads)
+    setTimeout(init, 800);
+  })();
+  </script>
+  <?php
+}
+// ===== EYE ICON END =====
