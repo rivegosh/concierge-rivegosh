@@ -67,22 +67,30 @@ WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
   - Browser-verified: computed styles confirmed exact px values on both pages
   - Fonts replaced sitewide: Cormorant Garamond (headings, 287x) + Inter (body, 125x)
 
-## Mobile + Card Icon Fixes (2026-04-16 — v52 in functions.php) ✅ COMPLETE
+## Mobile + Card Icon + Centering Fixes (2026-04-16 — v52 in functions.php) ✅ COMPLETE
 
-All four UX fixes deployed in `rivegosh_mobile_v52` (`wp_footer`, priority 99999):
+All five UX fixes deployed in `rivegosh_mobile_v52` (`wp_footer`, priority 99999):
 
-- **FIX 1 — Desktop card icons**: Icons (`h-button__icon`) were `position:absolute !important` from `wp-custom-css` (spec 1-2-0). Changed v52 selector to match same specificity `[data-colibri-id="61861-h30"] .h-button__icon` — later source order wins. Now `position:relative`. Icons sit left of text in flex flow, no overlap.
-- **FIX 2 — Mobile logo scrolls**: `.rg-fixed-logo` overridden from `position:fixed` to `position:absolute; top:64px` in `@media (max-width:991px)`. Logo now scrolls away with page.
+- **FIX 1 — Desktop card icons**: Icons (`h-button__icon`) were `position:absolute !important` from `wp-custom-css` (spec 1-2-0). v52 selector `#colibri [data-colibri-id="61861-h30"] .h-button__icon` matches same spec — later source wins. Now `position:relative`. Icons sit in flex flow.
+- **FIX 2 — Mobile logo scrolls**: `.rg-fixed-logo` overridden from `position:fixed` to `position:absolute; top:64px` in `@media (max-width:991px)`. Logo scrolls away with page.
 - **FIX 3 — No sticky nav on mobile**: `.h-navigation_sticky` forced to `position:relative` on mobile — no sticky bar.
 - **FIX 4 — Cycling text fits mobile**: `.rg-word-1, .rg-word-2` reduced to 22px / 0.06em on mobile. Was 46px (overflowed 510px viewport).
+- **FIX 5 — Card centering**: `rivegosh-banner-late` (in `rivegosh_late_css`, `wp_footer` priority 99999) sets `justify-content:flex-start; gap:14px` spec 1-2-0 on `#colibri a[data-colibri-id="61861-h30"].h-button`. v52 registered after `rivegosh_late_css` → same spec, later source wins. Now `justify-content:center; gap:5px; text-align:center`. Icon + text treated as one centered unit, 5px apart.
 
 **KEY: Cascade specificity battle (wp-custom-css vs wp_footer)**
 - Source: `wp-custom-css` (in `<head>`) had `position:absolute !important` spec 1-2-0 using `[data-colibri-id]` attribute selector
 - My first v52 attempt used `.style-local-*` class selector = spec 1-1-0 — LOST despite `!important`
 - Fix: match same spec 1-2-0 in v52 selector — both `!important` + equal spec → later source (wp_footer) wins
-- **Rule**: When fighting `wp-custom-css`, must match or exceed its selector specificity
+- **Rule**: When fighting `wp-custom-css` or `rivegosh-banner-late`, must match or exceed its selector specificity
 
-**Deploy pattern**: `echo $B64 | base64 -d >> $PHPFILE` — safe for PHP with single quotes. v52 block at lines 1145–1198 of functions.php.
+**KEY: rivegosh-banner-late selector** (know this before touching card layout):
+- Lives in `rivegosh_late_css` function, `wp_footer` at 99999
+- Selector: `#colibri a[data-colibri-id="61861-h30"].h-button` — spec 1-2-0
+- Sets: `justify-content:flex-start; gap:14px; text-align:left` — intentional left-align was overriding Bootstrap's center class
+- Override in v52 (registered later, same spec): `justify-content:center; gap:5px; text-align:center`
+
+**Deploy pattern**: `echo $B64 | base64 -d >> $PHPFILE` — safe for PHP with single quotes. v52 block at lines 1366–1430 of functions.php.
+**Verified**: All 5 computed styles confirmed via `getComputedStyle` in browser (2026-04-16).
 
 ---
 
