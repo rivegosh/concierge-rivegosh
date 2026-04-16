@@ -1,5 +1,5 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-15 11:00 | **Session:** Nav Centering + GTranslate Separation
+**Date:** 2026-04-16 | **Session:** Mobile fixes + Card icon overlap fix (v52)
 
 ---
 
@@ -66,6 +66,25 @@ WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
   - CSS in post 69149, selectors: `[data-colibri-id="61861-*"]` + `[data-colibri-id="61866-*"]`
   - Browser-verified: computed styles confirmed exact px values on both pages
   - Fonts replaced sitewide: Cormorant Garamond (headings, 287x) + Inter (body, 125x)
+
+## Mobile + Card Icon Fixes (2026-04-16 — v52 in functions.php) ✅ COMPLETE
+
+All four UX fixes deployed in `rivegosh_mobile_v52` (`wp_footer`, priority 99999):
+
+- **FIX 1 — Desktop card icons**: Icons (`h-button__icon`) were `position:absolute !important` from `wp-custom-css` (spec 1-2-0). Changed v52 selector to match same specificity `[data-colibri-id="61861-h30"] .h-button__icon` — later source order wins. Now `position:relative`. Icons sit left of text in flex flow, no overlap.
+- **FIX 2 — Mobile logo scrolls**: `.rg-fixed-logo` overridden from `position:fixed` to `position:absolute; top:64px` in `@media (max-width:991px)`. Logo now scrolls away with page.
+- **FIX 3 — No sticky nav on mobile**: `.h-navigation_sticky` forced to `position:relative` on mobile — no sticky bar.
+- **FIX 4 — Cycling text fits mobile**: `.rg-word-1, .rg-word-2` reduced to 22px / 0.06em on mobile. Was 46px (overflowed 510px viewport).
+
+**KEY: Cascade specificity battle (wp-custom-css vs wp_footer)**
+- Source: `wp-custom-css` (in `<head>`) had `position:absolute !important` spec 1-2-0 using `[data-colibri-id]` attribute selector
+- My first v52 attempt used `.style-local-*` class selector = spec 1-1-0 — LOST despite `!important`
+- Fix: match same spec 1-2-0 in v52 selector — both `!important` + equal spec → later source (wp_footer) wins
+- **Rule**: When fighting `wp-custom-css`, must match or exceed its selector specificity
+
+**Deploy pattern**: `echo $B64 | base64 -d >> $PHPFILE` — safe for PHP with single quotes. v52 block at lines 1145–1198 of functions.php.
+
+---
 
 ## Sticky Nav Fixes (2026-04-16 — v10–v14 in functions.php) ✅ COMPLETE
 - **v10** `rivegosh_nav_v10_fixes` (priority 999999): dark `::before` bg, 14px equal top/bottom padding, logo column min-width 100px, dropdown rgba(10,10,10,0.92)
