@@ -1420,7 +1420,7 @@ function rivegosh_portal_sidebar_v2() {
   #rg-portal-sidebar .rg-ps-label {
     color: rgba(204,197,147,0.45);
     font-family: 'Inter', sans-serif;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -1448,7 +1448,7 @@ function rivegosh_portal_sidebar_v2() {
     padding: 10px 8px 10px 2px;
     color: rgba(204,197,147,0.6);
     font-family: 'Inter', sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 400;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -1519,11 +1519,13 @@ function rivegosh_portal_sidebar_v2() {
       if (window.innerWidth < 992) { sb.style.display = 'none'; return; }
       sb.style.display = 'flex';
 
-      // Header height
-      var hdr = document.querySelector('.h-section.h-navigation');
-      var hdrH = hdr ? hdr.offsetHeight : 90;
+      // Top offset = nav bar + hero section (both sit above the form content area)
+      var hdr  = document.querySelector('.h-section.h-navigation');
+      var hero = document.querySelector('.h-section.h-hero');
+      var hdrH  = hdr  ? hdr.offsetHeight  : 90;
+      var heroH = hero ? hero.offsetHeight : 0;
       var adminH = document.body.classList.contains('admin-bar') ? 32 : 0;
-      var topOffset = hdrH + adminH;
+      var topOffset = hdrH + heroH + adminH;
       sb.style.top = topOffset + 'px';
       sb.style.height = 'calc(100vh - ' + topOffset + 'px)';
 
