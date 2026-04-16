@@ -89,8 +89,15 @@ All five UX fixes deployed in `rivegosh_mobile_v52` (`wp_footer`, priority 99999
 - Sets: `justify-content:flex-start; gap:14px; text-align:left` — intentional left-align was overriding Bootstrap's center class
 - Override in v52 (registered later, same spec): `justify-content:center; gap:5px; text-align:center`
 
-**Deploy pattern**: `echo $B64 | base64 -d >> $PHPFILE` — safe for PHP with single quotes. v52 block at lines 1366–1430 of functions.php.
+**Deploy pattern**: `printf '%s' '$B64' | base64 -d >> $PHPFILE` — use `printf '%s'` not `echo` to avoid newline issues. v52 combined block at lines ~1368–1441 of functions.php.
 **Verified**: All 5 computed styles confirmed via `getComputedStyle` in browser (2026-04-16).
+
+**⚠️ CRITICAL OPERATIONAL HAZARD — Hostinger File Browser Overwrites SSH Edits:**
+- Tabs with `functions.php` open in Hostinger's web file browser cache the old file content.
+- If ANYONE saves from those browser tabs, it silently REVERTS all SSH appends.
+- Before doing any SSH file edits: confirm no browser tabs have the file open in the Hostinger file manager.
+- Evidence: v52 was appended twice (SSH confirmed 1430→1451 lines) but reverted to 1367 lines before verification could complete.
+- Fix protocol: SSH → append → immediately `grep -c 'function_name' $PHPFILE` to confirm → run live browser check in same session.
 
 ---
 
