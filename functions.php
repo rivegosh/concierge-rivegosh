@@ -1365,3 +1365,184 @@ function rivegosh_register_logged_in_redirect() {
   }
 }
 // ===== REGISTER PAGE REDIRECT END =====
+
+// ===== PORTAL SIDEBAR v1 — persistent VIP customer nav, desktop only =====
+// Renders on: Login(73400), Register(73401), Account(73404),
+//             Members(73402), Booking VIP(54773), FAQ(61943)
+// Suppressed on WooCommerce My Account pages (Phase 3 WC sidebar handles those).
+// Registered LAST at 99999 — CSS loads after all other 99999-priority styles (KB#49 §20).
+add_action('wp_footer', 'rivegosh_portal_sidebar_v1', 99999);
+function rivegosh_portal_sidebar_v1() {
+  $portal_ids = [73400, 73401, 73404, 73402, 54773, 61943];
+  $current_id = get_the_ID();
+  if (!in_array($current_id, $portal_ids)) return;
+  // Suppress on all WooCommerce account endpoints (KB#49 §19)
+  if (function_exists('is_account_page') && is_account_page()) return;
+
+  $logged_in = is_user_logged_in();
+
+  $nav = [
+    ['label' => 'LOGIN',        'url' => '/login-2/',     'id' => 73400, 'vis' => 'guest'],
+    ['label' => 'REGISTER',     'url' => '/register/',    'id' => 73401, 'vis' => 'guest'],
+    ['label' => 'ACCOUNT',      'url' => '/account/',     'id' => 73404, 'vis' => 'member'],
+    ['label' => 'MY ORDERS',    'url' => '/my-account/',  'id' => 16,    'vis' => 'member'],
+    ['label' => 'MEMBERS',      'url' => '/members/',     'id' => 73402, 'vis' => 'member'],
+    ['label' => 'YOUR BOOKING', 'url' => '/booking-vip/', 'id' => 54773, 'vis' => 'member'],
+    ['label' => 'FAQ',          'url' => '/faq-2/',       'id' => 61943, 'vis' => 'all'],
+  ];
+  ?>
+  <style id="rg-portal-sidebar-css">
+  /* ============================================================
+     PORTAL SIDEBAR v1 — desktop only (>=992px)
+     ============================================================ */
+  #rg-portal-sidebar {
+    position: fixed;
+    left: 0; top: 0; /* JS sets exact top from header offsetHeight */
+    width: 200px;
+    height: 100vh; /* JS corrects to 100vh minus header */
+    background: #0c0c0c;
+    z-index: 1000; /* above content, below GTranslate(9999), below drawer(99998) — KB#49 §21 */
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display: flex;
+    flex-direction: column;
+    padding-top: 24px;
+    border-right: 1px solid rgba(204,197,147,0.08);
+  }
+  #rg-portal-sidebar::-webkit-scrollbar { display: none; }
+
+  /* "VIP CUSTOMER" section label */
+  #rg-portal-sidebar .rg-ps-label {
+    color: rgba(204,197,147,0.45);
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0 24px 12px;
+    display: block;
+  }
+  /* Single divider under label — no other lines */
+  #rg-portal-sidebar .rg-ps-divider {
+    height: 1px;
+    background: rgba(204,197,147,0.25);
+    margin: 0 16px 14px;
+    flex-shrink: 0;
+  }
+
+  /* Nav links */
+  #rg-portal-sidebar a {
+    display: block;
+    padding: 11px 24px 11px 22px;
+    color: rgba(204,197,147,0.6);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    transition: color 0.18s, background 0.18s, border-color 0.18s;
+    border-left: 2px solid transparent;
+    line-height: 1.3;
+  }
+  #rg-portal-sidebar a:hover {
+    color: #CCC593 !important;
+    background: rgba(204,197,147,0.04) !important;
+    border-left-color: rgba(204,197,147,0.35) !important;
+  }
+  #rg-portal-sidebar a.rg-ps-active {
+    color: #CCC593 !important;
+    background: rgba(204,197,147,0.06) !important;
+    border-left: 2px solid #CCC593 !important;
+    padding-left: 20px !important;
+  }
+
+  /* ---- Content push — per-page scoped (KB#49 §17 — NEVER target .site-content globally) ---- */
+  @media (min-width: 992px) {
+    /* UM pages — .site-content exists */
+    body.page-id-73400 .site-content,
+    body.page-id-73401 .site-content,
+    body.page-id-73404 .site-content,
+    body.page-id-73402 .site-content { margin-left: 200px !important; }
+
+    /* FAQ — .h-row-container only, NOT .h-section (100vw overflow trap — KB#49 §18) */
+    body.page-id-61943 .h-row-container { margin-left: 200px !important; }
+
+    /* Amelia — padding-left fills dark bg gap; margin-left would leave white strip (KB#49 §23) */
+    body.page-id-54773 [data-colibri-id="54773-c9"] { padding-left: 200px !important; }
+    body.page-id-54773 { background: #0c0c0c !important; }
+
+    /* Mobile reset — belt-and-braces */
+    /* (handled by the @media (max-width: 991px) block below) */
+  }
+  @media (max-width: 991px) {
+    #rg-portal-sidebar { display: none !important; }
+    body.page-id-73400 .site-content,
+    body.page-id-73401 .site-content,
+    body.page-id-73404 .site-content,
+    body.page-id-73402 .site-content { margin-left: 0 !important; }
+    body.page-id-61943 .h-row-container { margin-left: 0 !important; }
+    body.page-id-54773 [data-colibri-id="54773-c9"] { padding-left: 0 !important; }
+  }
+
+  /* ---- WooCommerce My Account — "VIP CUSTOMER" portal label above WC sidebar (KB#49 §19) ---- */
+  /* CSS ::before on the nav wrapper — no extra PHP hook needed */
+  @media (min-width: 992px) {
+    .woocommerce-account .woocommerce-MyAccount-navigation::before {
+      content: 'VIP CUSTOMER';
+      display: block;
+      color: rgba(204,197,147,0.45);
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 20px 24px 0;
+    }
+    .woocommerce-account .woocommerce-MyAccount-navigation ul::before {
+      content: '';
+      display: block;
+      height: 1px;
+      background: rgba(204,197,147,0.25);
+      margin: 12px 16px 8px;
+    }
+  }
+  </style>
+
+  <nav id="rg-portal-sidebar" aria-label="VIP Customer Portal" role="navigation">
+    <span class="rg-ps-label">VIP CUSTOMER</span>
+    <div class="rg-ps-divider"></div>
+    <?php foreach ($nav as $item):
+      if ($item['vis'] === 'guest'  && $logged_in)  continue;
+      if ($item['vis'] === 'member' && !$logged_in) continue;
+      $active = ($item['id'] === $current_id) ? ' rg-ps-active' : '';
+    ?>
+      <a href="<?php echo esc_url(home_url($item['url'])); ?>" class="<?php echo trim($active); ?>"><?php echo esc_html($item['label']); ?></a>
+    <?php endforeach; ?>
+  </nav>
+
+  <script id="rg-portal-sidebar-js">
+  (function(){
+    var sb = document.getElementById('rg-portal-sidebar');
+    if (!sb || window.innerWidth < 992) return;
+    function positionSidebar() {
+      var hdr = document.querySelector('.h-section.h-navigation');
+      var hdrH = hdr ? hdr.offsetHeight : 90;
+      var adminBar = document.body.classList.contains('admin-bar') ? 32 : 0;
+      var top = hdrH + adminBar;
+      sb.style.top = top + 'px';
+      sb.style.height = 'calc(100vh - ' + top + 'px)';
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', positionSidebar);
+    } else {
+      positionSidebar();
+    }
+    window.addEventListener('resize', positionSidebar);
+  })();
+  </script>
+  <?php
+}
+// ===== PORTAL SIDEBAR v1 END =====
