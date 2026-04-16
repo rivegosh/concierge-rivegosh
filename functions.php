@@ -917,6 +917,163 @@ body.page-id-73401 .um { max-width: 480px !important; margin: 0 auto !important;
 .woocommerce-account .woocommerce-MyAccount-content table th { color: rgba(204,197,147,0.55) !important; border-color: rgba(204,197,147,0.12) !important; }
 .woocommerce-account .woocommerce-MyAccount-content table td { color: rgba(255,255,255,0.8) !important; border-color: rgba(255,255,255,0.06) !important; }
 
+/* ============================================================
+   PHASE 6: REMAINING PORTAL PAGES — DARK LUXURY TREATMENT
+   ⚠️  CURRENT WORK — 2026-04-16 (Chi/Sonnet) — DO NOT MODIFY
+   Pages: WC MyAccount guest(16), Account(73404), Members(73402), FAQ(61943)
+   ============================================================ */
+
+/* --- Page-level dark background --- */
+body.page-id-73404,
+body.page-id-73402,
+body.page-id-61943 { background: #0c0c0c !important; }
+
+/* Kill white Colibri section backgrounds on all four pages */
+body.page-id-16 .h-section,
+body.page-id-73404 .h-section,
+body.page-id-73402 .h-section,
+body.page-id-61943 .h-section { background-color: #0c0c0c !important; }
+
+body.page-id-73404 .site-content,
+body.page-id-73402 .site-content,
+body.page-id-61943 .site-content { background: #0c0c0c !important; }
+
+/* ===================
+   WC MY ACCOUNT (16) — Guest state: Login + Register forms
+   =================== */
+/* Two-column login/register form cards */
+.woocommerce-account .woocommerce-form-login,
+.woocommerce-account .register {
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(204,197,147,0.1) !important;
+  border-radius: 2px !important;
+  padding: 32px !important;
+}
+/* "Login" / "Register" headings */
+.woocommerce-account .col2-set h2,
+.woocommerce-account > .woocommerce > h2 {
+  color: #CCC593 !important;
+  font-family: 'Cormorant Garamond', 'Georgia', serif !important;
+  font-size: 24px !important; letter-spacing: 0.04em !important;
+}
+/* All WC account labels */
+.woocommerce-account .woocommerce-form__label,
+.woocommerce-account label {
+  color: rgba(204,197,147,0.6) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important; letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+/* All WC account inputs (guest + logged-in edit forms) */
+.woocommerce-account input[type="text"],
+.woocommerce-account input[type="email"],
+.woocommerce-account input[type="password"],
+.woocommerce-account input[type="tel"],
+.woocommerce-account select,
+.woocommerce-account textarea {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(204,197,147,0.2) !important;
+  border-radius: 1px !important;
+  color: #fff !important;
+  font-family: 'Inter', sans-serif !important;
+  padding: 12px 16px !important;
+}
+.woocommerce-account input:focus,
+.woocommerce-account select:focus,
+.woocommerce-account textarea:focus {
+  border-color: rgba(204,197,147,0.6) !important;
+  outline: none !important; box-shadow: none !important;
+}
+/* Buttons — replace WooCommerce blue with cognac */
+.woocommerce-account .woocommerce-Button,
+.woocommerce-account button.button,
+.woocommerce-account input[type="submit"].button,
+.woocommerce-account button[type="submit"] {
+  background: #CCC593 !important;
+  color: #0c0c0c !important;
+  border: none !important; border-radius: 2px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important; font-weight: 600 !important;
+  letter-spacing: 0.12em !important; text-transform: uppercase !important;
+  padding: 14px 32px !important;
+  transition: background 0.2s !important;
+}
+.woocommerce-account .woocommerce-Button:hover,
+.woocommerce-account button.button:hover,
+.woocommerce-account button[type="submit"]:hover { background: #fff !important; }
+/* Muted helper text */
+.woocommerce-account .woocommerce-LostPassword a,
+.woocommerce-account .lost_password a { color: rgba(204,197,147,0.5) !important; font-size: 11px !important; }
+.woocommerce-account .woocommerce-privacy-policy-text,
+.woocommerce-account .woocommerce-privacy-policy-text * { color: rgba(255,255,255,0.35) !important; font-size: 11px !important; }
+.woocommerce-account .woocommerce-privacy-policy-text a { color: rgba(204,197,147,0.5) !important; }
+.woocommerce-account .woocommerce-form-login__rememberme span { color: rgba(255,255,255,0.45) !important; font-size: 11px !important; }
+.woocommerce-account input[type="checkbox"] { accent-color: #CCC593; }
+
+/* ===================
+   UM ACCOUNT page (73404) — profile dark treatment
+   =================== */
+body.page-id-73404 .um { color: rgba(255,255,255,0.85) !important; }
+body.page-id-73404 .um-profile-header-main { background: rgba(255,255,255,0.03) !important; border: 1px solid rgba(204,197,147,0.1) !important; border-radius: 2px !important; }
+body.page-id-73404 .um-profile-nav { border-bottom: 1px solid rgba(204,197,147,0.1) !important; background: transparent !important; }
+body.page-id-73404 .um-profile-nav-item a { color: rgba(204,197,147,0.6) !important; font-family: 'Inter', sans-serif !important; font-size: 11px !important; text-transform: uppercase !important; letter-spacing: 0.08em !important; }
+body.page-id-73404 .um-profile-nav-item.active a,
+body.page-id-73404 .um-profile-nav-item a:hover { color: #CCC593 !important; }
+body.page-id-73404 .um-field-label label { color: rgba(204,197,147,0.55) !important; font-size: 11px !important; text-transform: uppercase !important; letter-spacing: 0.08em !important; }
+body.page-id-73404 .um-field-value,
+body.page-id-73404 .um-field-area { color: rgba(255,255,255,0.85) !important; }
+body.page-id-73404 .um-name a { color: #CCC593 !important; font-family: 'Cormorant Garamond', serif !important; font-size: 22px !important; }
+body.page-id-73404 .um-edit-btn,
+body.page-id-73404 .um .um-button { background: #CCC593 !important; color: #0c0c0c !important; border: none !important; border-radius: 2px !important; font-family: 'Inter', sans-serif !important; font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0.12em !important; text-transform: uppercase !important; }
+body.page-id-73404 .um-edit-btn:hover,
+body.page-id-73404 .um .um-button:hover { background: #fff !important; }
+
+/* ===================
+   UM MEMBERS directory (73402) — dark grid
+   =================== */
+body.page-id-73402 .um-members,
+body.page-id-73402 .um-members-grid,
+body.page-id-73402 .um { background: transparent !important; }
+/* Member cards */
+body.page-id-73402 .um-member-card,
+body.page-id-73402 .um-member {
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(204,197,147,0.1) !important;
+  border-radius: 2px !important;
+}
+body.page-id-73402 .um-member-name a,
+body.page-id-73402 .um-member-name { color: #CCC593 !important; font-family: 'Cormorant Garamond', serif !important; }
+body.page-id-73402 .um-member-name a:hover { color: #fff !important; }
+body.page-id-73402 .um-member-meta { color: rgba(255,255,255,0.55) !important; font-size: 11px !important; }
+/* Filter/search */
+body.page-id-73402 .um-members-filter input[type="search"],
+body.page-id-73402 .um-members-filter input[type="text"],
+body.page-id-73402 .um-members-filter select {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(204,197,147,0.2) !important;
+  color: #fff !important; border-radius: 1px !important;
+}
+body.page-id-73402 .um-members-filter label,
+body.page-id-73402 .um-members-filter span { color: rgba(204,197,147,0.6) !important; }
+body.page-id-73402 .um-members-filter button,
+body.page-id-73402 .um-members-filter input[type="submit"] { background: #CCC593 !important; color: #0c0c0c !important; border: none !important; border-radius: 1px !important; }
+/* Pagination */
+body.page-id-73402 .um-pagination a { color: rgba(204,197,147,0.6) !important; }
+body.page-id-73402 .um-pagination .current,
+body.page-id-73402 .um-pagination a:hover { color: #CCC593 !important; }
+
+/* ===================
+   FAQ page (61943) — Colibri text/heading overrides
+   =================== */
+body.page-id-61943 .h-heading,
+body.page-id-61943 h1, body.page-id-61943 h2,
+body.page-id-61943 h3, body.page-id-61943 h4 { color: #CCC593 !important; }
+body.page-id-61943 .h-text,
+body.page-id-61943 p,
+body.page-id-61943 .h-accordion-content { color: rgba(255,255,255,0.8) !important; }
+body.page-id-61943 .h-accordion-title { color: rgba(204,197,147,0.9) !important; border-bottom: 1px solid rgba(204,197,147,0.12) !important; }
+/* ===== PHASE 6 END ===== 2026-04-16 */
+
 </style>
 
 
