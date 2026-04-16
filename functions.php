@@ -139,6 +139,22 @@ html body .h-navigation_sticky .h-logo__alt-image,
 html.colibri-wp-theme body .h-logo__alt-image,
 html.colibri-wp-theme body .h-navigation_sticky .h-logo__alt-image { display: none !important; visibility: hidden !important; opacity: 0 !important; }
 
+/* ============ STICKY NAV DROPDOWN CONTRAST — v1 ============ */
+/* Higher specificity (+1 class) than #colibri .sub-menu — always wins in sticky state */
+@media (min-width: 992px) {
+  #colibri .h-navigation_sticky .sub-menu,
+  #colibri .h-navigation_sticky .colibri-menu li > ul {
+    background: rgba(8,8,8,0.97) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(204,197,147,0.25) !important;
+  }
+  #colibri .h-navigation_sticky .sub-menu a,
+  #colibri .h-navigation_sticky .colibri-menu li > ul a {
+    color: rgba(204,197,147,1) !important;
+  }
+}
+
 /* ============ MOBILE HEADER LAYOUT v4 — CORRECT: burger=h10, kill alt-logo ============ */
 @media (max-width: 991px) {/* ============ DESIGN BIBLE: CTA CARDS v27 — ISOLATED BLOCKS ============ */
   /* iOS text auto-zoom kill */
