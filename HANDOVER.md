@@ -140,11 +140,33 @@ Single consolidated block `rivegosh_mobile_v52` (`wp_footer`, priority 99999) at
 | [#5 done] | topvipdriver.com replaced ✅ |
 | [#14](https://github.com/rivegosh/concierge-rivegosh/issues/14) | GA4 ID empty — need GA4 property ID from Daniel |
 
+## Mobile Hero + Drawer Fixes (2026-04-16 — LOCKED in mu-plugins) ✅ COMPLETE
+
+**Single source of truth: `wp-content/mu-plugins/rg-drawer-override.php`**
+Do NOT modify without reading KB #49 §11–12 first. All mobile CSS + JS is here.
+
+### What's locked:
+- **Hamburger drawer** (STEP 1+2): suppresses `rivegosh_custom_drawer_v43` at 99997, outputs locked drawer at 100001. 8 nav items, no login gating, champagne gold Inter 12px.
+- **Hero image** (CSS inside drawer): zoom to top-left (-70px/-50px, 200% width), 180px min-height, position:relative (required for arrow bottom:4px)
+- **Logo**: `top: 18px; position: absolute; height: 41px` — top-aligned with hamburger, 25% smaller
+- **Heading push-down**: `[data-colibri-id="61866-h28"] { margin-top: 30px }` — clears logo
+- **Heading font**: `h2 { font-size: 20px; line-height: 25px }` — also in post 69149
+- **Scroll arrow**: `[data-colibri-id="61866-h29"] { bottom: 4px }` — bottom edge of banner
+- **Interior nav**: `[data-colibri-id="61866-h2"] { background: transparent }` — no white strip
+- **Hero text swap JS** (STEP 3): suppresses broken `rivegosh_contextual_hero_text` at 99998, outputs fixed `rg_contextual_hero_text_fixed` at 100002. Fixed selector: h1-h5 only (NOT `[class*="h-heading"]` which destroyed the inner h2).
+
+### KEY: h2-destruction bug (KB #49 §11)
+Colibri's `[class*="h-heading"]` querySelectorAll matches OUTER wrapper div first → `innerHTML` replacement destroys inner `<h2>` → all CSS targeting `h2` children silently fails. Fix: target h1-h5 tags only.
+
+### KEY: Never set font-size on Colibri wrapper divs
+`[data-colibri-id] { font-size: 24px }` activates Colibri's `.style-968 h2 { font-size: 2em }` cascade → h2 becomes 48px. Always target heading tags directly.
+
 ## Next Session: Start Here
-1. **Await Daniel decisions:** Stripe (#23), Grace offboard (#22), Amelia vs OVA (#19), PayPal email (#24)
-2. **GA4 (#14):** Ask Daniel for GA4 Measurement ID — 5 min fix once we have it
-3. **Phase 2:** WooCommerce dark theme CSS (#37), WCFM dark theme CSS (#38) — now safe with child theme
-4. **Domain migration:** When rivegosh.com DNS points to Hostinger, run:
+1. **Verify mobile hero text** — force-refresh Safari, confirm "JOIN THE PRIVATE CIRCLE" is 20px/25px line-height
+2. **Await Daniel decisions:** Stripe (#23), Grace offboard (#22), Amelia vs OVA (#19), PayPal email (#24)
+3. **GA4 (#14):** Ask Daniel for GA4 Measurement ID — 5 min fix once we have it
+4. **Phase 2:** WooCommerce dark theme CSS (#37), WCFM dark theme CSS (#38) — now safe with child theme
+5. **Domain migration:** When rivegosh.com DNS points to Hostinger, run:
    `wp search-replace 'rivegosh-concierge.com' 'rivegosh.com' --all-tables`
 
 ## Key Decisions Still Pending (Daniel)
