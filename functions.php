@@ -1366,41 +1366,45 @@ function rivegosh_register_logged_in_redirect() {
 }
 // ===== REGISTER PAGE REDIRECT END =====
 
-// ===== PORTAL SIDEBAR v1 — persistent VIP customer nav, desktop only =====
-// Renders on: Login(73400), Register(73401), Account(73404),
-//             Members(73402), Booking VIP(54773), FAQ(61943)
+// ===== PORTAL SIDEBAR v2 — gutter-positioned VIP customer nav, desktop only =====
+// All 7 items always visible (design continuity with header dropdown — no guest/member filter).
+// Sidebar floats in the NATURAL GUTTER to the left of the centered form content.
+// NO content push — content stays centered, sidebar sits beside it.
 // Suppressed on WooCommerce My Account pages (Phase 3 WC sidebar handles those).
 // Registered LAST at 99999 — CSS loads after all other 99999-priority styles (KB#49 §20).
-add_action('wp_footer', 'rivegosh_portal_sidebar_v1', 99999);
-function rivegosh_portal_sidebar_v1() {
+add_action('wp_footer', 'rivegosh_portal_sidebar_v2', 99999);
+function rivegosh_portal_sidebar_v2() {
   $portal_ids = [73400, 73401, 73404, 73402, 54773, 61943];
   $current_id = get_the_ID();
   if (!in_array($current_id, $portal_ids)) return;
   // Suppress on all WooCommerce account endpoints (KB#49 §19)
   if (function_exists('is_account_page') && is_account_page()) return;
 
-  $logged_in = is_user_logged_in();
-
+  // All 7 items always shown — same as header VIP Customer dropdown (design continuity)
   $nav = [
-    ['label' => 'LOGIN',        'url' => '/login-2/',     'id' => 73400, 'vis' => 'guest'],
-    ['label' => 'REGISTER',     'url' => '/register/',    'id' => 73401, 'vis' => 'guest'],
-    ['label' => 'ACCOUNT',      'url' => '/account/',     'id' => 73404, 'vis' => 'member'],
-    ['label' => 'MY ORDERS',    'url' => '/my-account/',  'id' => 16,    'vis' => 'member'],
-    ['label' => 'MEMBERS',      'url' => '/members/',     'id' => 73402, 'vis' => 'member'],
-    ['label' => 'YOUR BOOKING', 'url' => '/booking-vip/', 'id' => 54773, 'vis' => 'member'],
-    ['label' => 'FAQ',          'url' => '/faq-2/',       'id' => 61943, 'vis' => 'all'],
+    ['label' => 'LOGIN',        'url' => '/login-2/',     'id' => 73400],
+    ['label' => 'REGISTER',     'url' => '/register/',    'id' => 73401],
+    'separator',
+    ['label' => 'ACCOUNT',      'url' => '/account/',     'id' => 73404],
+    ['label' => 'MY ORDERS',    'url' => '/my-account/',  'id' => 16],
+    ['label' => 'MEMBERS',      'url' => '/members/',     'id' => 73402],
+    ['label' => 'YOUR BOOKING', 'url' => '/booking-vip/', 'id' => 54773],
+    ['label' => 'FAQ',          'url' => '/faq-2/',       'id' => 61943],
   ];
   ?>
   <style id="rg-portal-sidebar-css">
   /* ============================================================
-     PORTAL SIDEBAR v1 — desktop only (>=992px)
+     PORTAL SIDEBAR v2 — gutter-positioned, desktop only (>=992px)
+     No content push — sidebar floats in the natural gutter.
+     JS measures content left edge and positions sidebar there.
      ============================================================ */
   #rg-portal-sidebar {
     position: fixed;
-    left: 0; top: 0; /* JS sets exact top from header offsetHeight */
-    width: 200px;
+    left: 24px; /* JS overrides with measured gutter center position */
+    top: 0;     /* JS sets from header offsetHeight */
+    width: 160px;
     height: 100vh; /* JS corrects to 100vh minus header */
-    background: #0c0c0c;
+    background: transparent; /* floats on dark page bg — no box */
     z-index: 1000; /* above content, below GTranslate(9999), below drawer(99998) — KB#49 §21 */
     overflow-y: auto;
     overflow-x: hidden;
@@ -1408,8 +1412,7 @@ function rivegosh_portal_sidebar_v1() {
     -ms-overflow-style: none;
     display: flex;
     flex-direction: column;
-    padding-top: 24px;
-    border-right: 1px solid rgba(204,197,147,0.08);
+    padding-top: 28px;
   }
   #rg-portal-sidebar::-webkit-scrollbar { display: none; }
 
@@ -1421,21 +1424,28 @@ function rivegosh_portal_sidebar_v1() {
     font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    padding: 0 24px 12px;
+    padding: 0 0 12px 2px;
     display: block;
   }
   /* Single divider under label — no other lines */
   #rg-portal-sidebar .rg-ps-divider {
     height: 1px;
     background: rgba(204,197,147,0.25);
-    margin: 0 16px 14px;
+    margin: 0 0 14px 0;
+    flex-shrink: 0;
+  }
+  /* Separator between guest and member sections */
+  #rg-portal-sidebar .rg-ps-sep {
+    height: 1px;
+    background: rgba(204,197,147,0.12);
+    margin: 6px 0 6px 2px;
     flex-shrink: 0;
   }
 
   /* Nav links */
   #rg-portal-sidebar a {
     display: block;
-    padding: 11px 24px 11px 22px;
+    padding: 10px 8px 10px 2px;
     color: rgba(204,197,147,0.6);
     font-family: 'Inter', sans-serif;
     font-size: 11px;
@@ -1443,52 +1453,27 @@ function rivegosh_portal_sidebar_v1() {
     letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none !important;
-    transition: color 0.18s, background 0.18s, border-color 0.18s;
+    transition: color 0.18s, border-color 0.18s;
     border-left: 2px solid transparent;
     line-height: 1.3;
   }
   #rg-portal-sidebar a:hover {
     color: #CCC593 !important;
-    background: rgba(204,197,147,0.04) !important;
     border-left-color: rgba(204,197,147,0.35) !important;
+    padding-left: 6px !important;
   }
   #rg-portal-sidebar a.rg-ps-active {
     color: #CCC593 !important;
-    background: rgba(204,197,147,0.06) !important;
     border-left: 2px solid #CCC593 !important;
-    padding-left: 20px !important;
+    padding-left: 6px !important;
   }
 
-  /* ---- Content push — per-page scoped (KB#49 §17 — NEVER target .site-content globally) ---- */
-  @media (min-width: 992px) {
-    /* UM pages — .site-content exists */
-    body.page-id-73400 .site-content,
-    body.page-id-73401 .site-content,
-    body.page-id-73404 .site-content,
-    body.page-id-73402 .site-content { margin-left: 200px !important; }
-
-    /* FAQ — .h-row-container only, NOT .h-section (100vw overflow trap — KB#49 §18) */
-    body.page-id-61943 .h-row-container { margin-left: 200px !important; }
-
-    /* Amelia — padding-left fills dark bg gap; margin-left would leave white strip (KB#49 §23) */
-    body.page-id-54773 [data-colibri-id="54773-c9"] { padding-left: 200px !important; }
-    body.page-id-54773 { background: #0c0c0c !important; }
-
-    /* Mobile reset — belt-and-braces */
-    /* (handled by the @media (max-width: 991px) block below) */
-  }
+  /* Mobile: hide completely — no layout impact */
   @media (max-width: 991px) {
     #rg-portal-sidebar { display: none !important; }
-    body.page-id-73400 .site-content,
-    body.page-id-73401 .site-content,
-    body.page-id-73404 .site-content,
-    body.page-id-73402 .site-content { margin-left: 0 !important; }
-    body.page-id-61943 .h-row-container { margin-left: 0 !important; }
-    body.page-id-54773 [data-colibri-id="54773-c9"] { padding-left: 0 !important; }
   }
 
   /* ---- WooCommerce My Account — "VIP CUSTOMER" portal label above WC sidebar (KB#49 §19) ---- */
-  /* CSS ::before on the nav wrapper — no extra PHP hook needed */
   @media (min-width: 992px) {
     .woocommerce-account .woocommerce-MyAccount-navigation::before {
       content: 'VIP CUSTOMER';
@@ -1515,9 +1500,10 @@ function rivegosh_portal_sidebar_v1() {
     <span class="rg-ps-label">VIP CUSTOMER</span>
     <div class="rg-ps-divider"></div>
     <?php foreach ($nav as $item):
-      if ($item['vis'] === 'guest'  && $logged_in)  continue;
-      if ($item['vis'] === 'member' && !$logged_in) continue;
-      $active = ($item['id'] === $current_id) ? ' rg-ps-active' : '';
+      if ($item === 'separator'): ?>
+      <div class="rg-ps-sep"></div>
+    <?php continue; endif;
+      $active = ($item['id'] === $current_id);
     ?>
       <a href="<?php echo esc_url(home_url($item['url'])); ?>"<?php echo $active ? ' class="rg-ps-active"' : ''; ?>><?php echo esc_html($item['label']); ?></a>
     <?php endforeach; ?>
@@ -1526,23 +1512,48 @@ function rivegosh_portal_sidebar_v1() {
   <script id="rg-portal-sidebar-js">
   (function(){
     var sb = document.getElementById('rg-portal-sidebar');
-    if (!sb || window.innerWidth < 992) return;
+    if (!sb) return;
+    var SB_W = 160;
+
     function positionSidebar() {
+      if (window.innerWidth < 992) { sb.style.display = 'none'; return; }
+      sb.style.display = 'flex';
+
+      // Header height
       var hdr = document.querySelector('.h-section.h-navigation');
       var hdrH = hdr ? hdr.offsetHeight : 90;
-      var adminBar = document.body.classList.contains('admin-bar') ? 32 : 0;
-      var top = hdrH + adminBar;
-      sb.style.top = top + 'px';
-      sb.style.height = 'calc(100vh - ' + top + 'px)';
+      var adminH = document.body.classList.contains('admin-bar') ? 32 : 0;
+      var topOffset = hdrH + adminH;
+      sb.style.top = topOffset + 'px';
+      sb.style.height = 'calc(100vh - ' + topOffset + 'px)';
+
+      // Gutter position: measure the main content's left edge
+      // Try multiple selectors in priority order
+      var content = document.querySelector('.site-content')
+                 || document.querySelector('.um')
+                 || document.querySelector('.um-form')
+                 || document.querySelector('.h-row-container');
+
+      var leftPos = 24; // fallback
+      if (content) {
+        var contentLeft = content.getBoundingClientRect().left;
+        if (contentLeft > SB_W + 32) {
+          // Centre the sidebar in the available gutter
+          leftPos = Math.round((contentLeft - SB_W) / 2);
+        }
+      }
+      sb.style.left = leftPos + 'px';
     }
+
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', positionSidebar);
     } else {
       positionSidebar();
     }
-    var _rt; window.addEventListener('resize', function(){ clearTimeout(_rt); _rt = setTimeout(positionSidebar, 80); });
+    var _rt;
+    window.addEventListener('resize', function(){ clearTimeout(_rt); _rt = setTimeout(positionSidebar, 80); });
   })();
   </script>
   <?php
 }
-// ===== PORTAL SIDEBAR v1 END =====
+// ===== PORTAL SIDEBAR v2 END =====
