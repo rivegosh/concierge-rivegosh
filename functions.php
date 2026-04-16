@@ -1367,9 +1367,14 @@ function rivegosh_register_logged_in_redirect() {
 // ===== REGISTER PAGE REDIRECT END =====
 
 // ===== PORTAL SIDEBAR v2 — gutter-positioned VIP customer nav, desktop only =====
+// ⚠️  CURRENT WORK — DO NOT MODIFY — Last updated: 2026-04-16 by CC session (Chi/Sonnet)
+// Feature: Fixed left-gutter sidebar on all 6 portal pages. All 7 items always visible.
+// GitHub issue: rivegosh/concierge-rivegosh#56 (CLOSED — implemented)
+// -----------------------------------------------------------------------
 // All 7 items always visible (design continuity with header dropdown — no guest/member filter).
 // Sidebar floats in the NATURAL GUTTER to the left of the centered form content.
 // NO content push — content stays centered, sidebar sits beside it.
+// Top offset = nav bar height + hero section height (not just nav bar).
 // Suppressed on WooCommerce My Account pages (Phase 3 WC sidebar handles those).
 // Registered LAST at 99999 — CSS loads after all other 99999-priority styles (KB#49 §20).
 add_action('wp_footer', 'rivegosh_portal_sidebar_v2', 99999);
@@ -1558,4 +1563,4 @@ function rivegosh_portal_sidebar_v2() {
   </script>
   <?php
 }
-// ===== PORTAL SIDEBAR v2 END =====
+// ===== PORTAL SIDEBAR v2 END ===== (2026-04-16 — DO NOT MODIFY without reading #56)
