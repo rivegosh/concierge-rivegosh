@@ -1151,13 +1151,12 @@ body.page-id-54773 .woocommerce-MyAccount-navigation { display: none !important;
   }
 }
 /* Hide ugly WC "Hello [name] (not [name]? Log out)" greeting */
-/* Hide WC "Hello X (not X? Log out)" greeting + dashboard description on portal pages */
+/* Hide WC "Hello X (not X? Log out)" greeting on portal pages (NOT the dashboard description) */
 body.page-id-73404 .woocommerce-MyAccount-content > p:first-child,
 body.page-id-73404 .woocommerce-MyAccount-content > p:first-of-type,
 body.page-id-73404 .woocommerce-MyAccount-content > p:nth-of-type(2),
 body.page-id-16 .woocommerce-MyAccount-content > p:first-child,
-body.page-id-16 .woocommerce-MyAccount-content > p:first-of-type,
-body.page-id-16 .woocommerce-MyAccount-content > p:nth-of-type(2) { display: none !important; }
+body.page-id-16 .woocommerce-MyAccount-content > p:first-of-type { display: none !important; }
 /* Style WC dashboard paragraphs + links dark */
 .woocommerce-MyAccount-content p,
 .woocommerce-MyAccount-content td,
@@ -1518,6 +1517,176 @@ body.page-id-54773 .style-local-54773-c9 {
 }
 
 /* ===== PHASE 7 END ===== 2026-04-16 */
+
+/* ============================================================
+   PHASE 8: ACCOUNT PAGE (page-id-73404) UM DARK RESKIN
+   + MY ORDERS (page-id-16) DASHBOARD DESCRIPTION STYLING
+   ============================================================ */
+
+/* --- MY ORDERS: dashboard description text (now visible) --- */
+body.page-id-16 .woocommerce-MyAccount-content > p {
+  color: rgba(255,255,255,0.55) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.8 !important;
+  padding: 28px 32px !important;
+  text-align: center !important;
+}
+body.page-id-16 .woocommerce-MyAccount-content > p a {
+  color: rgba(204,197,147,0.7) !important;
+}
+
+/* --- ACCOUNT: UM input fields → dark --- */
+body.page-id-73404 input.um-form-field,
+body.page-id-73404 .um input[type="text"],
+body.page-id-73404 .um input[type="email"],
+body.page-id-73404 .um input[type="password"],
+body.page-id-73404 .um input[type="tel"],
+body.page-id-73404 .um textarea,
+body.page-id-73404 .um select {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(204,197,147,0.25) !important;
+  color: rgba(255,255,255,0.85) !important;
+  border-radius: 2px !important;
+  font-family: 'Inter', sans-serif !important;
+  box-shadow: none !important;
+}
+body.page-id-73404 input.um-form-field:focus,
+body.page-id-73404 .um input:focus {
+  border-color: #CCC593 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(204,197,147,0.12) !important;
+}
+
+/* --- ACCOUNT: UM nav tabs (Account / Change Password / Privacy / Delete) --- */
+body.page-id-73404 .um-account-nav a {
+  color: rgba(255,255,255,0.55) !important;
+  border-bottom-color: rgba(204,197,147,0.1) !important;
+}
+body.page-id-73404 .um-account-nav a:hover {
+  color: rgba(255,255,255,0.85) !important;
+  border-bottom-color: rgba(204,197,147,0.35) !important;
+}
+body.page-id-73404 .um-account-nav a.current {
+  color: #CCC593 !important;
+  border-bottom-color: #CCC593 !important;
+}
+
+/* --- ACCOUNT: UM tab boxes background --- */
+body.page-id-73404 .um-account-tab {
+  background: rgba(255,255,255,0.02) !important;
+  border: none !important;
+}
+body.page-id-73404 .um-account-nav a.current .um-account-tab,
+body.page-id-73404 .um-account-nav a:hover .um-account-tab {
+  background: rgba(204,197,147,0.05) !important;
+}
+
+/* --- ACCOUNT: Icons (UM uses um-icon + material icons font) --- */
+body.page-id-73404 [class*="um-icon"],
+body.page-id-73404 .um-account-tab i,
+body.page-id-73404 .um-account-nav i {
+  color: rgba(204,197,147,0.45) !important;
+}
+body.page-id-73404 .um-account-nav a.current [class*="um-icon"],
+body.page-id-73404 .um-account-nav a.current i,
+body.page-id-73404 .um-account-nav a:hover [class*="um-icon"],
+body.page-id-73404 .um-account-nav a:hover i {
+  color: #CCC593 !important;
+}
+
+/* --- ACCOUNT: Avatar ring (blue → gold) --- */
+body.page-id-73404 .um-avatar,
+body.page-id-73404 .um .um-avatar-wrapper img {
+  border-color: rgba(204,197,147,0.5) !important;
+}
+
+/* --- ACCOUNT: Field labels --- */
+body.page-id-73404 .um .um-field-label label,
+body.page-id-73404 .um label {
+  color: rgba(255,255,255,0.45) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 10px !important;
+  letter-spacing: 0.09em !important;
+  text-transform: uppercase !important;
+}
+
+/* --- ACCOUNT: Section heading ("Account" title with icon) --- */
+body.page-id-73404 .um-account-heading,
+body.page-id-73404 .um-account-heading * {
+  color: #CCC593 !important;
+  font-family: 'Cormorant Garamond', 'Georgia', serif !important;
+  border-bottom-color: rgba(204,197,147,0.15) !important;
+}
+
+/* --- ACCOUNT: Profile name + "View profile" link --- */
+body.page-id-73404 .um-account-name a,
+body.page-id-73404 .um-account-name span {
+  color: #CCC593 !important;
+  font-family: 'Cormorant Garamond', 'Georgia', serif !important;
+}
+body.page-id-73404 .um-account-profile-link a {
+  color: rgba(204,197,147,0.5) !important;
+  font-size: 12px !important;
+}
+
+/* --- ACCOUNT: Submit / Update button --- */
+body.page-id-73404 .um .um-button,
+body.page-id-73404 .um input[type="submit"],
+body.page-id-73404 .um button[type="submit"] {
+  background: #CCC593 !important;
+  color: #0c0c0c !important;
+  border: none !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  font-size: 12px !important;
+}
+body.page-id-73404 .um .um-button:hover,
+body.page-id-73404 .um input[type="submit"]:hover {
+  background: #fff !important;
+}
+
+/* --- ACCOUNT: Desktop side nav (.um-account-side) — the real nav boxes --- */
+body.page-id-73404 .um-account-side li {
+  background: rgba(255,255,255,0.03) !important;
+  border-bottom: 1px solid rgba(204,197,147,0.08) !important;
+}
+body.page-id-73404 .um .um-account-link {
+  color: rgba(255,255,255,0.65) !important;
+}
+body.page-id-73404 .um .um-account-link.current,
+body.page-id-73404 .um .um-account-link:hover {
+  color: #CCC593 !important;
+  background: rgba(204,197,147,0.04) !important;
+}
+/* Icon (blue rgb(59,161,218) → gold) */
+body.page-id-73404 .um .um-account-icon,
+body.page-id-73404 .um .um-account-icon i,
+body.page-id-73404 .um .um-account-icontip i {
+  color: rgba(204,197,147,0.5) !important;
+}
+body.page-id-73404 .um .um-account-link.current .um-account-icon,
+body.page-id-73404 .um .um-account-link.current .um-account-icon i,
+body.page-id-73404 .um .um-account-link:hover .um-account-icon i {
+  color: #CCC593 !important;
+}
+/* Title and arrow */
+body.page-id-73404 .um .um-account-title {
+  color: rgba(255,255,255,0.65) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  letter-spacing: 0.03em !important;
+}
+body.page-id-73404 .um .um-account-link.current .um-account-title {
+  color: #CCC593 !important;
+}
+body.page-id-73404 .um .um-account-arrow i {
+  color: rgba(204,197,147,0.3) !important;
+}
+
+/* ===== PHASE 8 END ===== 2026-04-16 */
 
 </style>
 
