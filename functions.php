@@ -155,6 +155,23 @@ html.colibri-wp-theme body .h-navigation_sticky .h-logo__alt-image { display: no
   }
 }
 
+/* ============ DESKTOP STICKY — LOGO RESTORE + NAV HEIGHT FIX — v1 ============ */
+@media (min-width: 992px) {
+  /* Restore alt-logo in sticky desktop — overrides the global kill above (same specificity, later cascade wins).
+     Apply invert filter so the white PNG appears as a dark logo against the sticky white/light nav. */
+  html body .h-navigation_sticky .h-logo__alt-image {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    filter: invert(1) brightness(0.15) !important;
+    -webkit-filter: invert(1) brightness(0.15) !important;
+  }
+  /* Trim nav bottom padding in sticky so space below items = space above */
+  .h-navigation_sticky {
+    padding-bottom: 12px !important;
+  }
+}
+
 /* ============ MOBILE HEADER LAYOUT v4 — CORRECT: burger=h10, kill alt-logo ============ */
 @media (max-width: 991px) {/* ============ DESIGN BIBLE: CTA CARDS v27 — ISOLATED BLOCKS ============ */
   /* iOS text auto-zoom kill */
