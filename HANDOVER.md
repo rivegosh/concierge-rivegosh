@@ -67,22 +67,45 @@ WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
   - Browser-verified: computed styles confirmed exact px values on both pages
   - Fonts replaced sitewide: Cormorant Garamond (headings, 287x) + Inter (body, 125x)
 
-## Mobile + Card Icon Fixes (2026-04-16 — v52 in functions.php) ✅ COMPLETE
+## Mobile + Card Icon + Centering Fixes (2026-04-16 — v52 CLEAN in functions.php) ✅ COMPLETE
 
-All four UX fixes deployed in `rivegosh_mobile_v52` (`wp_footer`, priority 99999):
+Single consolidated block `rivegosh_mobile_v52` (`wp_footer`, priority 99999) at line 1557 of functions.php (1631 total lines):
 
-- **FIX 1 — Desktop card icons**: Icons (`h-button__icon`) were `position:absolute !important` from `wp-custom-css` (spec 1-2-0). Changed v52 selector to match same specificity `[data-colibri-id="61861-h30"] .h-button__icon` — later source order wins. Now `position:relative`. Icons sit left of text in flex flow, no overlap.
-- **FIX 2 — Mobile logo scrolls**: `.rg-fixed-logo` overridden from `position:fixed` to `position:absolute; top:64px` in `@media (max-width:991px)`. Logo now scrolls away with page.
-- **FIX 3 — No sticky nav on mobile**: `.h-navigation_sticky` forced to `position:relative` on mobile — no sticky bar.
-- **FIX 4 — Cycling text fits mobile**: `.rg-word-1, .rg-word-2` reduced to 22px / 0.06em on mobile. Was 46px (overflowed 510px viewport).
+- **FIX 1 — Desktop card icons, position**: Colibri `wp-custom-css` sets `position:absolute !important` spec 1-2-0 → icon out of flex flow at top of button padding box. v52 (same spec, later source): `position:relative` → back in flex flow.
+- **FIX 2 — Desktop card icons, vertical alignment**: Natural icon center Y=521, text center Y=530 (button btn h=52px, padding 10px T/B). Fix: `top: 9px !important` (POSITIVE = DOWN). Verified: iconCY=530, textCY=530, diff=1 across all 3 cards ✅
+- **FIX 3 — SVG baseline**: `svg { display: block !important }` kills `vertical-align: baseline` browser default.
+- **FIX 4 — Card centering**: `justify-content:center; gap:4px; text-align:center` beats `rivegosh-banner-late`'s flex-start.
+- **FIX 5 — Mobile logo scrolls**: `.rg-fixed-logo` → `position:absolute; top:64px` in `@media (max-width:991px)`.
+- **FIX 6 — No sticky nav on mobile**: `.h-navigation_sticky` → `position:relative` on mobile.
+- **FIX 7 — Cycling text fits mobile**: `.rg-word-1, .rg-word-2` → 22px / 0.06em on mobile.
+
+**KEY: Icon vertical alignment root cause (confirmed 2026-04-16 via live measurements):**
+- Colibri puts `.h-button__icon` at `position: absolute; top: 0` → icon at TOP of button padding box (Y≈521)
+- Text is flex-centered at button center (Y=530)
+- Fix direction: `top: POSITIVE` (DOWN toward text), NOT negative
+- `top: -7px` and `top: -4px` (v52d/v52e) were WRONG direction — moved icon UP away from text
+- `display: flex` on icon span (v52c) was a MISTAKE — caused unexpected layout interactions, do NOT repeat
+- `align-self: center` alone doesn't work because icon is `position: absolute` (out of flex flow)
 
 **KEY: Cascade specificity battle (wp-custom-css vs wp_footer)**
-- Source: `wp-custom-css` (in `<head>`) had `position:absolute !important` spec 1-2-0 using `[data-colibri-id]` attribute selector
-- My first v52 attempt used `.style-local-*` class selector = spec 1-1-0 — LOST despite `!important`
-- Fix: match same spec 1-2-0 in v52 selector — both `!important` + equal spec → later source (wp_footer) wins
-- **Rule**: When fighting `wp-custom-css`, must match or exceed its selector specificity
+- `wp-custom-css` (in `<head>`): `position:absolute !important` spec 1-2-0
+- Match same spec 1-2-0 in v52 → later source (wp_footer) wins
+- **Rule**: When fighting `wp-custom-css` or `rivegosh-banner-late`, must match or exceed its selector specificity
 
-**Deploy pattern**: `echo $B64 | base64 -d >> $PHPFILE` — safe for PHP with single quotes. v52 block at lines 1145–1198 of functions.php.
+**KEY: rivegosh-banner-late selector** (know this before touching card layout):
+- Lives in `rivegosh_late_css` function, `wp_footer` at 99999
+- Selector: `#colibri a[data-colibri-id="61861-h30"].h-button` — spec 1-2-0
+- Sets: `justify-content:flex-start; gap:14px; text-align:left`
+- Override in v52 (registered later, same spec): `justify-content:center; gap:4px; text-align:center`
+
+**Deploy pattern**: base64 encode locally → `printf '%s' '$B64' | base64 -d >> $PHPFILE` on server. Verify with `grep -c 'rivegosh_mobile_v52' $PHPFILE` and `document.getElementById('rg-mobile-v52')` in browser.
+
+**⚠️ CRITICAL OPERATIONAL HAZARD — Hostinger File Browser Overwrites SSH Edits:**
+- Tabs with `functions.php` open in Hostinger's web file browser cache the old file content.
+- If ANYONE saves from those browser tabs, it silently REVERTS all SSH appends.
+- Before doing any SSH file edits: confirm no browser tabs have the file open in the Hostinger file manager.
+- Evidence: v52 was appended twice (SSH confirmed 1430→1451 lines) but reverted to 1367 lines before verification could complete.
+- Fix protocol: SSH → append → immediately `grep -c 'function_name' $PHPFILE` to confirm → run live browser check in same session.
 
 ---
 

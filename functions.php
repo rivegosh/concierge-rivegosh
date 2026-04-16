@@ -762,6 +762,161 @@ body.h-offcanvas-opened [class*="gt_switcher"] {
   #rg-drawer-backdrop { display: none !important; }
 }
 
+/* ============================================================
+   PHASE 1: ULTIMATE MEMBER FORMS — DARK LUXURY TREATMENT
+   Targets: /login-2/ and /register/ (UM form IDs 73395, 73396)
+   ============================================================ */
+/* Page-level background */
+.um-page-login-2 .site-content,
+.um-page-register .site-content,
+body.page-id-73400,
+body.page-id-73401 { background: #0c0c0c !important; }
+
+/* UM outer wrapper — scoped to login + register pages only */
+body.page-id-73400 .um,
+body.page-id-73401 .um { max-width: 480px !important; margin: 0 auto !important; }
+
+/* UM form fields */
+.um-field-label label,
+.um-field-label span { color: rgba(204,197,147,0.7) !important; font-family: 'Inter', sans-serif !important; font-size: 11px !important; letter-spacing: 0.1em !important; text-transform: uppercase !important; }
+.um-field-input input[type="text"],
+.um-field-input input[type="email"],
+.um-field-input input[type="password"],
+.um-field-input input[type="tel"] {
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(204,197,147,0.25) !important;
+  border-radius: 2px !important;
+  color: #fff !important;
+  font-family: 'Inter', sans-serif !important;
+  padding: 12px 14px !important;
+}
+.um-field-input input:focus { border-color: #CCC593 !important; outline: none !important; }
+
+/* UM submit button — override UM inline styles via high-specificity */
+.um .um-button,
+.um input[type="submit"],
+.um button[type="submit"] {
+  background: #CCC593 !important;
+  background-color: #CCC593 !important;
+  border: none !important;
+  border-radius: 2px !important;
+  color: #0c0c0c !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  padding: 14px 32px !important;
+  cursor: pointer !important;
+  transition: background 0.2s, color 0.2s !important;
+}
+.um .um-button:hover { background: #fff !important; background-color: #fff !important; }
+
+/* UM secondary links (Login / Register toggle) */
+.um-col-alt a, .um-col-alt span { color: rgba(204,197,147,0.55) !important; }
+.um-col-alt a:hover { color: #CCC593 !important; }
+
+/* UM error messages */
+.um .um-notice { background: rgba(204,197,147,0.08) !important; border-color: #CCC593 !important; color: #CCC593 !important; }
+
+/* ============================================================
+   PHASE 2: AMELIA BOOKING GATE — DARK TREATMENT
+   /booking-vip/ (page 54773) — Colibri sections + Amelia panel
+   ============================================================ */
+/* Kill the white overlay on the booking page header card */
+[data-colibri-id="54773-c2"] .overlay-image-layer { background-color: #0c0c0c !important; opacity: 0.92 !important; }
+[data-colibri-id="54773-c2"] { background-color: #0c0c0c !important; }
+/* Main Amelia section bg */
+[data-colibri-id="54773-c9"],
+.style-local-54773-c9 { background-color: #0c0c0c !important; }
+
+/* Amelia v2 customer panel — login gate + general UI */
+.amelia-app-wrapper,
+.amelia-app { background: transparent !important; }
+/* Login form card */
+.amelia-app-wrapper .am-auth,
+.amelia-app-wrapper .am-login { background: rgba(255,255,255,0.04) !important; border: 1px solid rgba(204,197,147,0.15) !important; border-radius: 4px !important; }
+/* Amelia headings */
+.amelia-app-wrapper h1, .amelia-app-wrapper h2,
+.amelia-app-wrapper h3, .amelia-app-wrapper h4 { color: #CCC593 !important; font-family: 'Cormorant Garamond', 'Georgia', serif !important; }
+/* Amelia body text — avoid div (too broad, breaks status chips/error states) */
+.amelia-app-wrapper p,
+.amelia-app-wrapper label { color: rgba(255,255,255,0.8) !important; }
+/* Amelia inputs */
+.amelia-app-wrapper input[type="text"],
+.amelia-app-wrapper input[type="email"],
+.amelia-app-wrapper input[type="password"] {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(204,197,147,0.25) !important;
+  color: #fff !important; border-radius: 2px !important;
+}
+/* Amelia primary button — Element UI + Amelia classes */
+.amelia-app-wrapper .el-button--primary,
+.amelia-app-wrapper button.el-button--primary,
+.amelia-app-wrapper .am-button--primary {
+  background-color: #CCC593 !important;
+  border-color: #CCC593 !important;
+  color: #0c0c0c !important;
+  font-weight: 600 !important; letter-spacing: 0.08em !important;
+}
+.amelia-app-wrapper .el-button--primary:hover { background-color: #fff !important; border-color: #fff !important; }
+/* Amelia secondary/text buttons */
+.amelia-app-wrapper .el-button--text,
+.amelia-app-wrapper .el-link { color: #CCC593 !important; }
+
+/* ============================================================
+   PHASE 3: WOOCOMMERCE MY ACCOUNT — DARK SIDEBAR
+   /my-account/ (page 16) — WooCommerce account area
+   ============================================================ */
+/* Page wrapper */
+.woocommerce-account { background: #0c0c0c !important; }
+.woocommerce-account .site-content { background: #0c0c0c !important; }
+
+/* Sidebar navigation */
+.woocommerce-account .woocommerce-MyAccount-navigation {
+  background: #111 !important;
+  border-right: 1px solid rgba(204,197,147,0.12) !important;
+  padding: 24px 0 !important;
+  border-radius: 2px !important;
+}
+.woocommerce-account .woocommerce-MyAccount-navigation ul { list-style: none !important; margin: 0 !important; padding: 0 !important; }
+.woocommerce-account .woocommerce-MyAccount-navigation li { border-bottom: 1px solid rgba(255,255,255,0.04) !important; }
+.woocommerce-account .woocommerce-MyAccount-navigation li a {
+  display: block !important;
+  padding: 13px 24px !important;
+  color: rgba(204,197,147,0.6) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+  transition: color 0.2s, background 0.2s !important;
+}
+.woocommerce-account .woocommerce-MyAccount-navigation li a:hover,
+.woocommerce-account .woocommerce-MyAccount-navigation li.is-active a,
+.woocommerce-account .woocommerce-MyAccount-navigation li.woocommerce-MyAccount-navigation-link--is-active a {
+  color: #CCC593 !important;
+  background: rgba(204,197,147,0.06) !important;
+  border-left: 2px solid #CCC593 !important;
+  padding-left: 22px !important;
+}
+
+/* Content area */
+.woocommerce-account .woocommerce-MyAccount-content {
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(204,197,147,0.08) !important;
+  color: rgba(255,255,255,0.85) !important;
+  border-radius: 2px !important;
+  padding: 32px !important;
+}
+.woocommerce-account .woocommerce-MyAccount-content h2,
+.woocommerce-account .woocommerce-MyAccount-content h3 { color: #CCC593 !important; font-family: 'Cormorant Garamond', 'Georgia', serif !important; }
+.woocommerce-account .woocommerce-MyAccount-content a { color: #CCC593 !important; }
+.woocommerce-account .woocommerce-MyAccount-content a:hover { color: #fff !important; }
+.woocommerce-account .woocommerce-MyAccount-content table th { color: rgba(204,197,147,0.55) !important; border-color: rgba(204,197,147,0.12) !important; }
+.woocommerce-account .woocommerce-MyAccount-content table td { color: rgba(255,255,255,0.8) !important; border-color: rgba(255,255,255,0.06) !important; }
+
 </style>
 
 
@@ -921,16 +1076,19 @@ function rivegosh_custom_drawer_v43() {
             break;
         }
     }
+    // PHASE 5: Determine login state for conditional nav
+    $rg_logged_in = is_user_logged_in();
+
     if (empty($vip_kids)) {
         $vip_kids = [
-            ['title' => 'Home',         'url' => '/'],
-            ['title' => 'Login',        'url' => '/login-2/'],
-            ['title' => 'Register',     'url' => '/register/'],
-            ['title' => 'Account',      'url' => '/account/'],
-            ['title' => 'My Orders',    'url' => '/my-account/'],
-            ['title' => 'Members',      'url' => '/members/'],
-            ['title' => 'Your Booking', 'url' => '/booking-vip/'],
-            ['title' => 'FAQ',          'url' => '/faq-2/'],
+            ['title' => 'Home',         'url' => '/',             'vis' => 'all'],
+            ['title' => 'Login',        'url' => '/login-2/',     'vis' => 'guest'],
+            ['title' => 'Register',     'url' => '/register/',    'vis' => 'guest'],
+            ['title' => 'Account',      'url' => '/account/',     'vis' => 'member'],
+            ['title' => 'My Orders',    'url' => '/my-account/',  'vis' => 'member'],
+            ['title' => 'Members',      'url' => '/members/',     'vis' => 'member'],
+            ['title' => 'Your Booking', 'url' => '/booking-vip/', 'vis' => 'member'],
+            ['title' => 'FAQ',          'url' => '/faq-2/',       'vis' => 'all'],
         ];
     }
     if (!$pro_link) $pro_link = ['title' => 'Professional',        'url' => '/vendor-membership/'];
@@ -1024,8 +1182,20 @@ function rivegosh_custom_drawer_v43() {
     <aside id="rg-drawer" aria-hidden="true" role="dialog" aria-label="Main menu">
       <button id="rg-drawer-close" type="button" aria-label="Close menu">&times;</button>
       <nav class="rg-nav">
-        <a href="<?php echo esc_url(home_url('/')); ?>">Home</a>
-        <?php foreach ($vip_kids as $k): ?>
+        <?php foreach ($vip_kids as $k):
+          // Phase 5: visibility gating
+          $vis = isset($k['vis']) ? $k['vis'] : 'all';
+          if ($vis === 'guest'  && $rg_logged_in)  continue;
+          if ($vis === 'member' && !$rg_logged_in) continue;
+          // For dynamic menu items (no vis key): gate by URL pattern
+          if (!isset($k['vis'])) {
+            $u = $k['url'];
+            $is_auth  = (strpos($u,'/login')!==false || strpos($u,'/register')!==false);
+            $is_mbr   = (strpos($u,'/account')!==false || strpos($u,'/my-account')!==false || strpos($u,'/members')!==false || strpos($u,'/booking-vip')!==false);
+            if ($is_auth && $rg_logged_in)  continue;
+            if ($is_mbr  && !$rg_logged_in) continue;
+          }
+        ?>
           <a href="<?php echo esc_url($k['url']); ?>"><?php echo esc_html($k['title']); ?></a>
         <?php endforeach; ?>
         <div class="rg-divider"></div>
@@ -1131,6 +1301,59 @@ function rivegosh_cycling_hero_js() { ?>
 <?php }
 // ===== HERO GRAPHICS v3 END =====
 
+// ===== PHASE 3: WOOCOMMERCE MY ACCOUNT — REMOVE IRRELEVANT TABS =====
+// 'followings' = social plugin; 'support-tickets' = helpdesk plugin; 'inquiry' = extra plugin.
+// All unrelated to Rive Gosh. 'wpf-delete-account' = risky — remove from nav, keep endpoint.
+add_filter('woocommerce_account_menu_items', 'rivegosh_account_menu_items');
+function rivegosh_account_menu_items($items) {
+  unset(
+    $items['followings'],
+    $items['support-tickets'],
+    $items['inquiry'],
+    $items['wpf-delete-account']
+  );
+  return $items;
+}
+// ===== PHASE 3 END =====
+
+// ===== PHASE 4: CONTEXTUAL HERO TEXT PER PAGE =====
+// Inner page hero always says "YOUR DESTINATION" — meaningless on auth pages.
+// Replace via JS based on body page-id class. Falls back silently if heading not found.
+add_action('wp_footer', 'rivegosh_contextual_hero_text', 99999);
+function rivegosh_contextual_hero_text() {
+  $map = [
+    73400 => "WELCOME BACK",
+    73401 => "JOIN THE\nPRIVATE CIRCLE",
+    73404 => "YOUR\nPRIVATE SPACE",
+    16    => "YOUR\nPRIVATE SPACE",
+    54773 => "YOUR EXCLUSIVE\nITINERARY",
+    73402 => "YOUR\nMEMBER SPACE",
+  ];
+  $id  = get_the_ID();
+  if (!isset($map[$id])) return;
+  // Use <br> for line breaks — textContent ignores \n, innerHTML renders <br>
+  $html = nl2br( esc_html($map[$id]) );
+  ?>
+  <script id="rg-hero-text">
+  (function(){
+    var newHtml = <?php echo json_encode($html); ?>;
+    function swap(){
+      var heroes = document.querySelectorAll('.h-section.h-hero h1, .h-section.h-hero h2, .h-section.h-hero h3, .h-section.h-hero h4, .h-section.h-hero h5, .h-section.h-hero .h-heading, .h-section.h-hero [class*="h-heading"]');
+      heroes.forEach(function(el){
+        var t = el.textContent.trim().toUpperCase();
+        if(t.includes('DESTINATION') || t.includes('YOUR ')){
+          el.innerHTML = newHtml;
+        }
+      });
+    }
+    if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',swap); }
+    else { swap(); }
+  })();
+  </script>
+  <?php
+}
+// ===== PHASE 4 END =====
+
 // ===== REGISTER PAGE: REDIRECT LOGGED-IN USERS =====
 // When a logged-in user hits /register/, send them straight to My Account.
 // Prevents the dead "You are already registered." screen.
@@ -1142,3 +1365,184 @@ function rivegosh_register_logged_in_redirect() {
   }
 }
 // ===== REGISTER PAGE REDIRECT END =====
+
+// ===== PORTAL SIDEBAR v1 — persistent VIP customer nav, desktop only =====
+// Renders on: Login(73400), Register(73401), Account(73404),
+//             Members(73402), Booking VIP(54773), FAQ(61943)
+// Suppressed on WooCommerce My Account pages (Phase 3 WC sidebar handles those).
+// Registered LAST at 99999 — CSS loads after all other 99999-priority styles (KB#49 §20).
+add_action('wp_footer', 'rivegosh_portal_sidebar_v1', 99999);
+function rivegosh_portal_sidebar_v1() {
+  $portal_ids = [73400, 73401, 73404, 73402, 54773, 61943];
+  $current_id = get_the_ID();
+  if (!in_array($current_id, $portal_ids)) return;
+  // Suppress on all WooCommerce account endpoints (KB#49 §19)
+  if (function_exists('is_account_page') && is_account_page()) return;
+
+  $logged_in = is_user_logged_in();
+
+  $nav = [
+    ['label' => 'LOGIN',        'url' => '/login-2/',     'id' => 73400, 'vis' => 'guest'],
+    ['label' => 'REGISTER',     'url' => '/register/',    'id' => 73401, 'vis' => 'guest'],
+    ['label' => 'ACCOUNT',      'url' => '/account/',     'id' => 73404, 'vis' => 'member'],
+    ['label' => 'MY ORDERS',    'url' => '/my-account/',  'id' => 16,    'vis' => 'member'],
+    ['label' => 'MEMBERS',      'url' => '/members/',     'id' => 73402, 'vis' => 'member'],
+    ['label' => 'YOUR BOOKING', 'url' => '/booking-vip/', 'id' => 54773, 'vis' => 'member'],
+    ['label' => 'FAQ',          'url' => '/faq-2/',       'id' => 61943, 'vis' => 'all'],
+  ];
+  ?>
+  <style id="rg-portal-sidebar-css">
+  /* ============================================================
+     PORTAL SIDEBAR v1 — desktop only (>=992px)
+     ============================================================ */
+  #rg-portal-sidebar {
+    position: fixed;
+    left: 0; top: 0; /* JS sets exact top from header offsetHeight */
+    width: 200px;
+    height: 100vh; /* JS corrects to 100vh minus header */
+    background: #0c0c0c;
+    z-index: 1000; /* above content, below GTranslate(9999), below drawer(99998) — KB#49 §21 */
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display: flex;
+    flex-direction: column;
+    padding-top: 24px;
+    border-right: 1px solid rgba(204,197,147,0.08);
+  }
+  #rg-portal-sidebar::-webkit-scrollbar { display: none; }
+
+  /* "VIP CUSTOMER" section label */
+  #rg-portal-sidebar .rg-ps-label {
+    color: rgba(204,197,147,0.45);
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0 24px 12px;
+    display: block;
+  }
+  /* Single divider under label — no other lines */
+  #rg-portal-sidebar .rg-ps-divider {
+    height: 1px;
+    background: rgba(204,197,147,0.25);
+    margin: 0 16px 14px;
+    flex-shrink: 0;
+  }
+
+  /* Nav links */
+  #rg-portal-sidebar a {
+    display: block;
+    padding: 11px 24px 11px 22px;
+    color: rgba(204,197,147,0.6);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    transition: color 0.18s, background 0.18s, border-color 0.18s;
+    border-left: 2px solid transparent;
+    line-height: 1.3;
+  }
+  #rg-portal-sidebar a:hover {
+    color: #CCC593 !important;
+    background: rgba(204,197,147,0.04) !important;
+    border-left-color: rgba(204,197,147,0.35) !important;
+  }
+  #rg-portal-sidebar a.rg-ps-active {
+    color: #CCC593 !important;
+    background: rgba(204,197,147,0.06) !important;
+    border-left: 2px solid #CCC593 !important;
+    padding-left: 20px !important;
+  }
+
+  /* ---- Content push — per-page scoped (KB#49 §17 — NEVER target .site-content globally) ---- */
+  @media (min-width: 992px) {
+    /* UM pages — .site-content exists */
+    body.page-id-73400 .site-content,
+    body.page-id-73401 .site-content,
+    body.page-id-73404 .site-content,
+    body.page-id-73402 .site-content { margin-left: 200px !important; }
+
+    /* FAQ — .h-row-container only, NOT .h-section (100vw overflow trap — KB#49 §18) */
+    body.page-id-61943 .h-row-container { margin-left: 200px !important; }
+
+    /* Amelia — padding-left fills dark bg gap; margin-left would leave white strip (KB#49 §23) */
+    body.page-id-54773 [data-colibri-id="54773-c9"] { padding-left: 200px !important; }
+    body.page-id-54773 { background: #0c0c0c !important; }
+
+    /* Mobile reset — belt-and-braces */
+    /* (handled by the @media (max-width: 991px) block below) */
+  }
+  @media (max-width: 991px) {
+    #rg-portal-sidebar { display: none !important; }
+    body.page-id-73400 .site-content,
+    body.page-id-73401 .site-content,
+    body.page-id-73404 .site-content,
+    body.page-id-73402 .site-content { margin-left: 0 !important; }
+    body.page-id-61943 .h-row-container { margin-left: 0 !important; }
+    body.page-id-54773 [data-colibri-id="54773-c9"] { padding-left: 0 !important; }
+  }
+
+  /* ---- WooCommerce My Account — "VIP CUSTOMER" portal label above WC sidebar (KB#49 §19) ---- */
+  /* CSS ::before on the nav wrapper — no extra PHP hook needed */
+  @media (min-width: 992px) {
+    .woocommerce-account .woocommerce-MyAccount-navigation::before {
+      content: 'VIP CUSTOMER';
+      display: block;
+      color: rgba(204,197,147,0.45);
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 20px 24px 0;
+    }
+    .woocommerce-account .woocommerce-MyAccount-navigation ul::before {
+      content: '';
+      display: block;
+      height: 1px;
+      background: rgba(204,197,147,0.25);
+      margin: 12px 16px 8px;
+    }
+  }
+  </style>
+
+  <nav id="rg-portal-sidebar" aria-label="VIP Customer Portal" role="navigation">
+    <span class="rg-ps-label">VIP CUSTOMER</span>
+    <div class="rg-ps-divider"></div>
+    <?php foreach ($nav as $item):
+      if ($item['vis'] === 'guest'  && $logged_in)  continue;
+      if ($item['vis'] === 'member' && !$logged_in) continue;
+      $active = ($item['id'] === $current_id) ? ' rg-ps-active' : '';
+    ?>
+      <a href="<?php echo esc_url(home_url($item['url'])); ?>"<?php echo $active ? ' class="rg-ps-active"' : ''; ?>><?php echo esc_html($item['label']); ?></a>
+    <?php endforeach; ?>
+  </nav>
+
+  <script id="rg-portal-sidebar-js">
+  (function(){
+    var sb = document.getElementById('rg-portal-sidebar');
+    if (!sb || window.innerWidth < 992) return;
+    function positionSidebar() {
+      var hdr = document.querySelector('.h-section.h-navigation');
+      var hdrH = hdr ? hdr.offsetHeight : 90;
+      var adminBar = document.body.classList.contains('admin-bar') ? 32 : 0;
+      var top = hdrH + adminBar;
+      sb.style.top = top + 'px';
+      sb.style.height = 'calc(100vh - ' + top + 'px)';
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', positionSidebar);
+    } else {
+      positionSidebar();
+    }
+    var _rt; window.addEventListener('resize', function(){ clearTimeout(_rt); _rt = setTimeout(positionSidebar, 80); });
+  })();
+  </script>
+  <?php
+}
+// ===== PORTAL SIDEBAR v1 END =====
