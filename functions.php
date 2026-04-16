@@ -1519,7 +1519,7 @@ function rivegosh_portal_sidebar_v1() {
       if ($item['vis'] === 'member' && !$logged_in) continue;
       $active = ($item['id'] === $current_id) ? ' rg-ps-active' : '';
     ?>
-      <a href="<?php echo esc_url(home_url($item['url'])); ?>" class="<?php echo trim($active); ?>"><?php echo esc_html($item['label']); ?></a>
+      <a href="<?php echo esc_url(home_url($item['url'])); ?>"<?php echo $active ? ' class="rg-ps-active"' : ''; ?>><?php echo esc_html($item['label']); ?></a>
     <?php endforeach; ?>
   </nav>
 
@@ -1540,7 +1540,7 @@ function rivegosh_portal_sidebar_v1() {
     } else {
       positionSidebar();
     }
-    window.addEventListener('resize', positionSidebar);
+    var _rt; window.addEventListener('resize', function(){ clearTimeout(_rt); _rt = setTimeout(positionSidebar, 80); });
   })();
   </script>
   <?php
