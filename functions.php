@@ -739,6 +739,29 @@ body.h-offcanvas-opened [class*="gt_switcher"] {
   }
 }
 
+/* ============ FOOTER: KILL TEXTURE + DARK BRAND BG ============ */
+/* Colibri footer section #footer1 / 61872-f2 has a sports-texture bg image — nuke it, use near-black */
+#footer1,
+.style-local-61872-f2,
+[data-colibri-id="61872-f2"] {
+  background-image: none !important;
+  background-color: #0c0c0c !important;
+}
+/* Links → cognac; secondary copy → cognac 55% */
+#footer1 a,
+.style-local-61872-f2 a { color: #CCC593 !important; text-decoration: none !important; }
+#footer1 a:hover,
+.style-local-61872-f2 a:hover { color: #fff !important; }
+#footer1,
+.style-local-61872-f2 { color: rgba(204,197,147,0.55) !important; }
+
+/* ============ DRAWER: HIDE ON DESKTOP ============ */
+/* #rg-drawer HTML is always emitted — only CSS is media-gated → leaks on desktop. Kill it. */
+@media (min-width: 992px) {
+  #rg-drawer,
+  #rg-drawer-backdrop { display: none !important; }
+}
+
 </style>
 
 
@@ -1108,3 +1131,14 @@ function rivegosh_cycling_hero_js() { ?>
 <?php }
 // ===== HERO GRAPHICS v3 END =====
 
+// ===== REGISTER PAGE: REDIRECT LOGGED-IN USERS =====
+// When a logged-in user hits /register/, send them straight to My Account.
+// Prevents the dead "You are already registered." screen.
+add_action('template_redirect', 'rivegosh_register_logged_in_redirect');
+function rivegosh_register_logged_in_redirect() {
+  if ( is_user_logged_in() && is_page('register') ) {
+    wp_safe_redirect( home_url('/my-account/') );
+    exit;
+  }
+}
+// ===== REGISTER PAGE REDIRECT END =====
