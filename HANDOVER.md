@@ -67,12 +67,20 @@ WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
   - Browser-verified: computed styles confirmed exact px values on both pages
   - Fonts replaced sitewide: Cormorant Garamond (headings, 287x) + Inter (body, 125x)
 
-## Sticky Nav Fixes (2026-04-15 — v10/v11/v12 in functions.php)
+## Sticky Nav Fixes (2026-04-16 — v10–v14 in functions.php) ✅ COMPLETE
 - **v10** `rivegosh_nav_v10_fixes` (priority 999999): dark `::before` bg, 14px equal top/bottom padding, logo column min-width 100px, dropdown rgba(10,10,10,0.92)
-- **v11** `rivegosh_nav_v11_fixes` (priority 999999): force `.h-logo__image` + `.h-logo__alt-image` display:block in h4 (Colibri JS hides both in sticky mode)
-- **v12** `rivegosh_nav_v12_logo` (priority 999999): sticky-scoped fix — hides `.h-logo__image`, shows only `.h-logo__alt-image` with `#colibri .h-navigation_sticky` selector for correct specificity
-- **h2 background**: direct `background: rgba(10,10,10,0.88) !important` on h2 in v11 beats Colibri JS `background: white` inline override
-- All deployed via `wp_head` priority 999999 to guarantee post-Colibri source order
+- **v11** `rivegosh_nav_v11_fixes` (priority 999999): force `.h-logo__image` + `.h-logo__alt-image` display:block — ⚠️ SIDE EFFECT: also sets dark `background: rgba(10,10,10,0.88) !important` on h2 directly
+- **v12** `rivegosh_nav_v12_logo` (priority 999999): sticky-scoped — hides primary, shows alt-image (alt-image has no image set → shows placeholder)
+- **v13** `rivegosh_nav_v13_logo` (priority 999999): sticky-scoped — shows primary with `filter: brightness(0)`, hides alt-image
+- **v14** `rivegosh_nav_v14_sticky` (priority 99999, `wp_footer`): KB#49 final fix — loaded last, beats v10–v13:
+  - Kills `.h-logo__alt-image` globally using identical specificity to v11 (same-spec + later source = wins)
+  - Restores white sticky bg: `#colibri [data-colibri-id="61861-h2"].h-navigation_sticky { background: white !important }` (spec 1-2-0 beats v11's 0-1-0)
+  - Kills `::before` dark overlay in sticky state
+  - Shows `.h-logo__image` with `filter: brightness(0)` in sticky
+
+**KEY INSIGHT (2026-04-16):** JS simulation of sticky (`classList.add`) + `getComputedStyle` was unreliable. Colibri's JS sets inline `background: white` (no !important) AND adds the class — the real cascade behaves correctly. Always verify visually via scroll, not JS simulation.
+
+**`wp_footer` at 99999 = loads after `wp_head` at 999999** — use this pattern for all future overrides.
 
 ## Launch Readiness: 68% — Going live ~2 days
 
