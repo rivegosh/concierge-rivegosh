@@ -89,7 +89,13 @@ All five UX fixes deployed in `rivegosh_mobile_v52` (`wp_footer`, priority 99999
 - Sets: `justify-content:flex-start; gap:14px; text-align:left` — intentional left-align was overriding Bootstrap's center class
 - Override in v52 (registered later, same spec): `justify-content:center; gap:5px; text-align:center`
 
-**Deploy pattern**: `printf '%s' '$B64' | base64 -d >> $PHPFILE` — use `printf '%s'` not `echo` to avoid newline issues. v52 combined block at lines ~1368–1441 of functions.php.
+**Deploy pattern**: `printf '%s' '$B64' | base64 -d >> $PHPFILE` — use `printf '%s'` not `echo` to avoid newline issues. v52 combined block at ~1368–1441, v52c at ~1442–1478 of functions.php.
+
+**v52c additions (icon vertical align fix):**
+- Root cause: `svg { vertical-align: baseline; display: inline }` (browser defaults) → SVG sits at text baseline, appearing LOW
+- Fix: `.h-button__icon { display: flex; align-items: center }` + `svg { display: block }`
+- Gap changed to 4px (was 5px) per design spec
+- Selector for SVG: `#colibri [data-colibri-id="61861-h30"] .h-button__icon svg` spec 1-2-1 — beats browser default
 **Verified**: All 5 computed styles confirmed via `getComputedStyle` in browser (2026-04-16).
 
 **⚠️ CRITICAL OPERATIONAL HAZARD — Hostinger File Browser Overwrites SSH Edits:**
