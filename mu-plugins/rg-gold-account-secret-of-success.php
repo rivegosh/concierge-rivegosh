@@ -22,7 +22,12 @@
  *   Surgical: no DOM edits, no post_content rewrites, no removal of Colibri components.
  *   Fully reversible by deleting this file.
  *
- * Version: 1.0.0 (2026-04-17)
+ *   v1.1.0 — Added JS nuke pass (same pattern as rg-legacy-contrast-fixes.php).
+ *       LiteSpeed critical-CSS beats CSS !important at paint-time; JS inline
+ *       style.setProperty('…','important') is the final cascade layer and
+ *       always wins. Fixes: strong text color + image height constraint.
+ *
+ * Version: 1.1.0 (2026-04-17)
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -88,5 +93,51 @@ add_action( 'wp_footer', function () {
 		}
 	}
 	</style>
+	<script id="rg-gold-account-sos-js">
+	(function () {
+		function nukeGoldAccount() {
+			// Fix 1: force strong / bold elements inside c32 to gold
+			var c32 = document.querySelector('.style-local-64453-c32');
+			if (c32) {
+				var strongs = c32.querySelectorAll('strong, b, span[style]');
+				for (var i = 0; i < strongs.length; i++) {
+					strongs[i].style.setProperty('color', '#ccc593', 'important');
+				}
+				// OL / UL markers inherit from the list element
+				var lists = c32.querySelectorAll('ol, ul');
+				for (var j = 0; j < lists.length; j++) {
+					lists[j].style.setProperty('color', 'rgba(240, 235, 225, 0.92)', 'important');
+				}
+			}
+
+			// Fix 2: cap the h-multiple-image to a square ~380px tile
+			var c36 = document.querySelector('.style-local-64453-c36');
+			if (c36) {
+				c36.style.setProperty('max-width',  '380px', 'important');
+				c36.style.setProperty('max-height', '380px', 'important');
+				c36.style.setProperty('overflow',   'hidden', 'important');
+				c36.style.setProperty('aspect-ratio', '1 / 1', 'important');
+				c36.style.setProperty('width',  '100%', 'important');
+			}
+
+			// Fix 3: image column should not stretch to row height — align to top
+			var c35inner = document.querySelector('.style-local-64453-c35');
+			if (c35inner) {
+				c35inner.style.setProperty('align-self',      'flex-start', 'important');
+				c35inner.style.setProperty('justify-content', 'flex-start', 'important');
+			}
+			var c35outer = document.querySelector('.style-local-64453-c35-outer');
+			if (c35outer) {
+				c35outer.style.setProperty('align-self', 'flex-start', 'important');
+			}
+		}
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', nukeGoldAccount);
+		} else {
+			nukeGoldAccount();
+		}
+	})();
+	</script>
 	<?php
 }, 99999 );
