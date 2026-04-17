@@ -5,10 +5,34 @@
  *              imports (customer-panel chunks) keep resolving. Prevents the
  *              /booking-pro-panel/ blank-page regression from returning if
  *              someone flips the toggle in LiteSpeed admin.
- * Author: Rive Gosh / Chi (PAI)
- * Version: 1.0.0
+ * Author: RG
+ * Version: 1.0.1
  * Created: 2026-04-17
  * Review-by: 2026-10-17
+ *
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║  🛑 DO NOT DELETE. DO NOT MODIFY WITHOUT ASKING RODERIC.         ║
+ * ║  ───────────────────────────────────────────────────────────────  ║
+ * ║  Frozen gold-standard fix. Verified visually via Chrome MCP     ║
+ * ║  screenshot on 2026-04-17 and signed off by Daniel.             ║
+ * ║                                                                  ║
+ * ║  If /booking-pro-panel/ or the Amelia booking wizard renders    ║
+ * ║  blank later, FIX THE CAUSE (another mu-plugin, plugin update, ║
+ * ║  LiteSpeed admin toggle) — do NOT gut or rewrite this file.    ║
+ * ║  Ship additive overrides in a NEW mu-plugin if adjustment is    ║
+ * ║  genuinely needed.                                              ║
+ * ║                                                                  ║
+ * ║  WHY THIS FILE EXISTS: LiteSpeed's JS minify+combine bundles    ║
+ * ║  Amelia's webpack dynamic-import chunks into a single file      ║
+ * ║  whose chunk references 404 → ChunkLoadError → Vue mount        ║
+ * ║  aborts → blank booking pages. This guard re-asserts            ║
+ * ║  optm-js_min=0 + optm-js_defer=0 on admin_init (priority 1)    ║
+ * ║  so an admin Save in LiteSpeed → Page Optimization → JS         ║
+ * ║  cannot silently reintroduce the regression.                    ║
+ * ║                                                                  ║
+ * ║  GitHub: rivegosh/concierge-rivegosh#75                         ║
+ * ║  Commit of record: 43dcc68                                      ║
+ * ╚══════════════════════════════════════════════════════════════════╝
  *
  * WHY: DEFCON 1 incident 2026-04-17 — /booking-pro-panel/ rendered empty
  * because LiteSpeed bundled Amelia's webpack chunks into one minified file
