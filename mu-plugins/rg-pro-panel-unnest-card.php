@@ -7,14 +7,15 @@
  *              a SINGLE dark pill, not three nested rectangles. Fixes the
  *              "multiple fields stacked" regression Daniel reported 2026-04-17.
  * Author: RG
- * Version: 1.0.2
+ * Version: 1.0.3
  * Created: 2026-04-17
  *
  * ╔══════════════════════════════════════════════════════════════════╗
  * ║  🛑 DO NOT DELETE. DO NOT MODIFY WITHOUT ASKING RODERIC.         ║
  * ║  ───────────────────────────────────────────────────────────────  ║
- * ║  Frozen gold-standard fix. v1.0.1 — awaiting Daniel visual     ║
- * ║  sign-off after hard-reload on 2026-04-17.                      ║
+ * ║  Frozen gold-standard fix. Verified visually via Daniel's      ║
+ * ║  screenshot + sign-off 2026-04-17 after v1.0.2 specificity      ║
+ * ║  fix landed. Single card, single input pill per field.         ║
  * ║                                                                  ║
  * ║  If /booking-pro-panel/ login card looks off later, FIX THE    ║
  * ║  CAUSE (another mu-plugin adding card styles, plugin update,    ║
@@ -38,6 +39,7 @@
  * ║  field (.el-input).                                             ║
  * ║                                                                  ║
  * ║  GitHub: rivegosh/concierge-rivegosh#75                         ║
+ * ║  Commit of record: 42bb376 (v1.0.2 specificity + suffix fix)   ║
  * ╚══════════════════════════════════════════════════════════════════╝
  */
 
