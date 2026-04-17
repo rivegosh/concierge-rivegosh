@@ -7,7 +7,7 @@
  *              a SINGLE dark pill, not three nested rectangles. Fixes the
  *              "multiple fields stacked" regression Daniel reported 2026-04-17.
  * Author: RG
- * Version: 1.0.1
+ * Version: 1.0.2
  * Created: 2026-04-17
  *
  * ╔══════════════════════════════════════════════════════════════════╗
@@ -70,47 +70,62 @@ function rg_pro_panel_unnest_card_css() {
 	}
 
 	/* ─────────────────────────────────────────────────────────────
-	   INPUTS — strip the INNER two rectangles so only the outer
-	   .el-input pill shows. rg-amelia-access-link.php put borders
-	   on .el-input__wrapper AND the raw <input>, which stacked
-	   with the .el-input pill from rg-amelia-contrast.php →
-	   three nested boxes. Kill the inner two here.
+	   INPUTS — strip the INNER two rectangles + the suffix ghost
+	   column so only the outer .el-input pill shows.
+	   rg-amelia-access-link.php uses `body #amelia-container .am-asi
+	   .el-input__wrapper` (specificity 0,1,2,2). To beat it we match
+	   specificity with the same `#amelia-container` anchor AND/OR
+	   use a double-ID chain (#amelia-container#amelia-container) as
+	   a safety net against any future specificity climbs.
 	   ───────────────────────────────────────────────────────────── */
-	body.page-id-54778 .am-asi .el-input__wrapper,
-	body.page-id-54778 .am-auth .el-input__wrapper,
-	body.page-id-54778 .amelia-v2-booking .el-input__wrapper {
-		background: transparent !important;
-		background-color: transparent !important;
-		border: 0 !important;
-		border-radius: 0 !important;
-		box-shadow: none !important;
-		padding: 0 !important;
-		height: 100% !important;
-		width: 100% !important;
-	}
-	body.page-id-54778 .am-asi input,
-	body.page-id-54778 .am-asi input[type="text"],
-	body.page-id-54778 .am-asi input[type="email"],
-	body.page-id-54778 .am-asi input[type="password"],
-	body.page-id-54778 .am-asi .el-input__inner,
-	body.page-id-54778 .am-auth input,
-	body.page-id-54778 .am-auth input[type="text"],
-	body.page-id-54778 .am-auth input[type="email"],
-	body.page-id-54778 .am-auth input[type="password"],
-	body.page-id-54778 .am-auth .el-input__inner {
+	body.page-id-54778 #amelia-container .am-asi .el-input__wrapper,
+	body.page-id-54778 #amelia-container .am-asi .el-input__inner,
+	body.page-id-54778 #amelia-container .am-asi input,
+	body.page-id-54778 #amelia-container .am-asi input[type="text"],
+	body.page-id-54778 #amelia-container .am-asi input[type="email"],
+	body.page-id-54778 #amelia-container .am-asi input[type="password"],
+	body.page-id-54778 #amelia-container .am-auth .el-input__wrapper,
+	body.page-id-54778 #amelia-container .am-auth .el-input__inner,
+	body.page-id-54778 #amelia-container .am-auth input,
+	body.page-id-54778 #amelia-container .am-auth input[type="text"],
+	body.page-id-54778 #amelia-container .am-auth input[type="email"],
+	body.page-id-54778 #amelia-container .am-auth input[type="password"],
+	body.page-id-54778 #amelia-container#amelia-container .el-input__wrapper,
+	body.page-id-54778 #amelia-container#amelia-container .el-input__inner,
+	body.page-id-54778 #amelia-container#amelia-container input[type="text"],
+	body.page-id-54778 #amelia-container#amelia-container input[type="email"],
+	body.page-id-54778 #amelia-container#amelia-container input[type="password"] {
 		background: transparent !important;
 		background-color: transparent !important;
 		border: 0 !important;
 		border-radius: 0 !important;
 		box-shadow: none !important;
 		outline: none !important;
+		padding: 0 16px !important;
 	}
-	/* Focus state: show the outer .el-input pill only. Kill any
-	   focus-within box-shadow on the inner wrapper. */
-	body.page-id-54778 .am-asi .el-input__wrapper:focus-within,
-	body.page-id-54778 .am-auth .el-input__wrapper:focus-within,
-	body.page-id-54778 .am-asi .el-input__inner:focus,
-	body.page-id-54778 .am-auth .el-input__inner:focus {
+	/* Suffix + prefix columns: collapse to zero width so no ghost
+	   rectangle appears beside the input. */
+	body.page-id-54778 #amelia-container .am-asi .el-input__suffix,
+	body.page-id-54778 #amelia-container .am-auth .el-input__suffix,
+	body.page-id-54778 #amelia-container#amelia-container .el-input__suffix,
+	body.page-id-54778 #amelia-container .am-asi .el-input__prefix,
+	body.page-id-54778 #amelia-container .am-auth .el-input__prefix,
+	body.page-id-54778 #amelia-container#amelia-container .el-input__prefix {
+		width: 0 !important;
+		min-width: 0 !important;
+		background: transparent !important;
+		border: 0 !important;
+		box-shadow: none !important;
+		display: none !important;
+	}
+	/* Focus state: no inner ring, keep it only on outer .el-input
+	   (handled by rg-amelia-contrast.php). */
+	body.page-id-54778 #amelia-container .am-asi .el-input__wrapper:focus-within,
+	body.page-id-54778 #amelia-container .am-auth .el-input__wrapper:focus-within,
+	body.page-id-54778 #amelia-container .am-asi .el-input__inner:focus,
+	body.page-id-54778 #amelia-container .am-auth .el-input__inner:focus,
+	body.page-id-54778 #amelia-container#amelia-container .el-input__wrapper:focus-within,
+	body.page-id-54778 #amelia-container#amelia-container input:focus {
 		border: 0 !important;
 		box-shadow: none !important;
 		outline: none !important;
