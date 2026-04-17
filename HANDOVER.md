@@ -1,5 +1,5 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-16 | **Session:** Mobile fixes + Card icon overlap fix (v52)
+**Date:** 2026-04-17 | **Session:** Invoice fix + VIP Client rename + Invoice button UX + KB #49 update
 
 ---
 
@@ -11,7 +11,7 @@ WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
 
 ## Site State (verified 2026-04-14 20:12)
 - WordPress 6.9.4 | WooCommerce 10.6.2 | Colibri WP 1.0.162 (parent) + rivegosh-child (active)
-- **57 active plugins** / 6 inactive / 2 must-use
+- **57 active plugins** / 6 inactive / 5 must-use
 - **Coming Soon: OFF** ✅ — site publicly visible
 - Admin email: daniel@rivegosh.com ✅
 - Timezone: Europe/Paris ✅
@@ -161,12 +161,95 @@ Colibri's `[class*="h-heading"]` querySelectorAll matches OUTER wrapper div firs
 ### KEY: Never set font-size on Colibri wrapper divs
 `[data-colibri-id] { font-size: 24px }` activates Colibri's `.style-968 h2 { font-size: 2em }` cascade → h2 becomes 48px. Always target heading tags directly.
 
+## Amelia Catalog Reskin (2026-04-17 — #68) ✅ COMPLETE
+
+**CSS appended to `rg-amelia-contrast.php`** as `rg_amelia_catalog_css()` (wp_footer, priority 99999).
+
+- `.am-fcil__*` = catalog grid cards (service list)
+- `.am-fcis__*` = service detail view (after clicking Continue)
+- **`am-fcis__header-btn` + `am-fcis__header-action .am-button`** = Book Now button → gold bordered CTA ✅
+- Card names: Cormorant Garamond, champagne gold
+- Prices, meta: champagne gold
+- Continue/View buttons: gold bordered
+
+**Backup:** `functions.backup.20260417_102200.php` on server (functions.php itself untouched — change in mu-plugin)
+
+**NOT done (follow-up):** The Elementor section background is still white. The catalog cards render on white bg. Future issue: add dark section background to all booking pages.
+
+## Professional Menu Routing Bug (2026-04-17 — #69) ⏳ AWAITING DANIEL
+
+**Root cause confirmed:** `/professional-space/` (page 20) has `[wc_frontend_manager]`. WCFM redirects non-vendor roles → `/my-orders/` (client invoices). Daniel (admin role) is not a `wcfm_vendor` user.
+
+**Also found:** `wcfm_affiliate_registration_page_id = 20` duplicates `wc_frontend_manager_page_id = 20` — potential config conflict.
+
+**No code change made.** Daniel must test with a real driver account first.
+
+## Amelia Booking Wizard Reskin (2026-04-17 — #68 sub) ✅ COMPLETE
+
+**CSS appended to `rg-amelia-contrast.php`** as `rg_amelia_wizard_css()` (wp_footer, priority 99999).
+File: `/home/u100747640/domains/rivegosh-concierge.com/public_html/wp-content/mu-plugins/rg-amelia-contrast.php`
+Lines: 593 → 696. PHP syntax validated. LiteSpeed cache purged. Verified live.
+
+- `.am-fs__wrapper` / `.am-fs__main` — dark `#0f0c08` background (killed white)
+- `.am-fs-sb` — sidebar dark `#110e09` + gold border
+- `.am-advsc__*` — calendar container + header (month/year dropdowns gold-bordered)
+- `.fc-daygrid-day-frame` — Amelia blue `rgba(38,92,242)` overridden → champagne gold borders on bookable days
+- `:has(.am-advsc__occupancy)` — available days get gold `rgba(204,197,147,0.35)` border + subtle bg
+- `.fc-day-today` — today highlighted with gold border
+- `.am-button-continue` — CONTINUE button = champagne gold outlined CTA
+- `.am-select-popper` / `.am-select-option` — dark dropdown with gold hover
+- Scoped to `.am-dialog-popup.amelia-v2-booking` (wizard portal) — doesn't bleed into catalog
+
+## WCFM Affiliate Dashboard Reskin (2026-04-17) ✅ COMPLETE
+
+**CSS appended to `rg-amelia-contrast.php`** as `rg_wcfm_dark_css()` (wp_footer, priority 99999).
+File: 880 lines. PHP syntax validated. LiteSpeed cache purged. Verified live (logged-in).
+
+Scope: `body.wcfm-theme-rive-gosh` — fires on all WCFM affiliate/professional pages.
+
+Key classes targeted:
+- `.ml_wcutablinks` — top nav buttons (Sub-Affiliates, Network, etc.) → dark + gold border
+- `.wcu-settings-tab-nav li` — inner settings sub-tabs → ALL get `border-bottom: 2px solid transparent` to prevent layout shift on click; active gets gold underline
+- `.wcu-settings-tab-content` / `.wcu-settings-tab-pane` — white panel (was `rgb(255,255,255)`) → dark `rgba(20,16,10,0.6)` + gold border
+- `input[type="checkbox"]` → `accent-color` champagne gold
+- `.wcu-save-settings-button` → uppercase Inter + gold outline CTA
+- Tables → dark bg, gold headers, cream rows
+
+**Bug fixed in this session:** `has_body_class()` is NOT a WordPress function — it caused a fatal error in v1. Removed. CSS scoping via `body.wcfm-theme-rive-gosh` selector is sufficient.
+
+**Colibri section `#custom` / `.style-2466` note:** Inline `!important` cannot override this element's background via JS (Colibri sets via a different mechanism). However, `body.wcfm-theme-rive-gosh #custom { background-color: #0f0c08 !important }` DOES apply for logged-in users (verified visually). The section renders dark in the logged-in browser state.
+
+## Amelia Invoice Fixes (2026-04-17) ✅ COMPLETE
+
+### Root Cause 1: AMELIA_UPLOADS_URL http/https mismatch (KB #49 §13)
+Hostinger SSL terminates at LiteSpeed → `is_ssl()` returns false in WP-CLI → `set_url_scheme()` gives `http://`. But `company.pictureFullPath` stored as `https://`. `str_replace` fails silently → no logo in PDF.
+**Fix:** `rg-amelia-invoice-patch.php` v2.0 — pre-defines `AMELIA_UPLOADS_URL` with forced `https://` before Amelia loads.
+
+### Root Cause 2: pictureThumbPath is a cropped thumbnail (KB #49 §16)
+`PlaceholderService.php:223` uses `pictureThumbPath` (150×140px crop) not `pictureFullPath` (400×140px). The thumbnail is near-square — crops the horizontal logo.
+**Fix:** Updated `amelia_settings` wp_option: `pictureThumbPath` = `pictureFullPath`.
+
+### Invoice button UX (KB #49 §17)
+`rg-amelia-invoice-btn.php` v1.2 — MutationObserver injects green "INVOICE" badge next to booking status. Only shows for approved/completed (hidden for pending/waiting/canceled/rejected/no-show). Triggers Amelia's native Download Invoice via three-dots dropdown.
+
+### VIP Customer → VIP Client (KB #49 §18)
+Renamed in: menu item 63536, portal sidebar (functions.php: label, CSS, ARIA), mu-plugin comments. "Invoices" sidebar link removed (pointed to empty WooCommerce page). VIP Client now defaults to Reservations page (54773).
+
+### MU-plugins deployed this session:
+| File | Purpose |
+|------|---------|
+| `rg-amelia-invoice-patch.php` v2.0 | Force HTTPS on AMELIA_UPLOADS_URL + auto-patch invoice.inc logo sizing |
+| `rg-amelia-invoice-btn.php` v1.2 | Visible Invoice badge on approved bookings |
+
+### KB #49 updated with sections 13–18
+
 ## Next Session: Start Here
-1. **Verify mobile hero text** — force-refresh Safari, confirm "JOIN THE PRIVATE CIRCLE" is 20px/25px line-height
-2. **Await Daniel decisions:** Stripe (#23), Grace offboard (#22), Amelia vs OVA (#19), PayPal email (#24)
-3. **GA4 (#14):** Ask Daniel for GA4 Measurement ID — 5 min fix once we have it
-4. **Phase 2:** WooCommerce dark theme CSS (#37), WCFM dark theme CSS (#38) — now safe with child theme
-5. **Domain migration:** When rivegosh.com DNS points to Hostinger, run:
+1. **Professional nav #69:** Ask Daniel — tested with driver account? Still redirects?
+2. **Booking page white bg:** Dark Elementor section on `/book-a-ride-*/` pages (Phase 2 polish)
+3. **Await Daniel decisions:** Stripe (#23), Grace offboard (#22), Amelia vs OVA (#19), PayPal email (#24)
+4. **Email DNS:** Daniel must add Brevo SPF + DKIM DNS records in Hostinger hPanel
+5. **GA4 (#14):** Ask Daniel for GA4 Measurement ID — 5 min fix once we have it
+6. **Domain migration:** When rivegosh.com DNS points to Hostinger, run:
    `wp search-replace 'rivegosh-concierge.com' 'rivegosh.com' --all-tables`
 
 ## Key Decisions Still Pending (Daniel)
