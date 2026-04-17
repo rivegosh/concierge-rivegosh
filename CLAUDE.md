@@ -134,6 +134,23 @@ Track in GitHub issues with `decision-needed` label. See [Master Index #34](http
 
 ---
 
+## 🛑 Protected mu-plugins (DO NOT DELETE / DO NOT MODIFY without asking Roderic)
+
+Each of these is a **frozen, signed-off fix** with a `DO NOT DELETE` banner in its file header. They exist because a specific regression was diagnosed, fixed, and verified. If the behavior they protect looks wrong later, **fix the cause in a NEW mu-plugin** — do NOT edit these files.
+
+| File | Version | Commit of record | Issue | Why it exists |
+|------|---------|-----|-----|---------------|
+| `mu-plugins/rg-litespeed-amelia-guard.php` | 1.0.1 | [43dcc68](https://github.com/rivegosh/concierge-rivegosh/commit/43dcc68) | [#75](https://github.com/rivegosh/concierge-rivegosh/issues/75) | Locks LiteSpeed `optm-js_min=0` + `optm-js_defer=0` on every `admin_init`. If flipped on, Amelia webpack dynamic imports 404 → blank `/booking-pro-panel/` + broken wizard. |
+| `mu-plugins/rg-pro-panel-unnest-card.php` | 1.0.3 | [9fbccfc](https://github.com/rivegosh/concierge-rivegosh/commit/9fbccfc) | [#75](https://github.com/rivegosh/concierge-rivegosh/issues/75) | Strips outer `.am-auth` card + inner `.el-input__wrapper`/`.el-input__inner`/raw input borders on page-id-54778. Without this, two mu-plugins compete and render THREE nested cards + THREE nested input borders per field. |
+| `mu-plugins/rg-v52-card-icons.php` | — | — | — | (Inherited from prior session — DO NOT DELETE per auto-memory feedback.) |
+
+**Protocol for modifying a banner-protected file:**
+1. Open a GH issue describing the proposed change and the regression risk
+2. Wait for Roderic's explicit approval
+3. Bump version, deploy, re-verify with Daniel screenshot, update commit of record
+
+---
+
 ## Status Line (MANDATORY — Every Task Completion)
 
 Every reply at task completion MUST end with a `---` separator followed by this status line:
