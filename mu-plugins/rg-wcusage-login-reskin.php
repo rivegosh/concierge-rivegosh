@@ -7,6 +7,21 @@
  *   Separate file for anti-regression.
  * Author: RG
  * Version: 1.1
+ *
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║  🛑 DO NOT DELETE. DO NOT MODIFY WITHOUT ASKING RODERIC.         ║
+ * ║  ───────────────────────────────────────────────────────────────  ║
+ * ║  Frozen gold-standard reskin. Verified visually via Chrome       ║
+ * ║  screenshot on 2026-04-17 and signed off.                        ║
+ * ║                                                                   ║
+ * ║  If the WCUsage login card (/affiliate-dashboard/ when logged    ║
+ * ║  out, page-id-71558) looks wrong later, FIX THE CAUSE (another   ║
+ * ║  mu-plugin, plugin update, theme override) — do NOT gut or       ║
+ * ║  rewrite this file. Ship additive overrides in a NEW mu-plugin   ║
+ * ║  if adjustment is genuinely needed.                              ║
+ * ║                                                                   ║
+ * ║  GitHub: rivegosh/concierge-rivegosh (session commit aff166b)    ║
+ * ╚══════════════════════════════════════════════════════════════════╝
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 

@@ -3,13 +3,27 @@
  * Plugin Name: RG WCUsage Register Reskin
  * Description: Dark-luxury gold-standard reskin of the WCUsage affiliate
  *   registration form on /affiliate-registration/ (page-id-63619).
- *   Builds on rg-wcusage-login-reskin.php (.wcu-form-section card is
- *   shared). Widens card, restyles register-only classes
- *   (.wcu-register-field-col-*, .wcu-reg-terms, #wcu-register-button)
- *   and overrides the plugin's inline #ddbc89 button fill.
- *   Separate file for anti-regression (concurrent-session wipe defense).
+ *   Widens the shared .wcu-form-section card, restyles register-only
+ *   classes (.wcu-register-field-col-*, .wcu-reg-terms, #wcu-register-
+ *   button), overrides the plugin's inline #ddbc89 button fill, and
+ *   lays out the terms row as checkbox-left + small text-right.
  * Author: RG
  * Version: 1.0
+ *
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║  🛑 DO NOT DELETE. DO NOT MODIFY WITHOUT ASKING RODERIC.         ║
+ * ║  ───────────────────────────────────────────────────────────────  ║
+ * ║  Frozen gold-standard reskin. Verified visually via Chrome       ║
+ * ║  screenshot on 2026-04-17 and signed off.                        ║
+ * ║                                                                   ║
+ * ║  If /affiliate-registration/ looks wrong later, FIX THE CAUSE    ║
+ * ║  (another mu-plugin, plugin update, theme override) — do NOT     ║
+ * ║  gut or rewrite this file. Ship additive overrides in a NEW      ║
+ * ║  mu-plugin if adjustment is genuinely needed.                    ║
+ * ║                                                                   ║
+ * ║  GitHub: rivegosh/concierge-rivegosh#76                          ║
+ * ║  Commit of record: aff166b                                       ║
+ * ╚══════════════════════════════════════════════════════════════════╝
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 

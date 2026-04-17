@@ -9,6 +9,25 @@
  *   styled display div as the sole visible layer.
  * Author: RG
  * Version: 2.0
+ *
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║  🛑 DO NOT DELETE. DO NOT MODIFY WITHOUT ASKING RODERIC.         ║
+ * ║  ───────────────────────────────────────────────────────────────  ║
+ * ║  Frozen fix. Verified visually via Chrome screenshot on          ║
+ * ║  2026-04-17 and signed off.                                      ║
+ * ║                                                                   ║
+ * ║  If Amelia customer-panel date filters render correctly today    ║
+ * ║  but break later, FIX THE CAUSE (Amelia plugin update changed    ║
+ * ║  the DOM, Element Plus class rename, etc.) — do NOT gut or       ║
+ * ║  rewrite this file. Ship additive overrides in a NEW mu-plugin   ║
+ * ║  if adjustment is genuinely needed.                              ║
+ * ║                                                                   ║
+ * ║  WHY THIS FILE EXISTS: Amelia renders two overlapping date       ║
+ * ║  layers at the same position — this file kills the duplicate     ║
+ * ║  text so only one is visible. Without it dates appear garbled.   ║
+ * ║                                                                   ║
+ * ║  GitHub: rivegosh/concierge-rivegosh (session commit aff166b)    ║
+ * ╚══════════════════════════════════════════════════════════════════╝
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
