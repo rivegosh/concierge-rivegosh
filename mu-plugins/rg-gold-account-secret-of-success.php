@@ -26,8 +26,12 @@
  *       LiteSpeed critical-CSS beats CSS !important at paint-time; JS inline
  *       style.setProperty('…','important') is the final cascade layer and
  *       always wins. Fixes: strong text color + image height constraint.
+ *   v1.2.0 — Wrapped JS in <!--noptimize-->. LiteSpeed was rewriting
+ *       type="" → type="litespeed/javascript" on the inline script, silently
+ *       preventing the browser from executing it. <!--noptimize--> tells
+ *       LiteSpeed to leave the enclosed content entirely untouched.
  *
- * Version: 1.1.0 (2026-04-17)
+ * Version: 1.2.0 (2026-04-17)
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -93,7 +97,7 @@ add_action( 'wp_footer', function () {
 		}
 	}
 	</style>
-	<script id="rg-gold-account-sos-js">
+	<!--noptimize--><script id="rg-gold-account-sos-js">
 	(function () {
 		function nukeGoldAccount() {
 			// Fix 1: force strong / bold elements inside c32 to gold
@@ -138,6 +142,6 @@ add_action( 'wp_footer', function () {
 			nukeGoldAccount();
 		}
 	})();
-	</script>
+	</script><!--/noptimize-->
 	<?php
 }, 99999 );
