@@ -31,7 +31,7 @@
  * ║  guard runs on admin_init and restores the 3 items if missing.   ║
  * ║                                                                   ║
  * ║  GitHub: rivegosh/concierge-rivegosh#78                          ║
- * ║  Commit of record: TBD (set after push)                          ║
+ * ║  Commit of record: 7c743e3                                       ║
  * ╚══════════════════════════════════════════════════════════════════╝
  */
 
