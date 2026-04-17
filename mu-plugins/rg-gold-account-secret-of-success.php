@@ -31,7 +31,12 @@
  *       preventing the browser from executing it. <!--noptimize--> tells
  *       LiteSpeed to leave the enclosed content entirely untouched.
  *
- * Version: 1.2.0 (2026-04-17)
+ *   v1.3.0 — Replaced JS-only image constraints with CSS-only (LiteSpeed rewrites
+ *       DOMContentLoaded→DOMContentLiteSpeedLoaded, breaking JS listener). Added
+ *       max-height:380px + overflow:hidden + inner-container clip to the CSS <style>
+ *       block. CSS <style> tags are NOT rewritten by LiteSpeed, only <script> are.
+ *
+ * Version: 1.3.0 (2026-04-17)
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -90,10 +95,24 @@ add_action( 'wp_footer', function () {
 		}
 		/* Enforce square on the multi-image element */
 		body.page-id-64453 .style-local-64453-c36 {
-			aspect-ratio: 1 / 1 !important;
 			max-width: 380px !important;
+			max-height: 380px !important;
+			width: 100% !important;
+			overflow: hidden !important;
 			margin-left: auto !important;
 			margin-right: auto !important;
+		}
+		/* Images inside the collage fill the square */
+		body.page-id-64453 .style-local-64453-c36 img {
+			width: 100% !important;
+			height: 100% !important;
+			object-fit: cover !important;
+		}
+		/* Clip the collage inner container to the square */
+		body.page-id-64453 .style-local-64453-c36 .h-multiple-image-inside-container,
+		body.page-id-64453 .style-local-64453-c36 .ratio-inner {
+			max-height: 380px !important;
+			overflow: hidden !important;
 		}
 	}
 	</style>
