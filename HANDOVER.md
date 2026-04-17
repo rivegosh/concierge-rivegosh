@@ -1,5 +1,37 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-17 | **Session:** Invoice fix + VIP Client rename + Invoice button UX + KB #49 update
+**Date:** 2026-04-17 | **Session (current):** Amelia + home full dark luxury reskin (#68 multi-phase)
+
+---
+
+## Current Session — Issue #68 Multi-Phase Reskin
+
+**File touched:** `mu-plugins/rg-amelia-contrast.php` — now contains 6 `wp_footer` functions.
+
+| # | Function | Scope | Verified |
+|---|----------|-------|----------|
+| 1 | `rg_amelia_page_dark_css` | Catalog page bg | ✅ Browser |
+| 2 | `rg_amelia_luxury_redesign` | Catalog cards, kill blue links | ✅ Browser |
+| 3 | `rg_amelia_detail_redesign` | Service detail H1, car sizing, Go Back | ✅ Browser |
+| 4 | `rg_amelia_wizard_contrast_v2` | Calendar + timezone + date picker | ⚠️ curl only |
+| 5 | `rg_home_redesign` | Home grid (61860-c2 shared section) | ⚠️ curl only, no regression sweep |
+| 6 | `rg_amelia_persons_extras_css` | Passenger/suitcase counters (Daniel's bug) | ❌ NOT verified live |
+
+### Confidence: 6.5/10
+Functions 4–6 deployed based on documented selectors, not observed runtime DOM. Chrome MCP extension lacks permission on `rivegosh-concierge.com` — visual verification is manual.
+
+### Next session must-do
+1. Daniel walks `/all-transfers-airports-area-washington-dc-usa/` booking flow → confirm counters visible
+2. Grep every page using `[data-colibri-id="61860-c2"]` → sweep regressions from `rg_home_redesign`
+3. Mobile viewport smoke test
+4. Consolidate 6 `wp_footer` functions into 1 (maintainability)
+
+### GitHub state
+- Issue #68 body rewritten with full session state + self-review
+- KB #49 appended sections 19–21: `.overlay-image-layer`, El-UI `.el-input-number__inner`, `:has()` scoping
+
+---
+
+## Prior Session — Invoice fix + VIP Client rename + Invoice button UX + KB #49 update
 
 ---
 
