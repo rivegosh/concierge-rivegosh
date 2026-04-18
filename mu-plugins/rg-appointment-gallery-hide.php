@@ -29,7 +29,7 @@
  * ║  the same single image. Removed per Daniel UX decision.          ║
  * ║                                                                   ║
  * ║  GitHub: rivegosh/concierge-rivegosh#82                          ║
- * ║  Commit of record: TBD                                            ║
+ * ║  Commit of record: a53eed2                                        ║
  * ╚══════════════════════════════════════════════════════════════════╝
  */
 
