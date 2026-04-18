@@ -7,7 +7,7 @@
  *              Overrides rg-amelia-contrast.php — loads later (l > a alphabetical)
  *              so wins at equal !important specificity.
  * Author: RG
- * Version: 1.1.0
+ * Version: 1.2.0
  * Created: 2026-04-18
  *
  * ╔══════════════════════════════════════════════════════════════════╗
@@ -227,24 +227,29 @@ function rg_login_page_tighten() {
         margin-top: 10px !important;
         text-align: center !important;
     }
-    /* Register checkbox (terms, if present) */
+    /* Register checkbox — same native absolute+padding-left approach as login */
+    .um.um-73395 .um-field-c .um-field-area { text-align: left !important; }
     .um.um-73395 .um-field-checkbox {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        gap: 8px !important;
+        position: relative !important;
+        display: block !important;
+        padding-left: 26px !important;
         text-align: left !important;
+        cursor: pointer !important;
+        min-height: 18px !important;
     }
     .um.um-73395 .um-field-checkbox-state {
-        position: static !important;
-        flex-shrink: 0 !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 1px !important;
         margin: 0 !important;
+        line-height: 1 !important;
     }
     .um.um-73395 .um-field-checkbox-option {
-        position: static !important;
-        text-align: left !important;
+        display: inline !important;
         margin: 0 !important;
-        padding-left: 0 !important;
+        padding: 0 !important;
+        text-align: left !important;
+        line-height: 1.3 !important;
     }
     <?php endif; ?>
 
