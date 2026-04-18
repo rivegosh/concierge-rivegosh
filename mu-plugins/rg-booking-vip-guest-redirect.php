@@ -33,7 +33,7 @@
  * ║  so UM returns them to reservations after login.                 ║
  * ║                                                                   ║
  * ║  GitHub: rivegosh/concierge-rivegosh#79                          ║
- * ║  Commit of record: TBD (set after push)                          ║
+ * ║  Commit of record: c00c21d                                       ║
  * ╚══════════════════════════════════════════════════════════════════╝
  */
 
