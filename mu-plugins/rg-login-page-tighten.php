@@ -13,20 +13,23 @@
  * ╔══════════════════════════════════════════════════════════════════╗
  * ║  🛑 DO NOT DELETE. DO NOT MODIFY WITHOUT ASKING RODERIC.         ║
  * ║  ───────────────────────────────────────────────────────────────  ║
+ * ║  Frozen gold-standard reskin. Verified visually via Chrome        ║
+ * ║  screenshot on 2026-04-18 and signed off by Daniel.              ║
+ * ║                                                                   ║
+ * ║  If /login-2/, /register/, or /my-orders/ login forms look wrong ║
+ * ║  later, FIX THE CAUSE (another mu-plugin, UM update, WC update,  ║
+ * ║  theme override) — do NOT gut or rewrite this file. Ship         ║
+ * ║  additive overrides in a NEW mu-plugin if needed.                ║
+ * ║                                                                   ║
  * ║  WHY THIS FILE EXISTS:                                            ║
- * ║  1. rg-amelia-contrast.php styles BOTH .um.um-73396 AND its      ║
- * ║     child .um-form with the card treatment → two nested cards.   ║
- * ║     This strips the inner card so only one border shows.         ║
- * ║  2. .um-col-alt has text-align:center !important which centers   ║
- * ║     the "Keep me signed in" text even in a flex label. This      ║
- * ║     overrides it to left-align the checkbox row.                 ║
- * ║  3. Extends the same dark luxury treatment + spacing to          ║
- * ║     /register/ (um-73395) and /my-orders/ (WC form).            ║
+ * ║  rg-amelia-contrast.php applied the same card CSS to both        ║
+ * ║  .um.um-73396 AND its child .um-form → two nested visible cards. ║
+ * ║  .um-col-alt { text-align:center } centered the checkbox text    ║
+ * ║  even in a flex layout. /register/ and /my-orders/ had no dark   ║
+ * ║  luxury treatment despite a dark page background.                ║
  * ║                                                                   ║
- * ║  If spacing looks off later, ship additive CSS in a NEW          ║
- * ║  mu-plugin rather than editing this file.                        ║
- * ║                                                                   ║
- * ║  GitHub: rivegosh/concierge-rivegosh#5                           ║
+ * ║  GitHub: rivegosh/concierge-rivegosh#81                          ║
+ * ║  Commit of record: 950d4e3                                        ║
  * ╚══════════════════════════════════════════════════════════════════╝
  */
 
