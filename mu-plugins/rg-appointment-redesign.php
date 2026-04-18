@@ -7,7 +7,7 @@
  *              centered airplane icons, and solid charbon background.
  *              Scope-guarded by is_page( 44401 ) — zero bleed to other pages.
  * Author: RG
- * Version: 1.2.2
+ * Version: 1.2.3
  * Created: 2026-04-18
  *
  * ╔══════════════════════════════════════════════════════════════════╗
@@ -159,7 +159,15 @@ add_action( 'wp_footer', function () {
 	color: #1A1A1A !important;
 }
 
-/* LABELS (middle) — copy refresh via ::before */
+/* LABELS (middle) — copy refresh via ::before
+   NOTE: parent is display:block, not flex — gap: won't apply,
+   so push labels down with explicit top margin on each step. */
+#colibri [data-colibri-id="44401-c9"],
+#colibri [data-colibri-id="44401-c12"],
+#colibri [data-colibri-id="44401-c15"],
+#colibri [data-colibri-id="44401-c18"] {
+	margin-top: 16px !important;
+}
 #colibri [data-colibri-id="44401-c6"] .h-heading h5 {
 	font-size: 0 !important;
 	color: transparent !important;
@@ -354,6 +362,21 @@ add_action( 'wp_footer', function () {
 	#colibri [data-colibri-id="44401-c19"] .h-icon svg {
 		width: 26px !important;
 		height: 26px !important;
+	}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BOTTOM SCROLL ROOM
+   Appointment page is short — give the user runway to scroll past
+   the destination grid so the last row doesn't sit flush with the
+   footer/viewport edge.
+   ══════════════════════════════════════════════════════════════ */
+#colibri [data-colibri-id="44401-c1"] {
+	padding-bottom: 320px !important;
+}
+@media (max-width: 767px) {
+	#colibri [data-colibri-id="44401-c1"] {
+		padding-bottom: 200px !important;
 	}
 }
 </style>
