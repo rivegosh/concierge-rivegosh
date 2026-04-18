@@ -7,8 +7,9 @@
  *              image is confusing UX. The vehicle photo is already visible as a
  *              thumbnail in the service card above. Removes the dark box entirely.
  * Author: RG
- * Version: 1.0.0
+ * Version: 1.1.0
  * Created: 2026-04-18
+ * Updated: 2026-04-18
  *
  * ╔══════════════════════════════════════════════════════════════════╗
  * ║  🛑 DO NOT DELETE. DO NOT MODIFY WITHOUT ASKING RODERIC.         ║
@@ -41,11 +42,18 @@ function rg_appointment_gallery_hide() {
     ?>
     <style id="rg-appointment-gallery-hide">
     /* Hide the gallery section on the Amelia service detail step.
-       .am-fcis__gallery = service view; .am-fcip__gallery = package view.
+       Specificity (0,2,0) matches .amelia-v2-booking [class*="fcis__gallery"] in
+       rg-amelia-contrast.php (which sets display:flex !important at same specificity).
+       This file loads later alphabetically (g > c) so source order gives us the win.
        DB audit confirmed 54/55 services have 1 photo — gallery UI is dead weight. */
-    .am-fcis__gallery,
-    .am-fcip__gallery {
+    .amelia-v2-booking .am-fcis__gallery,
+    .amelia-v2-booking [class*="fcis__gallery"],
+    .amelia-v2-booking .am-fcip__gallery,
+    .amelia-v2-booking [class*="fcip__gallery"] {
         display: none !important;
+        min-height: 0 !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
     }
     </style>
     <?php
