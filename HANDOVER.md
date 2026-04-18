@@ -1,5 +1,5 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-18 | **Session:** Nav bugs — Affiliate Dashboard restore, menu lock, VIP Client redirect
+**Date:** 2026-04-18 | **Session:** Nav bugs + Login page CSS tighten
 
 ---
 
@@ -10,8 +10,9 @@
 | Fix | Issue | File | Verified |
 |-----|-------|------|----------|
 | Affiliate Dashboard restored as 3rd top-level nav + 2 children | — | DB (menu items 74053/74057/74058) | ✅ curl (menu-item-has-children) |
-| Header menu lock guard | [#78](https://github.com/rivegosh/concierge-rivegosh/issues/78) ✅ | `mu-plugins/rg-header-menu-lock.php` v1.0.0 | ✅ self-heal proven (delete → wp eval → restored) |
+| Header menu lock guard | [#78](https://github.com/rivegosh/concierge-rivegosh/issues/78) ✅ | `mu-plugins/rg-header-menu-lock.php` v1.0.0 | ✅ self-heal proven |
 | VIP Client → /my-orders/ redirect fixed | [#79](https://github.com/rivegosh/concierge-rivegosh/issues/79) ✅ | `mu-plugins/rg-booking-vip-guest-redirect.php` v1.0.0 | ✅ curl 302 → /login-2/?redirect_to=/booking-vip/ |
+| /login-2/ spacing tighten + dark luxury to /register/ + /my-orders/ | [#81](https://github.com/rivegosh/concierge-rivegosh/issues/81) ✅ | `mu-plugins/rg-login-page-tighten.php` v1.2.0 | ✅ Daniel screenshot sign-off |
 
 ### Root causes documented
 - **Affiliate Dashboard** deleted between 2026-04-15 and 2026-04-17 — hard-deleted from `wp_posts`, no commit trail. Silent concurrent CC session wipe. Now locked by guard.
@@ -59,14 +60,15 @@ Guard `rg-header-menu-lock.php` auto-restores item 3 + its 2 children if deleted
 
 1. **Daniel test**: Log in via VIP Client header → confirm /booking-vip/ (Amelia reservations) after login
 2. **Professional nav #69**: Daniel must test with driver account — still redirects to /my-orders/?
-3. **Blockers pending Daniel decisions** (unchanged):
+3. **Verify /register/ + /my-orders/ login** visually (Daniel) — code matches /login-2/ pattern but unconfirmed screenshots
+4. **Blockers pending Daniel decisions** (unchanged):
    - Stripe account (#23) ← most critical
    - Grace Vincent offboard (#22)
    - Amelia vs OVA (#19)
    - PayPal email (#24)
    - Real SMTP mailbox (#25)
    - GA4 Measurement ID (#14)
-4. **Verify tasks still in-progress**: #5 login CSS, #7 invoices sidebar, #9 wizard persons, #10 home grid
+5. **Remaining in-progress**: #7 invoices sidebar, #9 wizard persons, #10 home grid
 
 ---
 
