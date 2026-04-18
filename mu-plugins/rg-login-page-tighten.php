@@ -88,30 +88,34 @@ function rg_login_page_tighten() {
         text-align: left !important;
     }
 
-    /* Checkbox row: flex, left-aligned, gap:8px
-       NOTE: text-align:left overrides .um-col-alt text-align:center !important
-       which cascades into .um-field-checkbox-option and centers the text */
+    /* Checkbox row: use UM's native absolute+padding-left layout (reliable),
+       indent the row 20px from the card edge, keep text left-aligned.
+       Flex was causing children to stack vertically due to UM internal overrides. */
+    .um.um-73396 .um-col-alt {
+        padding-left: 20px !important;
+    }
     .um.um-73396 .um-field-c .um-field-area {
         text-align: left !important;
     }
     .um.um-73396 .um-field-checkbox {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        gap: 8px !important;
+        position: relative !important;
+        display: block !important;
+        padding-left: 26px !important;
         text-align: left !important;
         cursor: pointer !important;
+        min-height: 18px !important;
     }
     .um.um-73396 .um-field-checkbox-state {
-        position: static !important;
-        flex-shrink: 0 !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 1px !important;
         margin: 0 !important;
         line-height: 1 !important;
     }
     .um.um-73396 .um-field-checkbox-option {
-        position: static !important;
+        display: inline !important;
         margin: 0 !important;
-        padding-left: 0 !important;
+        padding: 0 !important;
         text-align: left !important;
         line-height: 1.3 !important;
     }
