@@ -1,37 +1,72 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-17 | **Session (current):** Amelia + home full dark luxury reskin (#68 multi-phase)
+**Date:** 2026-04-18 | **Session:** Nav bugs — Affiliate Dashboard restore, menu lock, VIP Client redirect
 
 ---
 
-## Current Session — Issue #68 Multi-Phase Reskin
+## Current State — 2026-04-18
 
-**File touched:** `mu-plugins/rg-amelia-contrast.php` — now contains 6 `wp_footer` functions.
+### Work completed this session
 
-| # | Function | Scope | Verified |
-|---|----------|-------|----------|
-| 1 | `rg_amelia_page_dark_css` | Catalog page bg | ✅ Browser |
-| 2 | `rg_amelia_luxury_redesign` | Catalog cards, kill blue links | ✅ Browser |
-| 3 | `rg_amelia_detail_redesign` | Service detail H1, car sizing, Go Back | ✅ Browser |
-| 4 | `rg_amelia_wizard_contrast_v2` | Calendar + timezone + date picker | ⚠️ curl only |
-| 5 | `rg_home_redesign` | Home grid (61860-c2 shared section) | ⚠️ curl only, no regression sweep |
-| 6 | `rg_amelia_persons_extras_css` | Passenger/suitcase counters (Daniel's bug) | ❌ NOT verified live |
+| Fix | Issue | File | Verified |
+|-----|-------|------|----------|
+| Affiliate Dashboard restored as 3rd top-level nav + 2 children | — | DB (menu items 74053/74057/74058) | ✅ curl (menu-item-has-children) |
+| Header menu lock guard | [#78](https://github.com/rivegosh/concierge-rivegosh/issues/78) ✅ | `mu-plugins/rg-header-menu-lock.php` v1.0.0 | ✅ self-heal proven (delete → wp eval → restored) |
+| VIP Client → /my-orders/ redirect fixed | [#79](https://github.com/rivegosh/concierge-rivegosh/issues/79) ✅ | `mu-plugins/rg-booking-vip-guest-redirect.php` v1.0.0 | ✅ curl 302 → /login-2/?redirect_to=/booking-vip/ |
 
-### Confidence: 6.5/10
-Functions 4–6 deployed based on documented selectors, not observed runtime DOM. Chrome MCP extension lacks permission on `rivegosh-concierge.com` — visual verification is manual.
+### Root causes documented
+- **Affiliate Dashboard** deleted between 2026-04-15 and 2026-04-17 — hard-deleted from `wp_posts`, no commit trail. Silent concurrent CC session wipe. Now locked by guard.
+- **VIP Client → /my-orders/**: Amelia Customer Panel (page 54773) calls `wp_login_url()` for logged-out users. WooCommerce overrides `wp_login_url()` to return WC myaccount (page ID 16, slug `/my-orders/`). Fixed by `template_redirect` priority 1 intercept.
 
-### Next session must-do
-1. Daniel walks `/all-transfers-airports-area-washington-dc-usa/` booking flow → confirm counters visible
-2. Grep every page using `[data-colibri-id="61860-c2"]` → sweep regressions from `rg_home_redesign`
-3. Mobile viewport smoke test
-4. Consolidate 6 `wp_footer` functions into 1 (maintainability)
+### Chain confirmed (redirect_to flow)
+UM login form on `/login-2/` reads `$_REQUEST['redirect_to']` (proven: `um-actions-misc.php:60`, `um-actions-login.php:226-227`). Page 73396 has `_um_login_use_custom_settings = 0` — no override. Full chain:
+> Click VIP Client → /booking-vip/ → 302 → /login-2/?redirect_to=/booking-vip/ → user logs in → UM fires `um_safe_redirect($submitted_data['redirect_to'])` → /booking-vip/ (reservations) ✅
 
-### GitHub state
-- Issue #68 body rewritten with full session state + self-review
-- KB #49 appended sections 19–21: `.overlay-image-layer`, El-UI `.el-input-number__inner`, `:has()` scoping
+### Remaining assumption (must confirm with Daniel)
+- **Login post-redirect**: Daniel must log in via VIP Client → confirm lands on /booking-vip/ (Amelia customer panel / Reservations) after login. This is the only untested leg of the flow.
 
 ---
 
-## Prior Session — Invoice fix + VIP Client rename + Invoice button UX + KB #49 update
+## MU-Plugins on server (state as of 2026-04-18)
+
+**Protected (DO NOT DELETE):**
+See CLAUDE.md Protected mu-plugins table — 5 frozen files with banners.
+
+**Other active files on server (not in git — do not touch without reading first):**
+- `rg-amelia-contrast.php` — 880+ lines, 6 wp_footer functions (catalog, wizard, WCFM dark CSS etc.)
+- `rg-drawer-override.php` — LOCKED mobile drawer (DO NOT MODIFY)
+- `rg-v52-card-icons.php` — LOCKED (DO NOT DELETE per auto-memory)
+- `rg-amelia-capf-fix.php`, `rg-amelia-invoice-patch.php`, `rg-amelia-invoice-btn.php`
+- `rg-invoices-page.php`, `rg-order-view.php`, `rg-email-as-username.php`
+- `rg-login-page-guard.php` — redirects logged-IN users from /login-2/ → /booking-vip/
+- `rg-health-check.php`, `rg-wcusage-login-reskin.php`, `rg-wcusage-register-reskin.php`
+- `rg-pro-login-refinements.php`, `rg-v53-nav-fixes.php`
+
+---
+
+## Header Menu Structure (as of 2026-04-18)
+
+| Position | Parent | Children |
+|----------|--------|----------|
+| 1 | VIP Client (63536) → /booking-vip/ | Login, Register, Account, Reservations, Invoices, Members, FAQ |
+| 2 | Professional (64806) → /vendor-membership/ | Become a Partner, Professional Account, Professional Booking Dashboard, Be an Affiliate |
+| 3 | Affiliate Dashboard (74053) → /affiliate-dashboard/ | Affiliate Registration (74057), Multi Level Affiliate (74058) |
+
+Guard `rg-header-menu-lock.php` auto-restores item 3 + its 2 children if deleted.
+
+---
+
+## Next Session: Start Here
+
+1. **Daniel test**: Log in via VIP Client header → confirm /booking-vip/ (Amelia reservations) after login
+2. **Professional nav #69**: Daniel must test with driver account — still redirects to /my-orders/?
+3. **Blockers pending Daniel decisions** (unchanged):
+   - Stripe account (#23) ← most critical
+   - Grace Vincent offboard (#22)
+   - Amelia vs OVA (#19)
+   - PayPal email (#24)
+   - Real SMTP mailbox (#25)
+   - GA4 Measurement ID (#14)
+4. **Verify tasks still in-progress**: #5 login CSS, #7 invoices sidebar, #9 wizard persons, #10 home grid
 
 ---
 
@@ -41,267 +76,31 @@ ssh -p 65002 -i ~/.ssh/id_ed25519 u100747640@145.79.20.24
 WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
 ```
 
-## Site State (verified 2026-04-14 20:12)
-- WordPress 6.9.4 | WooCommerce 10.6.2 | Colibri WP 1.0.162 (parent) + rivegosh-child (active)
-- **57 active plugins** / 6 inactive / 5 must-use
-- **Coming Soon: OFF** ✅ — site publicly visible
-- Admin email: daniel@rivegosh.com ✅
-- Timezone: Europe/Paris ✅
-- GTranslate: ACTIVE ✅ (FR/EN and 4 other languages)
-- WC store email: daniel@rivegosh.com ✅
-- Child theme: rivegosh-child active ✅
-
-## Done This Session
-- Generated 11 PNG brand assets → `brand-assets/` committed
-- Uploaded 6 logos to WP media (IDs 73790–73795), set custom_logo + site_icon
-- Fixed Colibri header post 61861 → logo IMAGE (not text) for desktop + mobile
-- Brand CSS in post 69149: logo 49px, 30px left padding, 14px nav padding, dark overlay
-- Written 17 Elementor global colors (kit ID 19) + 3 typography tokens
-- Turned Coming Soon OFF (both Hostinger + WooCommerce)
-- **Fixed gold sitewide (#42 CLOSED):**
-  - Root cause: Colibri stores theme in FILESYSTEM file, not just DB
-  - File: `wp-content/uploads/colibri/c-5894288-4d442e60-12716623-3de27865`
-  - Replaced `f79007` → `CCC593` (DB: 4 hits, file: 77 hits)
-  - Replaced `D6B579` → `CCC593` (DB: 16 hits, file: 1 hit + RGB)
-  - Replaced `D69C32` → `CCC593` (file: 1 hit + RGB)
-  - Also fixed `theme.css` static file (19 hits)
-  - Browser verified: 23 headings all `rgb(204, 197, 147)` = `#CCC593` ✅
-- **P1 sweep:**
-  - GTranslate activated (#18 CLOSED) ✅
-  - Timezone → Europe/Paris (#28 CLOSED) ✅
-  - WC onboarding email → daniel@rivegosh.com (#27 CLOSED) ✅
-  - Child theme scaffolded + activated (#36 CLOSED) ✅
-  - topvipdriver.com → rivegosh-concierge.com: 678 replacements (#5 CLOSED) ✅
-  - system360vip.com + udaantechnologies.com: already clean
-
-- **Glassmorphic nav (#48 CLOSED — v12 final):**
-  - 3 main items: 14px Cormorant Garamond, 40px gap, centered full-screen (h8 absolute overlay technique)
-  - ENGLISH: Inter 11px, `position: absolute; right: 48px` pinned to header row right
-  - Panels: rgba(8,8,8,0.25) + blur(28px) saturate(180%), 1px gold border, 220px wide, centered under trigger
-  - Items: Inter 12px, `padding: 10px 5px 10px 8px`, word-wrap at spaces (no mid-word breaks)
-  - Hover: `rgba(204,197,147,0.03)` tint + gold left-border accent
-  - Mobile: rgba(8,8,8,0.95) + blur, Inter 12px
-  - **Colibri h8 structure**: h3=row-container, h4=logo, h6=spacer, h8=nav column, h9=h-menu
-  - CSS in WP Additional CSS post 69149
-- **UX issues filed (#43–#47) + CSS fixes applied:**
-  - #43 ✅ Monoton → Cormorant Garamond on interior hero heading
-  - #44 ✅ 200px dead space removed (padding-bottom: 60px)
-  - #45 ✅ Mobile: hero height 260px, hamburger centered, heading 28px
-  - #46 ✅ GTranslate fixed to bottom, body padding-bottom added
-  - #47 Queued (Phase 2): homepage marquee text run-on
-- **Cookie consent fixed:** domain mismatch was causing banner to reappear — changed from www.rivegosh-concierge.com to .rivegosh-concierge.com; LiteSpeed configured to bypass cache for cmplz_ cookie holders
-- **Header padding + logo sizing unified (#CSS DONE):**
-  - Homepage logo: 56px (15% bigger than 49px interior)
-  - Interior logo: 49px (all pages via post 61866)
-  - Both headers: 48px left padding, 22px top/bottom padding
-  - Both headers: dark overlay rgba(26,26,26,0.45) applied
-  - CSS in post 69149, selectors: `[data-colibri-id="61861-*"]` + `[data-colibri-id="61866-*"]`
-  - Browser-verified: computed styles confirmed exact px values on both pages
-  - Fonts replaced sitewide: Cormorant Garamond (headings, 287x) + Inter (body, 125x)
-
-## Mobile + Card Icon + Centering Fixes (2026-04-16 — v52 CLEAN in functions.php) ✅ COMPLETE
-
-Single consolidated block `rivegosh_mobile_v52` (`wp_footer`, priority 99999) at line 1557 of functions.php (1631 total lines):
-
-- **FIX 1 — Desktop card icons, position**: Colibri `wp-custom-css` sets `position:absolute !important` spec 1-2-0 → icon out of flex flow at top of button padding box. v52 (same spec, later source): `position:relative` → back in flex flow.
-- **FIX 2 — Desktop card icons, vertical alignment**: Natural icon center Y=521, text center Y=530 (button btn h=52px, padding 10px T/B). Fix: `top: 9px !important` (POSITIVE = DOWN). Verified: iconCY=530, textCY=530, diff=1 across all 3 cards ✅
-- **FIX 3 — SVG baseline**: `svg { display: block !important }` kills `vertical-align: baseline` browser default.
-- **FIX 4 — Card centering**: `justify-content:center; gap:4px; text-align:center` beats `rivegosh-banner-late`'s flex-start.
-- **FIX 5 — Mobile logo scrolls**: `.rg-fixed-logo` → `position:absolute; top:64px` in `@media (max-width:991px)`.
-- **FIX 6 — No sticky nav on mobile**: `.h-navigation_sticky` → `position:relative` on mobile.
-- **FIX 7 — Cycling text fits mobile**: `.rg-word-1, .rg-word-2` → 22px / 0.06em on mobile.
-
-**KEY: Icon vertical alignment root cause (confirmed 2026-04-16 via live measurements):**
-- Colibri puts `.h-button__icon` at `position: absolute; top: 0` → icon at TOP of button padding box (Y≈521)
-- Text is flex-centered at button center (Y=530)
-- Fix direction: `top: POSITIVE` (DOWN toward text), NOT negative
-- `top: -7px` and `top: -4px` (v52d/v52e) were WRONG direction — moved icon UP away from text
-- `display: flex` on icon span (v52c) was a MISTAKE — caused unexpected layout interactions, do NOT repeat
-- `align-self: center` alone doesn't work because icon is `position: absolute` (out of flex flow)
-
-**KEY: Cascade specificity battle (wp-custom-css vs wp_footer)**
-- `wp-custom-css` (in `<head>`): `position:absolute !important` spec 1-2-0
-- Match same spec 1-2-0 in v52 → later source (wp_footer) wins
-- **Rule**: When fighting `wp-custom-css` or `rivegosh-banner-late`, must match or exceed its selector specificity
-
-**KEY: rivegosh-banner-late selector** (know this before touching card layout):
-- Lives in `rivegosh_late_css` function, `wp_footer` at 99999
-- Selector: `#colibri a[data-colibri-id="61861-h30"].h-button` — spec 1-2-0
-- Sets: `justify-content:flex-start; gap:14px; text-align:left`
-- Override in v52 (registered later, same spec): `justify-content:center; gap:4px; text-align:center`
-
-**Deploy pattern**: base64 encode locally → `printf '%s' '$B64' | base64 -d >> $PHPFILE` on server. Verify with `grep -c 'rivegosh_mobile_v52' $PHPFILE` and `document.getElementById('rg-mobile-v52')` in browser.
-
-**⚠️ CRITICAL OPERATIONAL HAZARD — Hostinger File Browser Overwrites SSH Edits:**
-- Tabs with `functions.php` open in Hostinger's web file browser cache the old file content.
-- If ANYONE saves from those browser tabs, it silently REVERTS all SSH appends.
-- Before doing any SSH file edits: confirm no browser tabs have the file open in the Hostinger file manager.
-- Evidence: v52 was appended twice (SSH confirmed 1430→1451 lines) but reverted to 1367 lines before verification could complete.
-- Fix protocol: SSH → append → immediately `grep -c 'function_name' $PHPFILE` to confirm → run live browser check in same session.
+## Site State (verified 2026-04-18)
+- WordPress 6.x | WooCommerce | Colibri WP + rivegosh-child
+- **Coming Soon: OFF** ✅
+- Header menu: 3 top-level items + submenus (locked)
+- VIP Client → guests go to /login-2/?redirect_to=/booking-vip/ (not /my-orders/) ✅
+- LiteSpeed JS Minify/Defer: LOCKED OFF (rg-litespeed-amelia-guard.php)
 
 ---
 
-## Sticky Nav Fixes (2026-04-16 — v10–v14 in functions.php) ✅ COMPLETE
-- **v10** `rivegosh_nav_v10_fixes` (priority 999999): dark `::before` bg, 14px equal top/bottom padding, logo column min-width 100px, dropdown rgba(10,10,10,0.92)
-- **v11** `rivegosh_nav_v11_fixes` (priority 999999): force `.h-logo__image` + `.h-logo__alt-image` display:block — ⚠️ SIDE EFFECT: also sets dark `background: rgba(10,10,10,0.88) !important` on h2 directly
-- **v12** `rivegosh_nav_v12_logo` (priority 999999): sticky-scoped — hides primary, shows alt-image (alt-image has no image set → shows placeholder)
-- **v13** `rivegosh_nav_v13_logo` (priority 999999): sticky-scoped — shows primary with `filter: brightness(0)`, hides alt-image
-- **v14** `rivegosh_nav_v14_sticky` (priority 99999, `wp_footer`): KB#49 final fix — loaded last, beats v10–v13:
-  - Kills `.h-logo__alt-image` globally using identical specificity to v11 (same-spec + later source = wins)
-  - Restores white sticky bg: `#colibri [data-colibri-id="61861-h2"].h-navigation_sticky { background: white !important }` (spec 1-2-0 beats v11's 0-1-0)
-  - Kills `::before` dark overlay in sticky state
-  - Shows `.h-logo__image` with `filter: brightness(0)` in sticky
+## Key Technical Facts (anti-forget)
 
-**KEY INSIGHT (2026-04-16):** JS simulation of sticky (`classList.add`) + `getComputedStyle` was unreliable. Colibri's JS sets inline `background: white` (no !important) AND adds the class — the real cascade behaves correctly. Always verify visually via scroll, not JS simulation.
+### Colibri Architecture
+- Theme data: FILESYSTEM JSON at `wp-content/uploads/colibri/c-5894288-4d442e60-12716623-3de27865`
+- `wp search-replace` misses it — must `sed -i` directly
+- Post 61861 = header template; Post 69149 = Additional CSS
 
-**`wp_footer` at 99999 = loads after `wp_head` at 999999** — use this pattern for all future overrides.
+### WooCommerce / UM
+- WC myaccount page = page ID 16, slug `/my-orders/`
+- UM login page = page ID 73396, slug `/login-2/`
+- WC overrides `wp_login_url()` → /my-orders/ (hence rg-booking-vip-guest-redirect.php exists)
+- UM reads `$_REQUEST['redirect_to']` from login form — passes through post-login
 
-## Launch Readiness: 68% — Going live ~2 days
+### Protected mu-plugins (full list in CLAUDE.md)
+Never delete, never modify without explicit Roderic approval:
+`rg-litespeed-amelia-guard.php` · `rg-pro-panel-unnest-card.php` · `rg-header-menu-lock.php` · `rg-booking-vip-guest-redirect.php` · `rg-v52-card-icons.php`
 
-### 🔴 P0 — Blocked on Daniel's decision
-| Issue | Problem |
-|-------|---------|
-| [#22](https://github.com/rivegosh/concierge-rivegosh/issues/22) | Grace Vincent still admin |
-| [#23](https://github.com/rivegosh/concierge-rivegosh/issues/23) | Stripe account ownership unknown |
-| [#19](https://github.com/rivegosh/concierge-rivegosh/issues/19) | Amelia AND OVA both active — booking conflict |
-| [#24](https://github.com/rivegosh/concierge-rivegosh/issues/24) | PayPal configured with Udaan Technologies — needs correct PayPal email |
-
-### 🟠 P1 — Remaining (no decisions needed)
-| Issue | Fix |
-|-------|-----|
-| [#5 done] | topvipdriver.com replaced ✅ |
-| [#14](https://github.com/rivegosh/concierge-rivegosh/issues/14) | GA4 ID empty — need GA4 property ID from Daniel |
-
-## Mobile Hero + Drawer Fixes (2026-04-16 — LOCKED in mu-plugins) ✅ COMPLETE
-
-**Single source of truth: `wp-content/mu-plugins/rg-drawer-override.php`**
-Do NOT modify without reading KB #49 §11–12 first. All mobile CSS + JS is here.
-
-### What's locked:
-- **Hamburger drawer** (STEP 1+2): suppresses `rivegosh_custom_drawer_v43` at 99997, outputs locked drawer at 100001. 8 nav items, no login gating, champagne gold Inter 12px.
-- **Hero image** (CSS inside drawer): zoom to top-left (-70px/-50px, 200% width), 180px min-height, position:relative (required for arrow bottom:4px)
-- **Logo**: `top: 18px; position: absolute; height: 41px` — top-aligned with hamburger, 25% smaller
-- **Heading push-down**: `[data-colibri-id="61866-h28"] { margin-top: 30px }` — clears logo
-- **Heading font**: `h2 { font-size: 20px; line-height: 25px }` — also in post 69149
-- **Scroll arrow**: `[data-colibri-id="61866-h29"] { bottom: 4px }` — bottom edge of banner
-- **Interior nav**: `[data-colibri-id="61866-h2"] { background: transparent }` — no white strip
-- **Hero text swap JS** (STEP 3): suppresses broken `rivegosh_contextual_hero_text` at 99998, outputs fixed `rg_contextual_hero_text_fixed` at 100002. Fixed selector: h1-h5 only (NOT `[class*="h-heading"]` which destroyed the inner h2).
-
-### KEY: h2-destruction bug (KB #49 §11)
-Colibri's `[class*="h-heading"]` querySelectorAll matches OUTER wrapper div first → `innerHTML` replacement destroys inner `<h2>` → all CSS targeting `h2` children silently fails. Fix: target h1-h5 tags only.
-
-### KEY: Never set font-size on Colibri wrapper divs
-`[data-colibri-id] { font-size: 24px }` activates Colibri's `.style-968 h2 { font-size: 2em }` cascade → h2 becomes 48px. Always target heading tags directly.
-
-## Amelia Catalog Reskin (2026-04-17 — #68) ✅ COMPLETE
-
-**CSS appended to `rg-amelia-contrast.php`** as `rg_amelia_catalog_css()` (wp_footer, priority 99999).
-
-- `.am-fcil__*` = catalog grid cards (service list)
-- `.am-fcis__*` = service detail view (after clicking Continue)
-- **`am-fcis__header-btn` + `am-fcis__header-action .am-button`** = Book Now button → gold bordered CTA ✅
-- Card names: Cormorant Garamond, champagne gold
-- Prices, meta: champagne gold
-- Continue/View buttons: gold bordered
-
-**Backup:** `functions.backup.20260417_102200.php` on server (functions.php itself untouched — change in mu-plugin)
-
-**NOT done (follow-up):** The Elementor section background is still white. The catalog cards render on white bg. Future issue: add dark section background to all booking pages.
-
-## Professional Menu Routing Bug (2026-04-17 — #69) ⏳ AWAITING DANIEL
-
-**Root cause confirmed:** `/professional-space/` (page 20) has `[wc_frontend_manager]`. WCFM redirects non-vendor roles → `/my-orders/` (client invoices). Daniel (admin role) is not a `wcfm_vendor` user.
-
-**Also found:** `wcfm_affiliate_registration_page_id = 20` duplicates `wc_frontend_manager_page_id = 20` — potential config conflict.
-
-**No code change made.** Daniel must test with a real driver account first.
-
-## Amelia Booking Wizard Reskin (2026-04-17 — #68 sub) ✅ COMPLETE
-
-**CSS appended to `rg-amelia-contrast.php`** as `rg_amelia_wizard_css()` (wp_footer, priority 99999).
-File: `/home/u100747640/domains/rivegosh-concierge.com/public_html/wp-content/mu-plugins/rg-amelia-contrast.php`
-Lines: 593 → 696. PHP syntax validated. LiteSpeed cache purged. Verified live.
-
-- `.am-fs__wrapper` / `.am-fs__main` — dark `#0f0c08` background (killed white)
-- `.am-fs-sb` — sidebar dark `#110e09` + gold border
-- `.am-advsc__*` — calendar container + header (month/year dropdowns gold-bordered)
-- `.fc-daygrid-day-frame` — Amelia blue `rgba(38,92,242)` overridden → champagne gold borders on bookable days
-- `:has(.am-advsc__occupancy)` — available days get gold `rgba(204,197,147,0.35)` border + subtle bg
-- `.fc-day-today` — today highlighted with gold border
-- `.am-button-continue` — CONTINUE button = champagne gold outlined CTA
-- `.am-select-popper` / `.am-select-option` — dark dropdown with gold hover
-- Scoped to `.am-dialog-popup.amelia-v2-booking` (wizard portal) — doesn't bleed into catalog
-
-## WCFM Affiliate Dashboard Reskin (2026-04-17) ✅ COMPLETE
-
-**CSS appended to `rg-amelia-contrast.php`** as `rg_wcfm_dark_css()` (wp_footer, priority 99999).
-File: 880 lines. PHP syntax validated. LiteSpeed cache purged. Verified live (logged-in).
-
-Scope: `body.wcfm-theme-rive-gosh` — fires on all WCFM affiliate/professional pages.
-
-Key classes targeted:
-- `.ml_wcutablinks` — top nav buttons (Sub-Affiliates, Network, etc.) → dark + gold border
-- `.wcu-settings-tab-nav li` — inner settings sub-tabs → ALL get `border-bottom: 2px solid transparent` to prevent layout shift on click; active gets gold underline
-- `.wcu-settings-tab-content` / `.wcu-settings-tab-pane` — white panel (was `rgb(255,255,255)`) → dark `rgba(20,16,10,0.6)` + gold border
-- `input[type="checkbox"]` → `accent-color` champagne gold
-- `.wcu-save-settings-button` → uppercase Inter + gold outline CTA
-- Tables → dark bg, gold headers, cream rows
-
-**Bug fixed in this session:** `has_body_class()` is NOT a WordPress function — it caused a fatal error in v1. Removed. CSS scoping via `body.wcfm-theme-rive-gosh` selector is sufficient.
-
-**Colibri section `#custom` / `.style-2466` note:** Inline `!important` cannot override this element's background via JS (Colibri sets via a different mechanism). However, `body.wcfm-theme-rive-gosh #custom { background-color: #0f0c08 !important }` DOES apply for logged-in users (verified visually). The section renders dark in the logged-in browser state.
-
-## Amelia Invoice Fixes (2026-04-17) ✅ COMPLETE
-
-### Root Cause 1: AMELIA_UPLOADS_URL http/https mismatch (KB #49 §13)
-Hostinger SSL terminates at LiteSpeed → `is_ssl()` returns false in WP-CLI → `set_url_scheme()` gives `http://`. But `company.pictureFullPath` stored as `https://`. `str_replace` fails silently → no logo in PDF.
-**Fix:** `rg-amelia-invoice-patch.php` v2.0 — pre-defines `AMELIA_UPLOADS_URL` with forced `https://` before Amelia loads.
-
-### Root Cause 2: pictureThumbPath is a cropped thumbnail (KB #49 §16)
-`PlaceholderService.php:223` uses `pictureThumbPath` (150×140px crop) not `pictureFullPath` (400×140px). The thumbnail is near-square — crops the horizontal logo.
-**Fix:** Updated `amelia_settings` wp_option: `pictureThumbPath` = `pictureFullPath`.
-
-### Invoice button UX (KB #49 §17)
-`rg-amelia-invoice-btn.php` v1.2 — MutationObserver injects green "INVOICE" badge next to booking status. Only shows for approved/completed (hidden for pending/waiting/canceled/rejected/no-show). Triggers Amelia's native Download Invoice via three-dots dropdown.
-
-### VIP Customer → VIP Client (KB #49 §18)
-Renamed in: menu item 63536, portal sidebar (functions.php: label, CSS, ARIA), mu-plugin comments. "Invoices" sidebar link removed (pointed to empty WooCommerce page). VIP Client now defaults to Reservations page (54773).
-
-### MU-plugins deployed this session:
-| File | Purpose |
-|------|---------|
-| `rg-amelia-invoice-patch.php` v2.0 | Force HTTPS on AMELIA_UPLOADS_URL + auto-patch invoice.inc logo sizing |
-| `rg-amelia-invoice-btn.php` v1.2 | Visible Invoice badge on approved bookings |
-
-### KB #49 updated with sections 13–18
-
-## Next Session: Start Here
-1. **Professional nav #69:** Ask Daniel — tested with driver account? Still redirects?
-2. **Booking page white bg:** Dark Elementor section on `/book-a-ride-*/` pages (Phase 2 polish)
-3. **Await Daniel decisions:** Stripe (#23), Grace offboard (#22), Amelia vs OVA (#19), PayPal email (#24)
-4. **Email DNS:** Daniel must add Brevo SPF + DKIM DNS records in Hostinger hPanel
-5. **GA4 (#14):** Ask Daniel for GA4 Measurement ID — 5 min fix once we have it
-6. **Domain migration:** When rivegosh.com DNS points to Hostinger, run:
-   `wp search-replace 'rivegosh-concierge.com' 'rivegosh.com' --all-tables`
-
-## Key Decisions Still Pending (Daniel)
-1. Stripe account — whose is it? (→ #23) ← most critical before launch
-2. Grace Vincent offboard — how? (→ #22)
-3. Amelia vs OVA — which booking system wins? (→ #19)
-4. PayPal — which email/account? (→ #24)
-5. Real SMTP mailbox (→ #25)
-6. GA4 Measurement ID (→ #14)
-7. Real business address for WooCommerce
-
-## CRITICAL: Colibri Architecture (must know for any color/style work)
-- **Colibri stores theme data in a FILESYSTEM JSON file**, not just wp_options
-- Active file: `wp-content/uploads/colibri/c-5894288-4d442e60-12716623-3de27865`
-- `colibri_page_builder_use_fs` option = `c-5894288-4d442e60-12716623-3de27865` (current file ID)
-- `wp search-replace` does NOT touch this file — must use `sed -i` directly on the server
-- Three gold colors were hardcoded there: f79007, D6B579, D69C32 — all replaced with CCC593
-- Backup files exist in same dir with `.bkp` suffix — do not confuse with active file
-- **Post 61861** = Colibri header template (pre-compiled HTML with token system)
-- **Post 69149** = WordPress Additional CSS (brand CSS block) — linked to `rivegosh-child` theme mods
-- **Colibri Color slots**: Color 1 = primary, Color 2 was orange (now CCC593 champagne gold)
-- **Elementor kit ID 19**: `_elementor_page_settings` post meta stores global color + typography tokens
-- **Child theme**: `rivegosh-child` (parent: colibri-wp) — put CSS overrides in child theme functions.php
+### Launch Readiness
+~68% — blocked on Daniel's decisions (Stripe, Grace, Amelia vs OVA, PayPal, SMTP)
