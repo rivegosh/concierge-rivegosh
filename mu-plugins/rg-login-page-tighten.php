@@ -103,13 +103,15 @@ function rg_login_page_tighten() {
         cursor: pointer !important;
     }
     .um.um-73396 .um-field-checkbox-state {
+        position: static !important;
         flex-shrink: 0 !important;
         margin: 0 !important;
         line-height: 1 !important;
     }
     .um.um-73396 .um-field-checkbox-option {
+        position: static !important;
         margin: 0 !important;
-        padding: 0 !important;
+        padding-left: 0 !important;
         text-align: left !important;
         line-height: 1.3 !important;
     }
@@ -229,10 +231,16 @@ function rg_login_page_tighten() {
         gap: 8px !important;
         text-align: left !important;
     }
+    .um.um-73395 .um-field-checkbox-state {
+        position: static !important;
+        flex-shrink: 0 !important;
+        margin: 0 !important;
+    }
     .um.um-73395 .um-field-checkbox-option {
+        position: static !important;
         text-align: left !important;
         margin: 0 !important;
-        padding: 0 !important;
+        padding-left: 0 !important;
     }
     <?php endif; ?>
 
