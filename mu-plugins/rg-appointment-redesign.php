@@ -7,7 +7,7 @@
  *              centered airplane icons, and solid charbon background.
  *              Scope-guarded by is_page( 44401 ) — zero bleed to other pages.
  * Author: RG
- * Version: 1.2.1
+ * Version: 1.2.2
  * Created: 2026-04-18
  *
  * ╔══════════════════════════════════════════════════════════════════╗
@@ -107,11 +107,11 @@ add_action( 'wp_footer', function () {
 /* Each step column: vertical stack, centered */
 #colibri [data-colibri-id="44401-c6"] .h-column__inner {
 	background: transparent !important;
-	padding: 6px 10px !important;
+	padding: 14px 10px !important;
 	flex-direction: column !important;
 	align-items: center !important;
 	justify-content: flex-start !important;
-	gap: 10px !important;
+	gap: 14px !important;
 	text-align: center !important;
 }
 #colibri [data-colibri-id="44401-c6"] .background-wrapper {
@@ -196,7 +196,7 @@ add_action( 'wp_footer', function () {
 	display: block;
 	width: 22px;
 	height: 22px;
-	margin: 6px auto 0 auto;
+	margin: 12px auto 0 auto;
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
