@@ -79,7 +79,8 @@ function rg_catalog_luxury_reskin() {
        below them renders browser-white. Fix: force body dark on any page
        where Amelia booking form is present. Works on /appointment/ AND all
        destination sub-pages (all-transfers-*, book-a-ride-*, etc.). */
-    body:has(.amelia-v2-booking) {
+    body:has(.amelia-v2-booking),
+    body.page-id-44401 {
         background-color: #1A1A1A !important;
         min-height: 100vh;
     }
