@@ -62,13 +62,18 @@ function rg_catalog_luxury_reskin() {
     }
 
     /* ─── 1. DARK PAGE & CONTAINER ──────────────────────────────── */
-    /* Override Amelia's inline CSS custom property (--am-c-main-bgr: #fff) set by Vue at mount.
-       !important in stylesheet beats inline style without !important per CSS cascade spec. */
+    /* Override Amelia's inline --am-c-main-bgr: #fff. Set to match page body
+       (#1A1A1A) so any element using var(--am-c-main-bgr) blends in rather
+       than showing as a near-black box on the slightly-lighter page. */
     .amelia-v2-booking,
     .amelia-v2-booking #amelia-container {
-        --am-c-main-bgr: #0f0c08 !important;
+        --am-c-main-bgr: #1A1A1A !important;
         --am-c-card-bgr: transparent !important;
         --am-c-inp-bgr: rgba(20, 17, 12, 0.9) !important;
+        --am-c-main-text: rgba(220, 213, 170, 0.88) !important;
+        --am-c-main-heading-text: #CCC593 !important;
+        --am-c-primary: #CCC593 !important;
+        --am-c-primary-text: #0a0a0a !important;
     }
 
     .amelia-v2-booking,
@@ -79,6 +84,7 @@ function rg_catalog_luxury_reskin() {
 
     .amelia-v2-booking #amelia-container .am-fcl,
     .amelia-v2-booking #amelia-container .am-fcil,
+    .amelia-v2-booking #amelia-container .am-fcil__wrapper,
     .amelia-v2-booking #amelia-container .am-cat__wrapper {
         background: transparent !important;
     }
@@ -89,14 +95,18 @@ function rg_catalog_luxury_reskin() {
     }
 
     /* ─── 2. CATEGORY DESCRIPTION TEXT ─────────────────────────── */
-    /* The intro paragraph ("Illinois and Area refers to...") */
+    /* Transparent bg on ALL text containers so no dark-box artifacts on
+       the #1A1A1A page body. Color to champagne for readability. */
     .amelia-v2-booking #amelia-container .am-fcil p,
     .amelia-v2-booking #amelia-container .am-fcil span,
     .amelia-v2-booking #amelia-container .am-fcil__subtitle,
     .amelia-v2-booking #amelia-container .am-fcl__desc,
     .amelia-v2-booking #amelia-container [class*="fcil__desc"],
-    .amelia-v2-booking #amelia-container [class*="fcl__desc"] {
-        color: rgba(220, 213, 170, 0.78) !important;
+    .amelia-v2-booking #amelia-container [class*="fcl__desc"],
+    .amelia-v2-booking #amelia-container .am-fcil__item-content,
+    .amelia-v2-booking #amelia-container [class*="fcil__item"] {
+        color: rgba(220, 213, 170, 0.88) !important;
+        background: transparent !important;
         font-size: 14px !important;
         line-height: 1.65 !important;
         max-width: 640px !important;
@@ -159,9 +169,9 @@ function rg_catalog_luxury_reskin() {
     }
 
     /* ─── 4. SERVICE DETAIL VIEW ────────────────────────────────── */
-    /* Service title (e.g. "Sedan Airport Transfer California") */
-    .amelia-v2-booking #amelia-container .am-fcis__title,
-    .amelia-v2-booking #amelia-container [class*="fcis__title"],
+    /* Service title */
+    .amelia-v2-booking #amelia-container .am-fcis__header-name,
+    .amelia-v2-booking #amelia-container [class*="fcis__header-name"],
     .amelia-v2-booking #amelia-container .am-fcis h1,
     .amelia-v2-booking #amelia-container .am-fcis h2,
     .amelia-v2-booking #amelia-container .am-fcis h3 {
@@ -171,10 +181,23 @@ function rg_catalog_luxury_reskin() {
         letter-spacing: 0.02em !important;
     }
 
-    /* Price in detail header */
-    .amelia-v2-booking #amelia-container .am-fcis .el-tag,
-    .amelia-v2-booking #amelia-container .am-fcis__price,
-    .amelia-v2-booking #amelia-container [class*="fcis__price"] {
+    /* Service type badge ("Service" / "Package" — was green-on-green) */
+    .amelia-v2-booking #amelia-container .am-fcis__badge,
+    .amelia-v2-booking #amelia-container [class*="fcis__badge"],
+    .amelia-v2-booking #amelia-container .am-fcis__badge [class*="el-tag"],
+    .amelia-v2-booking #amelia-container [class*="fcis__badge"] [class*="el-tag"] {
+        background: rgba(204, 197, 147, 0.12) !important;
+        border: 1px solid rgba(204, 197, 147, 0.35) !important;
+        color: #CCC593 !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+    }
+
+    /* Price — was dark-on-blue el-tag */
+    .amelia-v2-booking #amelia-container .am-fcis__header-price,
+    .amelia-v2-booking #amelia-container [class*="fcis__header-price"],
+    .amelia-v2-booking #amelia-container .am-fcis__header-price [class*="el-tag"],
+    .amelia-v2-booking #amelia-container .am-fcis__header-price * {
         color: #CCC593 !important;
         font-size: 20px !important;
         font-weight: 700 !important;
@@ -182,12 +205,65 @@ function rg_catalog_luxury_reskin() {
         border: none !important;
     }
 
+    /* Header tax line */
+    .amelia-v2-booking #amelia-container .am-fcis__header-tax,
+    .amelia-v2-booking #amelia-container [class*="fcis__header-tax"] {
+        color: rgba(204, 197, 147, 0.5) !important;
+        font-size: 11px !important;
+    }
+
+    /* Go Back button */
+    .amelia-v2-booking #amelia-container .am-fcis__header-btn,
+    .amelia-v2-booking #amelia-container [class*="fcis__header-btn"] {
+        background: rgba(14, 11, 7, 0.7) !important;
+        border: 1px solid rgba(204, 197, 147, 0.35) !important;
+        color: rgba(204, 197, 147, 0.85) !important;
+        font-size: 13px !important;
+    }
+
+    /* Mini info row: "Florida Transfer USA + 200 drivers | 2h | 1/3"
+       was dark-text on dark pill badges */
+    .amelia-v2-booking #amelia-container .am-fcis__mini-info,
+    .amelia-v2-booking #amelia-container [class*="fcis__mini-info"],
+    .amelia-v2-booking #amelia-container .am-fcis__mini-info *,
+    .amelia-v2-booking #amelia-container [class*="fcis__mini-info"] * {
+        color: rgba(220, 213, 170, 0.75) !important;
+        background: transparent !important;
+        border-color: rgba(204, 197, 147, 0.2) !important;
+        font-size: 12px !important;
+    }
+
+    /* Header bottom strip (holds badge + price + action) */
+    .amelia-v2-booking #amelia-container .am-fcis__header-bottom,
+    .amelia-v2-booking #amelia-container [class*="fcis__header-bottom"] {
+        background: transparent !important;
+    }
+
+    /* Header top strip */
+    .amelia-v2-booking #amelia-container .am-fcis__header-top,
+    .amelia-v2-booking #amelia-container [class*="fcis__header-top"] {
+        background: transparent !important;
+    }
+
+    /* Service description text under "About Service" tab */
+    .amelia-v2-booking #amelia-container .am-fcis__info-content,
+    .amelia-v2-booking #amelia-container .am-fcis__info-service__desc,
+    .amelia-v2-booking #amelia-container [class*="fcis__info-content"],
+    .amelia-v2-booking #amelia-container [class*="fcis__info-content"] *,
+    .amelia-v2-booking #amelia-container [class*="fcis__info-service__desc"] * {
+        color: rgba(220, 213, 170, 0.85) !important;
+        background: transparent !important;
+        font-size: 14px !important;
+        line-height: 1.7 !important;
+    }
+
     /* Meta row (category, duration, capacity) */
     .amelia-v2-booking #amelia-container .am-fcis__info,
     .amelia-v2-booking #amelia-container [class*="fcis__info"],
     .amelia-v2-booking #amelia-container .am-fcis__info *,
     .amelia-v2-booking #amelia-container [class*="fcis__info"] * {
-        color: rgba(220, 213, 170, 0.55) !important;
+        color: rgba(220, 213, 170, 0.75) !important;
+        background: transparent !important;
         font-size: 12px !important;
     }
 
@@ -206,15 +282,6 @@ function rg_catalog_luxury_reskin() {
         border-bottom-color: #CCC593 !important;
     }
 
-    /* Service description text under "About Service" tab */
-    .amelia-v2-booking #amelia-container .am-fcis__info-content,
-    .amelia-v2-booking #amelia-container [class*="fcis__info-content"],
-    .amelia-v2-booking #amelia-container .am-fcis__info-content *,
-    .amelia-v2-booking #amelia-container [class*="fcis__info-content"] * {
-        color: rgba(220, 213, 170, 0.7) !important;
-        font-size: 14px !important;
-        line-height: 1.7 !important;
-    }
 
     /* ─── 5. GALLERY — KEEP HERO, REMOVE BUTTON + THUMBS ──────── */
     /* "View all photos" button — HIDE */
@@ -286,12 +353,13 @@ function rg_catalog_luxury_reskin() {
         font-size: 12px !important;
     }
 
-    /* ─── 7. SERVICE TYPE BADGE ("Service" tag) ─────────────────── */
-    .amelia-v2-booking #amelia-container .el-tag--light,
-    .amelia-v2-booking #amelia-container .el-tag.el-tag--success {
-        background: rgba(34, 85, 34, 0.25) !important;
-        border-color: rgba(100, 180, 100, 0.3) !important;
-        color: rgba(140, 210, 140, 0.9) !important;
+    /* ─── 7. ALL EL-TAGS — universal champagne override ─────────── */
+    /* Catches any el-tag variant (--success, --primary, --warning, --light)
+       that Amelia might render. Each gets champagne text on dark glass bg. */
+    .amelia-v2-booking #amelia-container [class*="el-tag"] {
+        background: rgba(204, 197, 147, 0.1) !important;
+        border: 1px solid rgba(204, 197, 147, 0.25) !important;
+        color: rgba(220, 213, 170, 0.9) !important;
     }
 
     </style>
