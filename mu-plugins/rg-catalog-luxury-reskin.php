@@ -191,9 +191,11 @@ function rg_catalog_luxury_reskin() {
     }
 
     /* ─── 4. SERVICE DETAIL VIEW ────────────────────────────────── */
-    /* Service title (e.g. "Sedan Airport Transfer California") */
-    .amelia-v2-booking #amelia-container .am-fcis__title,
-    .amelia-v2-booking #amelia-container [class*="fcis__title"],
+    /* Service title — DOM-verified class is am-fcis__header-name.
+       3-class specificity beats Amelia's own .am-fcis .am-fcis__header-name rule. */
+    .amelia-v2-booking #amelia-container .am-fcis .am-fcis__header-name,
+    .amelia-v2-booking #amelia-container .am-fcis [class*="fcis__header-name"],
+    .amelia-v2-booking #amelia-container .am-fcis .am-fcis__title,
     .amelia-v2-booking #amelia-container .am-fcis h1,
     .amelia-v2-booking #amelia-container .am-fcis h2,
     .amelia-v2-booking #amelia-container .am-fcis h3 {
@@ -319,12 +321,11 @@ function rg_catalog_luxury_reskin() {
     }
 
     /* ─── 7. SERVICE TYPE BADGE ("Service" tag) ─────────────────── */
-    /* Was green-on-green. Scoped to .am-fcis so we don't touch gallery el-tags. */
-    .amelia-v2-booking #amelia-container .am-fcis .el-tag--light,
-    .amelia-v2-booking #amelia-container .am-fcis .el-tag.el-tag--success,
-    .amelia-v2-booking #amelia-container .am-fcis .el-tag.el-tag--primary,
-    .amelia-v2-booking #amelia-container .am-fcl__card .el-tag.el-tag--success,
-    .amelia-v2-booking #amelia-container .am-fcl__card .el-tag.el-tag--light {
+    /* Service/Package badge — DOM: rgb(1,151,25) bright green. Target all
+       el-tag variants inside fcis and fcil cards. */
+    .amelia-v2-booking #amelia-container .am-fcis .el-tag,
+    .amelia-v2-booking #amelia-container .am-fcil__item .el-tag,
+    .amelia-v2-booking #amelia-container .am-fcl__card .el-tag {
         background: rgba(204, 197, 147, 0.12) !important;
         border: 1px solid rgba(204, 197, 147, 0.3) !important;
         color: #CCC593 !important;
