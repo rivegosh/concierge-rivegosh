@@ -95,8 +95,12 @@ function rg_catalog_luxury_reskin() {
     .amelia-v2-booking #amelia-container .am-fcil__subtitle,
     .amelia-v2-booking #amelia-container .am-fcl__desc,
     .amelia-v2-booking #amelia-container [class*="fcil__desc"],
-    .amelia-v2-booking #amelia-container [class*="fcl__desc"] {
-        color: rgba(220, 213, 170, 0.78) !important;
+    .amelia-v2-booking #amelia-container [class*="fcl__desc"],
+    .amelia-v2-booking #amelia-container .am-fcil__content p,
+    .amelia-v2-booking #amelia-container .am-fcil__content span,
+    .amelia-v2-booking #amelia-container .am-fcil strong,
+    .amelia-v2-booking #amelia-container .am-fcil b {
+        color: #ffffff !important;
         font-size: 14px !important;
         line-height: 1.65 !important;
         max-width: 640px !important;
