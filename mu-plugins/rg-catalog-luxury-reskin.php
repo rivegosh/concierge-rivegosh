@@ -51,6 +51,17 @@ function rg_catalog_luxury_reskin() {
      * Loads after rg-amelia-contrast.php (c > a) and rg-appointment-redesign.php (c > a)
      * ══════════════════════════════════════════════════════════════ */
 
+    /* ─── 0a. COLIBRI PAGE TEXT — white on dark bg ──────────────── */
+    /* The destination sub-page description paragraphs live in Colibri
+       h-text blocks (NOT inside Amelia). They inherit rgb(0,0,0) from
+       Colibri's default text color. Scope to pages that have Amelia. */
+    body:has(.amelia-v2-booking) .h-text p,
+    body:has(.amelia-v2-booking) .h-text strong,
+    body:has(.amelia-v2-booking) .h-text b,
+    body:has(.amelia-v2-booking) .h-text span {
+        color: #ffffff !important;
+    }
+
     /* ─── 0. DARK PAGE BODY ─────────────────────────────────────── */
     /* Colibri sections only set dark bg on their own box — the page body
        below them renders browser-white. Fix: force body dark on any page
