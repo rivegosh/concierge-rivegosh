@@ -287,11 +287,60 @@ function rg_catalog_luxury_reskin() {
     }
 
     /* ─── 7. SERVICE TYPE BADGE ("Service" tag) ─────────────────── */
-    .amelia-v2-booking #amelia-container .el-tag--light,
-    .amelia-v2-booking #amelia-container .el-tag.el-tag--success {
-        background: rgba(34, 85, 34, 0.25) !important;
-        border-color: rgba(100, 180, 100, 0.3) !important;
-        color: rgba(140, 210, 140, 0.9) !important;
+    /* Was green-on-green. Scoped to .am-fcis so we don't touch gallery el-tags. */
+    .amelia-v2-booking #amelia-container .am-fcis .el-tag--light,
+    .amelia-v2-booking #amelia-container .am-fcis .el-tag.el-tag--success,
+    .amelia-v2-booking #amelia-container .am-fcis .el-tag.el-tag--primary,
+    .amelia-v2-booking #amelia-container .am-fcl__card .el-tag.el-tag--success,
+    .amelia-v2-booking #amelia-container .am-fcl__card .el-tag.el-tag--light {
+        background: rgba(204, 197, 147, 0.12) !important;
+        border: 1px solid rgba(204, 197, 147, 0.3) !important;
+        color: #CCC593 !important;
+    }
+
+    /* ─── 8. SERVICE DETAIL — HEADER CONTRAST FIXES ─────────────── */
+    /* Go Back btn — .am-button--plain already exists in §6, but the header
+       variant sits inside .am-fcis__header which may reset it. Re-scope it. */
+    .amelia-v2-booking #amelia-container .am-fcis__header .am-button,
+    .amelia-v2-booking #amelia-container [class*="fcis__header-btn"] {
+        background: rgba(14, 11, 7, 0.75) !important;
+        border: 1px solid rgba(204, 197, 147, 0.35) !important;
+        color: rgba(204, 197, 147, 0.85) !important;
+    }
+
+    /* Price: el-tag inside header price area was rendering dark-on-blue */
+    .amelia-v2-booking #amelia-container [class*="fcis__header-price"] .el-tag,
+    .amelia-v2-booking #amelia-container [class*="fcis__header-price"] {
+        color: #CCC593 !important;
+        background: transparent !important;
+        border: none !important;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+    }
+
+    /* Mini-info row: category + driver count + duration + capacity pills.
+       NO wildcard * here — only named pill classes to stay gallery-safe. */
+    .amelia-v2-booking #amelia-container [class*="fcis__mini-info"],
+    .amelia-v2-booking #amelia-container [class*="fcis__mini-info"] .el-tag,
+    .amelia-v2-booking #amelia-container [class*="fcis__mini-info"] span {
+        color: rgba(220, 213, 170, 0.75) !important;
+        background: transparent !important;
+        border-color: rgba(204, 197, 147, 0.2) !important;
+        font-size: 12px !important;
+    }
+
+    /* Description/body-copy dark boxes: transparent bg on text containers only */
+    .amelia-v2-booking #amelia-container [class*="fcis__info-content"],
+    .amelia-v2-booking #amelia-container [class*="fcis__info-service__desc"],
+    .amelia-v2-booking #amelia-container .am-fcil__item-content {
+        background: transparent !important;
+        color: rgba(220, 213, 170, 0.82) !important;
+    }
+
+    /* Header top/bottom strips — transparent so dark page shows through */
+    .amelia-v2-booking #amelia-container [class*="fcis__header-top"],
+    .amelia-v2-booking #amelia-container [class*="fcis__header-bottom"] {
+        background: transparent !important;
     }
 
     </style>
