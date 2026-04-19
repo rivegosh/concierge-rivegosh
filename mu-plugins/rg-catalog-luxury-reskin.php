@@ -51,15 +51,27 @@ function rg_catalog_luxury_reskin() {
      * Loads after rg-amelia-contrast.php (c > a) and rg-appointment-redesign.php (c > a)
      * ══════════════════════════════════════════════════════════════ */
 
-    /* ─── 0a. COLIBRI PAGE TEXT — white on dark bg ──────────────── */
-    /* The destination sub-page description paragraphs live in Colibri
-       h-text blocks (NOT inside Amelia). They inherit rgb(0,0,0) from
-       Colibri's default text color. Scope to pages that have Amelia. */
-    body:has(.amelia-v2-booking) .h-text p,
+    /* ─── 0a. COLIBRI PAGE TEXT — white, constrained, centered ─────── */
+    /* Description paragraphs on destination sub-pages live in Colibri
+       h-text blocks (NOT Amelia). Default: rgb(0,0,0), full-width 1200px. */
+    body:has(.amelia-v2-booking) .h-text {
+        max-width: 680px !important;
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        align-self: center !important;
+        text-align: center !important;
+    }
+    body:has(.amelia-v2-booking) .h-text p {
+        color: rgba(255, 255, 255, 0.88) !important;
+        font-size: 15px !important;
+        line-height: 1.75 !important;
+        margin-bottom: 1em !important;
+    }
     body:has(.amelia-v2-booking) .h-text strong,
-    body:has(.amelia-v2-booking) .h-text b,
-    body:has(.amelia-v2-booking) .h-text span {
+    body:has(.amelia-v2-booking) .h-text b {
         color: #ffffff !important;
+        font-weight: 600 !important;
     }
 
     /* ─── 0. DARK PAGE BODY ─────────────────────────────────────── */
