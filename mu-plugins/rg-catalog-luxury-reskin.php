@@ -51,6 +51,16 @@ function rg_catalog_luxury_reskin() {
      * Loads after rg-amelia-contrast.php (c > a) and rg-appointment-redesign.php (c > a)
      * ══════════════════════════════════════════════════════════════ */
 
+    /* ─── 0. DARK PAGE BODY ─────────────────────────────────────── */
+    /* Colibri sections only set dark bg on their own box — the page body
+       below them renders browser-white. Fix: force body dark on any page
+       where Amelia booking form is present. Works on /appointment/ AND all
+       destination sub-pages (all-transfers-*, book-a-ride-*, etc.). */
+    body:has(.amelia-v2-booking) {
+        background-color: #1A1A1A !important;
+        min-height: 100vh;
+    }
+
     /* ─── 1. DARK PAGE & CONTAINER ──────────────────────────────── */
     /* Override Amelia's inline CSS custom property (--am-c-main-bgr: #fff) set by Vue at mount.
        !important in stylesheet beats inline style without !important per CSS cascade spec. */
