@@ -108,6 +108,11 @@ function rg_catalog_luxury_reskin() {
         margin-right: auto !important;
     }
 
+    /* Service card titles in list view (was rgb(26,44,55) dark navy) */
+    .amelia-v2-booking #amelia-container .am-fcil__item-name {
+        color: #ffffff !important;
+    }
+
     /* "Available – N Services" line */
     .amelia-v2-booking #amelia-container .am-fcil__heading,
     .amelia-v2-booking #amelia-container [class*="fcil__heading"],
