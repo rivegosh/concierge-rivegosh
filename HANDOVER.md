@@ -1,9 +1,9 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-18 | **Session:** Nav bugs + Login page CSS tighten + Gallery hide fix
+**Date:** 2026-04-19 | **Session:** Nav bugs + Login page CSS tighten + Gallery hide fix + Catalog luxury reskin
 
 ---
 
-## Current State — 2026-04-18
+## Current State — 2026-04-19
 
 ### Work completed this session
 
@@ -13,10 +13,13 @@
 | Header menu lock guard | [#78](https://github.com/rivegosh/concierge-rivegosh/issues/78) ✅ | `mu-plugins/rg-header-menu-lock.php` v1.0.0 | ✅ self-heal proven |
 | VIP Client → /my-orders/ redirect fixed | [#79](https://github.com/rivegosh/concierge-rivegosh/issues/79) ✅ | `mu-plugins/rg-booking-vip-guest-redirect.php` v1.0.0 | ✅ curl 302 → /login-2/?redirect_to=/booking-vip/ |
 | /login-2/ spacing tighten + dark luxury to /register/ + /my-orders/ | [#81](https://github.com/rivegosh/concierge-rivegosh/issues/81) ✅ | `mu-plugins/rg-login-page-tighten.php` v1.2.0 | ✅ Daniel screenshot sign-off |
-| /appointment/ gallery hide — specificity fix v1.1.0 | [#82](https://github.com/rivegosh/concierge-rivegosh/issues/82) | `mu-plugins/rg-appointment-gallery-hide.php` v1.1.0 | ⏳ Awaiting Daniel screenshot |
+| /appointment/ gallery hide v1.3.0 — hides btn+thumbs, keeps car hero | [#82](https://github.com/rivegosh/concierge-rivegosh/issues/82) | `mu-plugins/rg-appointment-gallery-hide.php` v1.3.0 | ⏳ Awaiting Daniel screenshot |
+| /appointment/ catalog luxury reskin v1.0.0 — dark bg, body copy fix, car sizing | [#82](https://github.com/rivegosh/concierge-rivegosh/issues/82) | `mu-plugins/rg-catalog-luxury-reskin.php` v1.0.0 | ⏳ Awaiting Daniel screenshot |
 
 ### Root causes documented
-- **Gallery hide v1.0.0 not working**: `rg-amelia-contrast.php` sets `display: flex !important` on `.amelia-v2-booking [class*="fcis__gallery"]` (specificity 0,2,0). Our bare `.am-fcis__gallery` (0,1,0) lost the `!important` specificity battle. Fix v1.1.0: added `.amelia-v2-booking` parent → (0,2,0), loads later (`g` > `c`) → wins. Documented in KB #49 §25.
+- **Gallery hide v1.0.0–v1.2.0 wrong**: Hiding `.am-fcis__gallery` (the container) also hid the car hero photo inside it. v1.3.0 corrects: hides only `.am-fcis__gallery-btn` + `.am-fcis__gallery-thumb__wrapper`.
+- **Dark luxury gone (white background)**: Concurrent CC sessions deleted prior catalog form mu-plugins. LiteSpeed cache was masking the absence — purge revealed white. Root: `rg-amelia-contrast.php` has zero `am-fc*` rules; catalog reskin was in a now-deleted file. Fix: `rg-catalog-luxury-reskin.php` v1.0.0 (18ca4cf).
+- **Gallery hide v1.0.0 CSS battle**: `rg-amelia-contrast.php` sets `display: flex !important` on `.amelia-v2-booking [class*="fcis__gallery"]` (specificity 0,2,0). Our bare `.am-fcis__gallery` (0,1,0) lost. Fix: nuclear specificity (1,3,1) + JS MutationObserver inline `!important`. Documented in KB #49 §25.
 - **Affiliate Dashboard** deleted between 2026-04-15 and 2026-04-17 — hard-deleted from `wp_posts`, no commit trail. Silent concurrent CC session wipe. Now locked by guard.
 - **VIP Client → /my-orders/**: Amelia Customer Panel (page 54773) calls `wp_login_url()` for logged-out users. WooCommerce overrides `wp_login_url()` to return WC myaccount (page ID 16, slug `/my-orders/`). Fixed by `template_redirect` priority 1 intercept.
 
