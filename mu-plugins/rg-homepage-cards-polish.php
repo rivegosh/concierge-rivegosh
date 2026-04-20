@@ -82,5 +82,17 @@ add_action( 'wp_footer', function() {
 	echo '  font-weight: 700 !important; ';
 	echo '}';
 
+	/* ─── "Sign up" button (c85) — force black text ───────────────
+	   Anchor <a> is black, but Colibri ships (1,2,1):
+	     #colibri [data-colibri-id="61860-c80"] .h-button span { color: rgba(204,197,147,.9) }
+	   → gold-on-gold = invisible.
+	   Beat it with (1,2,2) via body#colibri.page-id-61860 prefix. */
+	echo 'body#colibri.page-id-61860 [data-colibri-id="61860-c85"] span, ';
+	echo 'body#colibri.page-id-61860 [data-colibri-id="61860-c85"] > span { ';
+	echo '  color: #000 !important; ';
+	echo '  background: transparent !important; ';
+	echo '  font-size: 14px !important; ';
+	echo '}';
+
 	echo '</style>';
 }, 99999 );
