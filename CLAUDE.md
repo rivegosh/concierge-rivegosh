@@ -194,6 +194,10 @@ This is a WordPress migration project, not a TypeScript codebase. Foundry phases
 **WP-CLI reference commands:**
 ```bash
 SSH="ssh -p 65002 -i ~/.ssh/id_ed25519 u100747640@145.79.20.24"
+# ⚠️ After ANY change to wp_amelia_custom_fields, rebuild amelia_stash:
+# $SSH "wp --path=... eval-file /tmp/rg-rebuild-stash-customfields.php"
+# (stash is a separate cache from LiteSpeed — purging LiteSpeed does NOT update it)
+# Format rule: customFields must use services:[{id:N}] NOT serviceIds:[N]
 WP="wp --path=/home/u100747640/domains/rivegosh-concierge.com/public_html"
 
 $SSH "$WP option get <key>"          # Read config

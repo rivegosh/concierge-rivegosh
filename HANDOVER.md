@@ -1,9 +1,39 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-19 | **Session:** Catalog luxury reskin v2.0.0 — full dark luxury verified
+**Date:** 2026-04-20 | **Session:** Google Maps autocomplete — Phase A deployed, pending Daniel visual confirm
 
 ---
 
-## Current State — 2026-04-19 (end of session)
+## Current State — 2026-04-20 (end of session)
+
+### Work completed this session
+
+| Fix | Issue | Change | Verified |
+|-----|-------|--------|----------|
+| Google Maps API key replaced | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | `amelia_settings.general.gMapApiKey` → `AIzaSyDvUqJXEAcikf4OjoyWwgbiuZX0iTwlrsw` | ✅ PHP runtime |
+| DB custom fields #20/#21/#27 → address type | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | `wp_amelia_custom_fields` `type` column | ✅ SSH |
+| amelia_stash rebuilt from DB | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | 13 custom fields, correct `services:[{id:N}]` format | ✅ JS in-browser |
+| Vue crash fixed (iye TypeError) | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | stash had `serviceIds:[N]`, Vue needed `services:[{id:N}]` | ✅ code-verified |
+
+### What still needs Daniel to verify
+- **"Your Information" step renders with address autocomplete inputs** — WC redirect blocks automated testing. Daniel: go through booking wizard on any Florida service → Cart → Continue → check if Pickup/Destination fields have Google Maps dropdown suggestions when typing.
+
+### ⚠️ Stash rebuild maintenance
+If Amelia plugin updates or any process clears `amelia_stash`, the `customFields` must be rebuilt:
+```bash
+ssh -p 65002 -i ~/.ssh/id_ed25519 u100747640@145.79.20.24
+wp --path=/home/u100747640/domains/rivegosh-concierge.com/public_html eval-file /tmp/rg-rebuild-stash-customfields.php
+# Script is in /tmp — recreate from local /tmp/rg-rebuild-stash-customfields.php if lost
+```
+**Key fact:** stash `customFields` must use `services:[{id:N}]` NOT `serviceIds:[N]`. Amelia Vue does `r.services.map(i => i.id)` — wrong format = blank "Your Information" step.
+
+### Phase B (NOT started)
+- `mu-plugins/rg-booking-maps-distance.php` — distance surcharge on booking
+- Hook: `amelia_before_appointment_added_filter($appointmentData, $service->toArray(), $paymentData)`
+- **Blocked on:** (1) Daniel visual confirm of Phase A, (2) Daniel enables Distance Matrix API on GCP for key `AIzaSyDvUqJXEAcikf4OjoyWwgbiuZX0iTwlrsw`
+
+---
+
+## Previous State — 2026-04-19 (end of session)
 
 ### Work completed this session
 
