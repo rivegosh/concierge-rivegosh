@@ -1,21 +1,27 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-20 | **Session:** Google Maps autocomplete — Phase A deployed, pending Daniel visual confirm
+**Date:** 2026-04-20 | **Session:** Booking wizard + cart + nav fixes complete
 
 ---
 
-## Current State — 2026-04-20 (end of session)
+## Current State — 2026-04-20 (end of session, second pass)
 
 ### Work completed this session
 
-| Fix | Issue | Change | Verified |
-|-----|-------|--------|----------|
-| Google Maps API key replaced | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | `amelia_settings.general.gMapApiKey` → `AIzaSyDvUqJXEAcikf4OjoyWwgbiuZX0iTwlrsw` | ✅ PHP runtime |
-| DB custom fields #20/#21/#27 → address type | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | `wp_amelia_custom_fields` `type` column | ✅ SSH |
-| amelia_stash rebuilt from DB | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | 13 custom fields, correct `services:[{id:N}]` format | ✅ JS in-browser |
-| Vue crash fixed (iye TypeError) | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | stash had `serviceIds:[N]`, Vue needed `services:[{id:N}]` | ✅ code-verified |
+| Fix | File | Change | Verified |
+|-----|------|--------|----------|
+| Vehicle image gone again | `rg-amelia-contrast.php` | `background:` shorthand → `background-color:` longhand on `[class*="fcis__gallery"]` — shorthand was resetting Vue's inline `background-image` to `initial !important` | ✅ screenshot |
+| Suitcase dropdown invisible (custom field #23) | `rg-amelia-contrast.php` | Added `.am-adv-select__item` + `.am-adv-select__item-label { color: rgba(240,235,225,0.85) }` | ✅ CSS injected, needs Daniel manual verify |
+| Nav all dropdowns expanded on /your-booking/ | `rg-misc-css.php` | Colibri omits `h-dropdown-menu` + `h-menu-horizontal` on WC pages → sub-menus rendered position:static, opacity:1. Fixed with CSS fallback + `position:relative` on li | ✅ screenshot (hover shows VIP CLIENT dropdown) |
+| 3 black pills on /your-booking/ | `rg-misc-css.php` | `.h-hamburger-button` hidden at `≥992px` — hamburger SVG (750px tall) was rendering on desktop without `has-offcanvas-mobile` class | ✅ screenshot |
+| Cart page blank (no content) | SSH WP option | `woocommerce_coming_soon=yes` was replacing ALL WC store pages. Disabled: `wp option update woocommerce_coming_soon no` | ✅ screenshot (cart shows booking + PROCEED TO CHECKOUT) |
 
 ### What still needs Daniel to verify
-- **"Your Information" step renders with address autocomplete inputs** — WC redirect blocks automated testing. Daniel: go through booking wizard on any Florida service → Cart → Continue → check if Pickup/Destination fields have Google Maps dropdown suggestions when typing.
+- **Suitcase dropdown numbers (1–8) visible in white/cream** — needs full booking wizard "Your Information" step (WC redirect blocks automation)
+- **Google Maps autocomplete on Pickup/Destination fields** — same step, same constraint
+- **Cart after real booking** — test full wizard → click "Continue to Payment" → confirm cart shows booking correctly
+
+### ⚠️ Anti-forget: WC coming-soon was silently killing cart
+`woocommerce_coming_soon = yes` + `woocommerce_store_pages_only = yes` were active. This replaces all WC store pages (cart, checkout, shop) with "Great things are on the horizon" placeholder. Root cause: WooCommerce admin setting, not a plugin/theme conflict. Now OFF.
 
 ### ⚠️ Stash rebuild maintenance
 If Amelia plugin updates or any process clears `amelia_stash`, the `customFields` must be rebuilt:
@@ -30,6 +36,19 @@ wp --path=/home/u100747640/domains/rivegosh-concierge.com/public_html eval-file 
 - `mu-plugins/rg-booking-maps-distance.php` — distance surcharge on booking
 - Hook: `amelia_before_appointment_added_filter($appointmentData, $service->toArray(), $paymentData)`
 - **Blocked on:** (1) Daniel visual confirm of Phase A, (2) Daniel enables Distance Matrix API on GCP for key `AIzaSyDvUqJXEAcikf4OjoyWwgbiuZX0iTwlrsw`
+
+---
+
+## Previous State — 2026-04-20 (Google Maps session)
+
+### Work completed that session
+
+| Fix | Issue | Change | Verified |
+|-----|-------|--------|----------|
+| Google Maps API key replaced | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | `amelia_settings.general.gMapApiKey` → `AIzaSyDvUqJXEAcikf4OjoyWwgbiuZX0iTwlrsw` | ✅ PHP runtime |
+| DB custom fields #20/#21/#27 → address type | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | `wp_amelia_custom_fields` `type` column | ✅ SSH |
+| amelia_stash rebuilt from DB | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | 13 custom fields, correct `services:[{id:N}]` format | ✅ JS in-browser |
+| Vue crash fixed (iye TypeError) | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | stash had `serviceIds:[N]`, Vue needed `services:[{id:N}]` | ✅ code-verified |
 
 ---
 
