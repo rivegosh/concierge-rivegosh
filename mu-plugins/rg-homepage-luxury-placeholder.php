@@ -39,7 +39,7 @@ add_action( 'wp_footer', function() {
 	echo '  display: block !important; ';
 	echo '  width: 100% !important; ';
 	echo '  height: 350px !important; ';
-	echo '  margin: 0 !important; ';
+	echo '  margin: 50px 0 !important; ';
 	echo '  padding: 0 !important; ';
 	echo '  background-image: url("' . esc_url( $banner_url ) . '") !important; ';
 	echo '  background-size: cover !important; ';
