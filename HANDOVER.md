@@ -1,9 +1,9 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-20 | **Session:** Google Maps route panel + address field types fixed
+**Date:** 2026-04-20 | **Session:** Google Maps route panel + select dropdown contrast + GCP blocked
 
 ---
 
-## Current State — 2026-04-20 (end of session, third pass)
+## Current State — 2026-04-20 (end of session, fourth pass)
 
 ### Work completed this session
 
@@ -11,16 +11,30 @@
 |-----|------|--------|----------|
 | Address fields 20/21/27 wrong type | DB + stash | `type=text` → `type=address` in `wp_amelia_custom_fields` + stash rebuild. Vue was rendering plain `<input>` not Google Maps autocomplete | ✅ `window.ameliaEntities` shows type=address for all 3 fields |
 | Google Maps route panel | `rg-booking-maps-display.php` (new) | MutationObserver on `.amelia-v2-booking` → detects `.am-fs__info` (InfoStep) → injects dark `#rg-map-panel` → DirectionsService renders pickup→destination route. Debounced input listener + body MutationObserver for dropdown removal | ✅ script loads, Amelia class guard passes |
+| Map fallback mode | `rg-booking-maps-display.php` | MutationObserver on map panel detects `.gm-err-container` instantly → switches to dark luxury fallback panel with "View Route on Google Maps" link. Fires before route update event. | ✅ code-verified |
 | Vehicle image gone again | `rg-amelia-contrast.php` | `background:` shorthand → `background-color:` longhand on `[class*="fcis__gallery"]` | ✅ screenshot |
-| Suitcase dropdown invisible (#23) | `rg-amelia-contrast.php` | `.am-adv-select__item-label` color fix | ✅ CSS injected |
+| Suitcase/passenger dropdown invisible — open popper | `rg-amelia-select-dropdown-contrast.php` v1.1.0 (new) | Dark luxury for Element Plus v2 teleported popper + COLLAPSED trigger. `el-select-dropdown__item` + `el-select__selected-item` / `__placeholder` all champagne/cream. | ✅ CSS deployed; Daniel visual confirm pending |
 | Nav dropdowns broken on WC pages | `rg-misc-css.php` | `position:relative` on `li.menu-item-has-children` so `top:100%` anchors to nav item | ✅ screenshot |
 | 3 black pills on cart | `rg-misc-css.php` | `.h-hamburger-button` hidden `≥992px` | ✅ screenshot |
 | Cart page blank | SSH WP option | `woocommerce_coming_soon=no` | ✅ screenshot |
+| Git sync — 2 server-only files | git commit 2932d94 | Pulled `rg-amelia-select-dropdown-contrast.php` + `rg-colibri-fonts-trim.php` from server into git | ✅ committed |
 
 ### What still needs Daniel to verify
-- **Google Maps autocomplete + route map visible** in "Your Information" step — log in as customer → advance through wizard → confirm Pickup/Destination show Google autocomplete + map renders route below
-- **Suitcase dropdown numbers (1–8) visible in white/cream** — same step
+- **Google Maps autocomplete + route map visible** in "Your Information" step — log in as customer → advance through wizard → confirm Pickup/Destination show Google autocomplete + map renders route below (currently shows fallback because Maps JS API not enabled — see GCP blocker below)
+- **Suitcase dropdown numbers (1–8) visible in white/cream** — select a value (e.g. "2"), close dropdown, confirm collapsed trigger shows "2" in cream text (not dark/invisible)
 - **Cart after real booking** — test full wizard → click "Continue to Payment" → confirm cart shows correctly
+
+### ⚠️ GCP BLOCKER — Daniel must do this
+Maps tile rendering and autocomplete require Google Cloud APIs enabled. **Must use Daniel's Google account, NOT Roderic's** (Roderic's account hit billing project limit).
+
+Daniel steps:
+1. Go to `console.cloud.google.com` — sign in with **your own Google account**
+2. Switch project to **"Rive Gosh"** (ID: `gen-lang-client-0317106618`)
+3. APIs & Services → Library → search and enable **"Maps JavaScript API"**
+4. Same place → enable **"Directions API"**
+5. When prompted, link your billing account to the project
+
+Once done: map tiles render automatically (no code change needed). Also needed for Phase B: enable **"Distance Matrix API"** (for surcharge calculation).
 
 ### ⚠️ Key facts: address fields + map injection
 - Custom fields #20 (Pickup), #21 (Destination), #27 (Pickup — secondary service set) MUST stay `type=address` in DB. If Amelia plugin update resets them to `text`, the autocomplete breaks AND the map panel won't fire (input IDs only exist for address-type fields).
