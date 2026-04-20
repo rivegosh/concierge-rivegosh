@@ -81,6 +81,37 @@ add_action( 'wp_footer', function () {
 	body:has(.am-cat__wrapper) .h-column__inner {
 		background-color: transparent !important;
 	}
+
+	/* ── Nav sub-menu fallback: WC pages missing h-dropdown-menu class ──
+	   Root cause: Colibri omits h-dropdown-menu + h-menu-horizontal on
+	   .h-menu on WooCommerce pages. Without those classes, the Colibri
+	   rules (.h-dropdown-menu>...{opacity:0}) don't match and sub-menus
+	   stay visible and position:static (pushing content down).
+	   This rule replicates the behaviour without requiring those classes.
+	   On pages that DO have h-dropdown-menu, Colibri's higher-specificity
+	   rule takes precedence — this is a silent fallback only. */
+	.h-menu > div > .colibri-menu-container > ul.colibri-menu li.menu-item-has-children {
+		position: relative;
+	}
+	.h-menu > div > .colibri-menu-container > ul.colibri-menu li > ul.sub-menu {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		z-index: 99999;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.15s ease;
+		min-width: 200px;
+	}
+	.h-menu > div > .colibri-menu-container > ul.colibri-menu li.menu-item-has-children:hover > ul.sub-menu {
+		opacity: 1;
+		pointer-events: auto;
+	}
+	/* Colibri omits has-offcanvas-mobile class on WC pages → hamburger
+	   icon renders at full column height on desktop. Hide it above tablet. */
+	@media (min-width: 992px) {
+		.h-hamburger-button { display: none !important; }
+	}
 	</style>
 	<script id="rg-legacy-contrast-js">
 	(function () {
