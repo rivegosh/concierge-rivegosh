@@ -3431,3 +3431,60 @@ function rg_cart_timeslot_contrast_css() { ?>
 
 </style>
 <?php }
+
+/* ============================================================
+   AM-ADV-SELECT (custom field "select" type) CONTRAST — #85
+   Root cause: AmAdvancedSelect component uses .am-adv-select__item
+   with --am-c-main-text (#1A2C37) — invisible on dark bg.
+   Different from AmSelect (.am-select-option) used for month/year.
+   ============================================================ */
+add_action( 'wp_footer', 'rg_adv_select_contrast_css', 99999 );
+function rg_adv_select_contrast_css() { ?>
+<style id="rg-adv-select-contrast">
+
+/* ── Dropdown wrapper / popper ────────────────────────────── */
+.am-adv-select__wrapper {
+    background: #1a1408 !important;
+    border: 1px solid rgba(204, 197, 147, 0.3) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    border-radius: 2px !important;
+}
+
+/* ── Popper heading ───────────────────────────────────────── */
+.am-adv-select__popper-heading {
+    color: rgba(204, 197, 147, 0.65) !important;
+    border-bottom: 1px solid rgba(204, 197, 147, 0.15) !important;
+}
+
+/* ── Each option item ─────────────────────────────────────── */
+.am-adv-select__item {
+    color: rgba(240, 235, 225, 0.85) !important;
+    background: transparent !important;
+}
+
+/* ── Item sub-elements ────────────────────────────────────── */
+.am-adv-select__item-label {
+    color: rgba(240, 235, 225, 0.85) !important;
+}
+.am-adv-select__item-price,
+.am-adv-select__item-quantity,
+.am-adv-select__item-tax {
+    color: rgba(204, 197, 147, 0.75) !important;
+}
+
+/* ── Hover state ──────────────────────────────────────────── */
+.am-adv-select__item:hover,
+.am-adv-select__item:hover .am-adv-select__item-label {
+    background: rgba(204, 197, 147, 0.1) !important;
+    color: #CCC593 !important;
+}
+
+/* ── Selected / checked state ─────────────────────────────── */
+.am-adv-select__item-checked,
+.am-adv-select__item-checked .am-adv-select__item-label {
+    color: #CCC593 !important;
+    font-weight: 500 !important;
+}
+
+</style>
+<?php }
