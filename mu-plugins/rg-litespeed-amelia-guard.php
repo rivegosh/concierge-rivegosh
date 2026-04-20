@@ -6,8 +6,9 @@
  *              /booking-pro-panel/ blank-page regression from returning if
  *              someone flips the toggle in LiteSpeed admin.
  * Author: RG
- * Version: 1.0.1
+ * Version: 1.0.2
  * Created: 2026-04-17
+ * Updated: 2026-04-20 (v1.0.2 — skip on Amelia admin pages per #75 / Daniel Customizer block)
  * Review-by: 2026-10-17
  *
  * ╔══════════════════════════════════════════════════════════════════╗
@@ -59,6 +60,20 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 add_action( 'admin_init', 'rivegosh_litespeed_amelia_guard', 1 );
 function rivegosh_litespeed_amelia_guard() {
+	// v1.0.2: Skip on Amelia's own admin screens so option writes + error_log
+	// can't interfere with the Customizer / Settings AJAX save lifecycle.
+	// The guard still fires on every OTHER admin page load, so LS toggles
+	// are re-asserted within one click of any non-Amelia admin nav.
+	if ( isset( $_GET['page'] ) && is_string( $_GET['page'] ) && strpos( $_GET['page'], 'wpamelia-' ) === 0 ) {
+		return;
+	}
+	if ( wp_doing_ajax() ) {
+		$action = isset( $_REQUEST['action'] ) ? (string) $_REQUEST['action'] : '';
+		if ( $action && strpos( $action, 'wpamelia' ) !== false ) {
+			return;
+		}
+	}
+
 	// Only act if LiteSpeed Cache is active.
 	if ( ! function_exists( 'run_litespeed_cache' ) && ! class_exists( 'LiteSpeed\Core' ) ) {
 		return;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Rive Gosh — Amelia Invoice Fixes (v2.0)
+ * Rive Gosh — Amelia Invoice Fixes (v2.1)
  *
  * FIX 1 (CRITICAL): AMELIA_UPLOADS_URL http/https mismatch.
  * Hostinger terminates SSL at LiteSpeed — PHP sees HTTP. Amelia uses
@@ -11,6 +11,12 @@
  * FIX 2: Invoice template logo sizing (50x50 square → 120x42 proportional).
  * Amelia hardcodes width:50px height:50px on the invoice logo.
  * Auto-patches invoice.inc after any Amelia update.
+ *
+ * v2.1 (2026-04-20): Skip the template patch on Amelia admin screens + AJAX.
+ * Daniel could not save Amelia Customizer — writing to a plugin-owned file
+ * mid-admin-request is the kind of side effect that trips integrity/MD5
+ * checks and can block settings persistence. Frontend + upgrader hooks
+ * still fire, so the patch stays applied after any Amelia update.
  */
 
 // FIX 1: Force AMELIA_UPLOADS_URL to use https
@@ -38,6 +44,18 @@ function rg_amelia_invoice_patch_on_upgrade($upgrader, $hook_extra) {
 }
 
 function rg_amelia_invoice_patch_apply() {
+    // v2.1: Never write to Amelia's template file during an Amelia admin
+    // request. Writing to a plugin-owned file mid-Customizer-save can
+    // trip integrity checks and block settings persistence. Upgrader +
+    // frontend init still cover re-applying the patch after updates.
+    if (wp_doing_ajax()) {
+        $action = isset($_REQUEST["action"]) ? (string) $_REQUEST["action"] : "";
+        if ($action && strpos($action, "wpamelia") !== false) { return; }
+    }
+    if (is_admin() && isset($_GET["page"]) && is_string($_GET["page"]) && strpos($_GET["page"], "wpamelia-") === 0) {
+        return;
+    }
+
     $template = WP_PLUGIN_DIR . "/ameliabooking/templates/invoice/invoice.inc";
     if (!file_exists($template) || !is_writable($template)) { return; }
     $content = file_get_contents($template);
