@@ -34,6 +34,13 @@ add_action( 'wp_footer', function() {
 	echo '  max-height: 140px !important; ';
 	echo '}';
 
+	// Widen text paragraphs to prevent widow/orphan words
+	echo 'body.page-id-67094 .style-local-67094-c2 p { ';
+	echo '  max-width: 900px !important; ';
+	echo '  margin-left: auto !important; ';
+	echo '  margin-right: auto !important; ';
+	echo '}';
+
 	// Unlock bottom embed that was blocking scroll
 	// Constrain iframe height instead of hiding it
 	echo 'body.page-id-67094 iframe { ';
