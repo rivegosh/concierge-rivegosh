@@ -1211,12 +1211,16 @@ function rg_amelia_detail_redesign() {
     }
 
     /* ─── Car image: show full car, no cropping ──────────────── */
+    /* NOTE: use background-color longhand (not `background` shorthand) so
+       Amelia's inline `background-image: url(...)` on .am-fcis__gallery-hero
+       survives — the shorthand resets background-image to initial and was
+       the cause of the black-rectangle hero bug (2026-04-20). */
     .amelia-v2-booking .am-fcis__media,
     .amelia-v2-booking [class*="fcis__gallery"],
     .amelia-v2-booking .am-fcis__image-wrapper {
         min-height: 240px !important;
         max-height: 300px !important;
-        background: #0a0a0a !important;
+        background-color: #0a0a0a !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -3348,3 +3352,82 @@ function rg_amelia_employee_login_reskin() {
     </style>
     <?php
 }
+
+/* ============================================================
+   CART STEP + TIME SLOT CONTRAST FIX — 2026-04-20 — #85
+   Root cause: --am-c-main-text: #1A2C37 (dark navy) was designed
+   for Amelia's light theme. Dark luxury bg makes it invisible.
+   Also fixes time slot buttons using --am-c-primary: #1246D6.
+   ============================================================ */
+add_action( 'wp_footer', 'rg_cart_timeslot_contrast_css', 99999 );
+function rg_cart_timeslot_contrast_css() { ?>
+<style id="rg-cart-timeslot-contrast">
+
+/* ── CART STEP: intro text ───────────────────────────────── */
+.am-fs__cart-title {
+    color: rgba(220, 215, 200, 0.75) !important;
+}
+
+/* ── CART STEP: "Service" / "Extras" section labels ─────── */
+.am-fs__ci-title {
+    color: rgba(204, 197, 147, 0.65) !important;
+    text-transform: uppercase !important;
+    font-size: 10px !important;
+    letter-spacing: 0.1em !important;
+}
+
+/* ── CART STEP: service name row (wrapper had dark text) ─── */
+.am-fs__ci-prod__title {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* ── CART STEP: price column on service row ──────────────── */
+.am-fs__ci-prod__price {
+    color: #CCC593 !important;
+}
+
+/* ── CART STEP: Subtotal / Total labels + amounts ────────── */
+.am-fs__ci-cost__title,
+.am-fs__ci-cost__price {
+    color: rgba(220, 215, 200, 0.85) !important;
+}
+
+/* ── CART STEP: Total Price row — slightly brighter ─────── */
+.am-fs__ci-total .am-fs__ci-cost__title,
+.am-fs__ci-total .am-fs__ci-cost__price {
+    color: #CCC593 !important;
+    font-weight: 600 !important;
+}
+
+/* ── CART STEP: "Edit" action link ──────────────────────── */
+.am-fs__ci-manage__edit {
+    color: #CCC593 !important;
+}
+.am-fs__ci-manage__edit:hover {
+    color: #E8DFB5 !important;
+}
+
+/* ── CART STEP: total price badge blue bg → dark luxury ─── */
+.am-fs__cserv-price {
+    background: rgba(204, 197, 147, 0.12) !important;
+    border: 1px solid rgba(204, 197, 147, 0.25) !important;
+    color: #CCC593 !important;
+}
+
+/* ── TIME SLOTS: unselected — dark blue text on faint blue bg */
+.am-advsc__slots-item__inner {
+    color: rgba(220, 215, 200, 0.85) !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(204, 197, 147, 0.2) !important;
+}
+
+/* ── TIME SLOTS: selected — white on blue → champagne on dark */
+.am-advsc__slots-item__selected .am-advsc__slots-item__inner,
+.am-advsc__slots-item--selected .am-advsc__slots-item__inner {
+    color: #CCC593 !important;
+    background-color: rgba(204, 197, 147, 0.15) !important;
+    border-color: rgba(204, 197, 147, 0.6) !important;
+}
+
+</style>
+<?php }
