@@ -3620,6 +3620,40 @@ table.shop_table .order-total .amount,
     box-shadow: 0 0 0 2px rgba(204, 197, 147, 0.1) !important;
 }
 
+/* ── Colibri section/column containers → transparent on cart/checkout ─── */
+/* Root cause of 3 black pills: Colibri assigns background-color to        */
+/* .h-column__inner / .h-section via its own scoped CSS. Making them       */
+/* transparent lets the dark body (#1A1A1A) show through and the           */
+/* WC content above becomes visible.                                        */
+body.woocommerce-cart .h-section,
+body.woocommerce-cart .h-row,
+body.woocommerce-cart .h-col,
+body.woocommerce-cart .h-column,
+body.woocommerce-cart .h-column__inner,
+body.woocommerce-cart .h-section-global-spacing,
+body.woocommerce-checkout .h-section,
+body.woocommerce-checkout .h-row,
+body.woocommerce-checkout .h-col,
+body.woocommerce-checkout .h-column,
+body.woocommerce-checkout .h-column__inner,
+body.woocommerce-checkout .h-section-global-spacing,
+body.page-id-14 .h-section,
+body.page-id-14 .h-column__inner,
+body.page-id-14 .wp-block-woocommerce-classic-shortcode,
+body.page-id-15 .h-section,
+body.page-id-15 .h-column__inner {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* ── WC cart/checkout wrapper text ──────────────────────── */
+body.woocommerce-cart .woocommerce,
+body.woocommerce-checkout .woocommerce,
+body.page-id-14 .woocommerce,
+body.page-id-15 .woocommerce {
+    color: rgba(220, 215, 200, 0.85) !important;
+}
+
 /* ── "Proceed to Checkout" button — full width treatment ─── */
 .wc-proceed-to-checkout {
     padding-top: 16px !important;
