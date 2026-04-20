@@ -194,9 +194,6 @@ add_action( 'wp_footer', function () {
 		line-height: 1.25 !important;
 	}
 	.am-fcil__filter { display: none !important; }
-	/* Remove white photographer backdrop from catalog card images via CSS.
-	   multiply: white(255)×dark-bg≈dark, black-car(0)×anything=0. No img edit needed. */
-	.am-fcil__item-hero { mix-blend-mode: multiply; }
 	</style>
 
 	<?php
