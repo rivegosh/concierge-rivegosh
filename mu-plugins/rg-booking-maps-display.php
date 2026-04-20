@@ -108,12 +108,13 @@ add_action( 'wp_footer', function () {
             return null;
         }
 
+        var fallbackMode = false; // true when Maps JS tile API unavailable
+
         function injectMap(infoStep) {
             if (mapInjected) return;
             if (!window.google || !window.google.maps) return;
             mapInjected = true;
 
-            // Wrap infoStep content in flex row on desktop
             infoStep.classList.add('rg-info-with-map');
 
             var panel = document.createElement('div');
@@ -125,21 +126,73 @@ add_action( 'wp_footer', function () {
             label.textContent = 'Route Preview';
             infoStep.appendChild(label);
 
-            dirService = new google.maps.DirectionsService();
-            mapInstance = new google.maps.Map(panel, {
-                center: { lat: 48.8566, lng: 2.3522 },
-                zoom: 10,
-                styles: DARK_STYLE,
-                disableDefaultUI: true,
-                zoomControl: true,
+            // Watch for Google's error container injected into the panel
+            // (fires on ExpiredKeyMapError / key restriction before setTimeout can react)
+            var mapErrObs = new MutationObserver(function () {
+                if (panel.querySelector('.gm-err-container, .gm-err-message, .gm-err')) {
+                    mapErrObs.disconnect();
+                    fallbackMode = true;
+                    showFallbackPanel(panel, label, lastPickup, lastDest);
+                }
             });
-            dirRenderer = new google.maps.DirectionsRenderer({
-                polylineOptions: { strokeColor: '#ccc593', strokeWeight: 4 },
-                suppressMarkers: false,
-            });
-            dirRenderer.setMap(mapInstance);
+            mapErrObs.observe(panel, { childList: true, subtree: true });
+
+            // Try full tile map
+            try {
+                dirService = new google.maps.DirectionsService();
+                mapInstance = new google.maps.Map(panel, {
+                    center: { lat: 37.0902, lng: -95.7129 },
+                    zoom: 5,
+                    styles: DARK_STYLE,
+                    disableDefaultUI: true,
+                    zoomControl: true,
+                });
+                dirRenderer = new google.maps.DirectionsRenderer({
+                    polylineOptions: { strokeColor: '#ccc593', strokeWeight: 4 },
+                    suppressMarkers: false,
+                });
+                dirRenderer.setMap(mapInstance);
+            } catch (e) {
+                fallbackMode = true;
+                mapErrObs.disconnect();
+                showFallbackPanel(panel, label, '', '');
+            }
 
             wireAddressListeners();
+        }
+
+        function showFallbackPanel(panel, label, pickup, dest) {
+            panel.innerHTML = '';
+            panel.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f0c08;border:1px solid rgba(204,197,147,0.35);border-radius:8px;padding:24px;box-sizing:border-box;';
+
+            var icon = document.createElement('div');
+            icon.innerHTML = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ccc593" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>';
+            panel.appendChild(icon);
+
+            var msg = document.createElement('div');
+            msg.style.cssText = 'color:rgba(204,197,147,0.7);font-size:12px;text-align:center;margin:12px 0 4px;letter-spacing:0.06em;';
+            msg.textContent = pickup && dest ? 'Route ready' : 'Enter pickup & destination';
+            panel.appendChild(msg);
+
+            var link = document.createElement('a');
+            link.id = 'rg-map-route-link';
+            link.target = '_blank';
+            link.rel = 'noopener';
+            link.style.cssText = 'display:inline-block;margin-top:12px;padding:10px 20px;background:transparent;border:1px solid rgba(204,197,147,0.5);border-radius:4px;color:#ccc593;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:border-color 0.2s;';
+            link.textContent = 'View Route on Google Maps';
+            link.style.opacity = (pickup && dest) ? '1' : '0.3';
+            link.style.pointerEvents = (pickup && dest) ? 'auto' : 'none';
+
+            if (pickup && dest) {
+                link.href = 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(pickup) + '&destination=' + encodeURIComponent(dest) + '&travelmode=driving';
+            } else {
+                link.href = '#';
+            }
+            panel.appendChild(link);
+
+            if (label) {
+                label.textContent = pickup && dest ? 'Route ready — click to open' : '';
+            }
         }
 
         function wireAddressListeners() {
@@ -166,7 +219,6 @@ add_action( 'wp_footer', function () {
         }
 
         function tryUpdateRoute() {
-            if (!dirService || !dirRenderer) return;
             var pair = getPickupDestPair();
             if (!pair || !pair.pickupEl) return;
 
@@ -174,10 +226,17 @@ add_action( 'wp_footer', function () {
             var dest = pair.destEl ? pair.destEl.value.trim() : '';
             if (!pickup || !dest) return;
 
-            // Avoid redundant API calls
             if (pickup === lastPickup && dest === lastDest) return;
             lastPickup = pickup;
             lastDest = dest;
+
+            // Fallback mode: just update the link button
+            if (fallbackMode || !dirService || !dirRenderer) {
+                var panel = document.getElementById('rg-map-panel');
+                var label = document.getElementById('rg-map-panel-label');
+                if (panel) showFallbackPanel(panel, label, pickup, dest);
+                return;
+            }
 
             dirService.route({
                 origin: pickup,
