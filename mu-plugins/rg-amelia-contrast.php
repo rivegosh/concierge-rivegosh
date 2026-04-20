@@ -3488,3 +3488,164 @@ function rg_adv_select_contrast_css() { ?>
 
 </style>
 <?php }
+
+/* ============================================================
+   WOOCOMMERCE CART + CHECKOUT DARK LUXURY — 2026-04-20 — #85
+   Root cause: WooCommerce Coming Soon (store-pages) was hiding
+   cart/checkout. Now visible but WC default light-theme styles
+   clash with dark luxury background.
+   ============================================================ */
+add_action( 'wp_footer', 'rg_wc_cart_checkout_css', 99999 );
+function rg_wc_cart_checkout_css() {
+    if ( ! ( is_cart() || is_checkout() || is_page(14) || is_page(15) ) ) return;
+    ?>
+<style id="rg-wc-cart-checkout">
+
+/* ── Page body ───────────────────────────────────────────── */
+body.woocommerce-cart .entry-content,
+body.woocommerce-checkout .entry-content {
+    color: rgba(220, 215, 200, 0.85) !important;
+}
+
+/* ── Notices (info / empty cart / error / success) ───────── */
+.woocommerce-info,
+.woocommerce-message,
+.woocommerce-error,
+.cart-empty.woocommerce-info {
+    background: rgba(26, 20, 8, 0.85) !important;
+    border-top-color: #CCC593 !important;
+    color: rgba(220, 215, 200, 0.85) !important;
+    border-left: 4px solid rgba(204, 197, 147, 0.5) !important;
+}
+.woocommerce-info::before,
+.woocommerce-message::before {
+    color: #CCC593 !important;
+}
+
+/* ── All WC buttons → champagne luxury ──────────────────── */
+.woocommerce .button,
+.woocommerce button.button,
+.woocommerce a.button,
+.woocommerce input.button,
+.woocommerce #respond input#submit,
+.wc-backward,
+.return-to-shop .button,
+.wc-proceed-to-checkout .checkout-button {
+    background: #CCC593 !important;
+    background-color: #CCC593 !important;
+    color: #1a1a1a !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    padding: 14px 28px !important;
+}
+.woocommerce .button:hover,
+.woocommerce a.button:hover,
+.wc-proceed-to-checkout .checkout-button:hover {
+    background: #E8DFB5 !important;
+    background-color: #E8DFB5 !important;
+    color: #0c0c0c !important;
+}
+
+/* ── Cart table ──────────────────────────────────────────── */
+table.shop_table,
+table.woocommerce-checkout-review-order-table {
+    background: rgba(26, 20, 8, 0.6) !important;
+    border: 1px solid rgba(204, 197, 147, 0.2) !important;
+    color: rgba(220, 215, 200, 0.85) !important;
+    border-collapse: collapse !important;
+}
+table.shop_table th,
+table.woocommerce-checkout-review-order-table th {
+    background: rgba(204, 197, 147, 0.08) !important;
+    color: rgba(204, 197, 147, 0.75) !important;
+    border-bottom: 1px solid rgba(204, 197, 147, 0.2) !important;
+    font-size: 11px !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+}
+table.shop_table td,
+table.woocommerce-checkout-review-order-table td {
+    color: rgba(220, 215, 200, 0.85) !important;
+    border-bottom: 1px solid rgba(204, 197, 147, 0.1) !important;
+}
+table.shop_table .product-name a,
+table.shop_table .product-name {
+    color: rgba(255, 255, 255, 0.88) !important;
+}
+table.shop_table .product-price,
+table.shop_table .product-subtotal,
+table.shop_table .order-total .amount,
+.cart_totals .order-total .amount {
+    color: #CCC593 !important;
+    font-weight: 600 !important;
+}
+
+/* ── Cart totals sidebar ─────────────────────────────────── */
+.cart-collaterals,
+.cart_totals,
+.cart_totals h2 {
+    color: rgba(220, 215, 200, 0.85) !important;
+}
+.cart_totals table th,
+.cart_totals table td {
+    border-bottom: 1px solid rgba(204, 197, 147, 0.12) !important;
+    color: rgba(220, 215, 200, 0.85) !important;
+}
+
+/* ── Checkout form fields ────────────────────────────────── */
+.woocommerce-checkout .form-row label,
+.woocommerce-billing-fields h3,
+.woocommerce-shipping-fields h3,
+.woocommerce-additional-fields h3,
+#order_review_heading {
+    color: rgba(204, 197, 147, 0.85) !important;
+}
+.woocommerce-checkout .input-text,
+.woocommerce-checkout select,
+.woocommerce-checkout textarea {
+    background: rgba(20, 17, 12, 0.9) !important;
+    border: 1px solid rgba(204, 197, 147, 0.35) !important;
+    color: rgba(220, 215, 200, 0.9) !important;
+    border-radius: 4px !important;
+}
+.woocommerce-checkout .input-text:focus,
+.woocommerce-checkout select:focus {
+    border-color: rgba(204, 197, 147, 0.7) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(204, 197, 147, 0.1) !important;
+}
+
+/* ── "Proceed to Checkout" button — full width treatment ─── */
+.wc-proceed-to-checkout {
+    padding-top: 16px !important;
+}
+.wc-proceed-to-checkout .checkout-button {
+    width: 100% !important;
+    display: block !important;
+    text-align: center !important;
+    padding: 16px !important;
+    font-size: 13px !important;
+}
+
+/* ── Payment methods on checkout ─────────────────────────── */
+#payment {
+    background: rgba(26, 20, 8, 0.6) !important;
+    border-radius: 4px !important;
+    border: 1px solid rgba(204, 197, 147, 0.2) !important;
+}
+#payment ul.payment_methods li label {
+    color: rgba(220, 215, 200, 0.85) !important;
+}
+#payment .payment_box {
+    background: rgba(204, 197, 147, 0.06) !important;
+    color: rgba(220, 215, 200, 0.75) !important;
+}
+
+</style>
+    <?php
+}
