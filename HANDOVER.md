@@ -1,24 +1,31 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-20 | **Session:** Booking wizard + cart + nav fixes complete
+**Date:** 2026-04-20 | **Session:** Google Maps route panel + address field types fixed
 
 ---
 
-## Current State — 2026-04-20 (end of session, second pass)
+## Current State — 2026-04-20 (end of session, third pass)
 
 ### Work completed this session
 
 | Fix | File | Change | Verified |
 |-----|------|--------|----------|
-| Vehicle image gone again | `rg-amelia-contrast.php` | `background:` shorthand → `background-color:` longhand on `[class*="fcis__gallery"]` — shorthand was resetting Vue's inline `background-image` to `initial !important` | ✅ screenshot |
-| Suitcase dropdown invisible (custom field #23) | `rg-amelia-contrast.php` | Added `.am-adv-select__item` + `.am-adv-select__item-label { color: rgba(240,235,225,0.85) }` | ✅ CSS injected, needs Daniel manual verify |
-| Nav all dropdowns expanded on /your-booking/ | `rg-misc-css.php` | Colibri omits `h-dropdown-menu` + `h-menu-horizontal` on WC pages → sub-menus rendered position:static, opacity:1. Fixed with CSS fallback + `position:relative` on li | ✅ screenshot (hover shows VIP CLIENT dropdown) |
-| 3 black pills on /your-booking/ | `rg-misc-css.php` | `.h-hamburger-button` hidden at `≥992px` — hamburger SVG (750px tall) was rendering on desktop without `has-offcanvas-mobile` class | ✅ screenshot |
-| Cart page blank (no content) | SSH WP option | `woocommerce_coming_soon=yes` was replacing ALL WC store pages. Disabled: `wp option update woocommerce_coming_soon no` | ✅ screenshot (cart shows booking + PROCEED TO CHECKOUT) |
+| Address fields 20/21/27 wrong type | DB + stash | `type=text` → `type=address` in `wp_amelia_custom_fields` + stash rebuild. Vue was rendering plain `<input>` not Google Maps autocomplete | ✅ `window.ameliaEntities` shows type=address for all 3 fields |
+| Google Maps route panel | `rg-booking-maps-display.php` (new) | MutationObserver on `.amelia-v2-booking` → detects `.am-fs__info` (InfoStep) → injects dark `#rg-map-panel` → DirectionsService renders pickup→destination route. Debounced input listener + body MutationObserver for dropdown removal | ✅ script loads, Amelia class guard passes |
+| Vehicle image gone again | `rg-amelia-contrast.php` | `background:` shorthand → `background-color:` longhand on `[class*="fcis__gallery"]` | ✅ screenshot |
+| Suitcase dropdown invisible (#23) | `rg-amelia-contrast.php` | `.am-adv-select__item-label` color fix | ✅ CSS injected |
+| Nav dropdowns broken on WC pages | `rg-misc-css.php` | `position:relative` on `li.menu-item-has-children` so `top:100%` anchors to nav item | ✅ screenshot |
+| 3 black pills on cart | `rg-misc-css.php` | `.h-hamburger-button` hidden `≥992px` | ✅ screenshot |
+| Cart page blank | SSH WP option | `woocommerce_coming_soon=no` | ✅ screenshot |
 
 ### What still needs Daniel to verify
-- **Suitcase dropdown numbers (1–8) visible in white/cream** — needs full booking wizard "Your Information" step (WC redirect blocks automation)
-- **Google Maps autocomplete on Pickup/Destination fields** — same step, same constraint
-- **Cart after real booking** — test full wizard → click "Continue to Payment" → confirm cart shows booking correctly
+- **Google Maps autocomplete + route map visible** in "Your Information" step — log in as customer → advance through wizard → confirm Pickup/Destination show Google autocomplete + map renders route below
+- **Suitcase dropdown numbers (1–8) visible in white/cream** — same step
+- **Cart after real booking** — test full wizard → click "Continue to Payment" → confirm cart shows correctly
+
+### ⚠️ Key facts: address fields + map injection
+- Custom fields #20 (Pickup), #21 (Destination), #27 (Pickup — secondary service set) MUST stay `type=address` in DB. If Amelia plugin update resets them to `text`, the autocomplete breaks AND the map panel won't fire (input IDs only exist for address-type fields).
+- After any Amelia update: run `wp eval-file /tmp/rg-rebuild-stash-customfields.php` AND check field types.
+- Map panel selector chain: `.amelia-v2-booking` → MutationObserver → `.am-fs__info` → inject `#rg-map-panel` → DirectionsService on address field input + body dropdown removal events.
 
 ### ⚠️ Anti-forget: WC coming-soon was silently killing cart
 `woocommerce_coming_soon = yes` + `woocommerce_store_pages_only = yes` were active. This replaces all WC store pages (cart, checkout, shop) with "Great things are on the horizon" placeholder. Root cause: WooCommerce admin setting, not a plugin/theme conflict. Now OFF.
