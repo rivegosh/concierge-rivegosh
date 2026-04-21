@@ -10,6 +10,222 @@ This rule has no exceptions. Skipping it has repeatedly caused regressions. Read
 
 ---
 
+## 🎓 HARD-WON RULES (2026-04-20 — READ BEFORE ANY WORK)
+
+**These are the lessons from 3 hours of painful debugging. Every single one was discovered by breaking something. Future AI: internalize these BEFORE touching anything.**
+
+### RULE 1 — You cannot trust your eyes. Use the contrast scanner.
+
+Humans (and LLMs reading screenshots) miss dark-on-dark text because it's invisible. You will ship regressions if you rely on visual inspection. Run the WCAG contrast scanner BEFORE and AFTER every CSS change:
+
+```javascript
+// Paste into Chrome console or run via Chrome MCP on the target page.
+// Returns total count + worst 15 violations. 4.5:1 is WCAG AA floor.
+(() => {
+  function parseColor(c) {
+    if (!c || c === 'transparent') return null;
+    const m = c.match(/rgba?\(([^)]+)\)/);
+    if (!m) return null;
+    const [r, g, b, a] = m[1].split(',').map(s => parseFloat(s));
+    return { r, g, b, a: isNaN(a) ? 1 : a };
+  }
+  function lum({r,g,b}) {
+    const [R,G,B] = [r,g,b].map(v => { v/=255; return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); });
+    return 0.2126*R + 0.7152*G + 0.0722*B;
+  }
+  function ratio(c1, c2) { const l1=lum(c1), l2=lum(c2); return (Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05); }
+  function effBg(el) {
+    let cur=el, stack=[];
+    while (cur && cur !== document.documentElement) {
+      const c = parseColor(getComputedStyle(cur).backgroundColor);
+      if (c && c.a > 0) stack.push(c);
+      cur = cur.parentElement;
+    }
+    let bg = { r:15, g:12, b:8, a:1 }; // dark luxury body fallback
+    stack.reverse().forEach(c => {
+      const a = c.a;
+      bg = { r: c.r*a+bg.r*(1-a), g: c.g*a+bg.g*(1-a), b: c.b*a+bg.b*(1-a), a:1 };
+    });
+    return bg;
+  }
+  const v = [], seen = new Set();
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  let n; while ((n = w.nextNode())) {
+    const t = n.textContent.trim(); if (!t || t.length < 2) continue;
+    const el = n.parentElement; if (!el || seen.has(el)) continue;
+    seen.add(el);
+    const r = el.getBoundingClientRect(); if (r.width===0 || r.height===0) continue;
+    const s = getComputedStyle(el);
+    if (s.visibility==='hidden' || s.display==='none' || parseFloat(s.opacity)<0.05) continue;
+    const fg = parseColor(s.color); if (!fg) continue;
+    const bg = effBg(el);
+    const cmp = { r: fg.r*fg.a+bg.r*(1-fg.a), g: fg.g*fg.a+bg.g*(1-fg.a), b: fg.b*fg.a+bg.b*(1-fg.a) };
+    const rr = ratio(cmp, bg);
+    if (rr < 4.5) v.push({ text: t.slice(0,50), ratio: rr.toFixed(2), fg: s.color, bg: `rgb(${Math.round(bg.r)},${Math.round(bg.g)},${Math.round(bg.b)})`, cls: (el.className||'').toString().slice(0,60) });
+  }
+  return { url: location.href, total: v.length, worst: v.sort((a,b)=>parseFloat(a.ratio)-parseFloat(b.ratio)).slice(0,15) };
+})();
+```
+
+**Save this as `scripts/contrast-audit.js` and run it every time. "Black on black" is a real bug even when you can't see it.**
+
+### RULE 2 — Amelia v3 themes via CSS custom properties. Use the silver bullet.
+
+Amelia v3 renders its wizard inside `.amelia-v2-booking` and themes EVERY component via `var(--am-c-*)` variables on that root:
+
+| Variable | What it colors | Default (invisible on dark) |
+|----------|----------------|------------------------------|
+| `--am-c-main-text` | Body text | `#1A2C37` (dark navy) |
+| `--am-c-main-heading-text` | Headings | `#33434C` (dark slate) |
+| `--am-c-inp-text` | Input field text | `#1A2C37` |
+| `--am-c-drop-text` | Dropdown option text | `#0E1920` |
+| `--am-c-drop-bgr` | Dropdown background | `#FFFFFF` |
+| `--am-c-btn-sec-text` | Secondary button text | `#1A2C37` |
+| `--am-c-btn-prim` | Primary button bg | `#265CF2` |
+| `--am-c-btn-prim-text` | Primary button text | `#FFFFFF` |
+| `--am-c-sb-bgr` | Sidebar bg | `#17295a` |
+
+**Redefine these on `.amelia-v2-booking` and the fix cascades through thousands of rules in one stroke.** See `mu-plugins/rg-amelia-contrast-sweep.php`. Class-by-class overrides are slow, brittle, and always miss consumers.
+
+**Gotcha:** `.el-select-dropdown` and `.el-popper.el-select__popper` TELEPORT to `document.body` — they escape `.amelia-v2-booking` parent scope. Use `body:has(.amelia-v2-booking)` as the scope for teleported elements (zero bleed — only matches when Amelia is mounted).
+
+### RULE 3 — Filled vs outline buttons: one CSS mistake makes them invisible.
+
+**Amelia and Colibri both use `.am-button--filled` / `.h-link` with a champagne background (`rgba(204,197,147,0.92)`).** If you set `color: #CCC593` on these, you get CHAMPAGNE TEXT ON CHAMPAGNE BG = invisible.
+
+The rule:
+- `.am-button--filled` (any variant) → **dark text** (`#0f0c08`)
+- `.am-button--secondary:not(.am-button--filled)` (outline) → **champagne text** (`#CCC593`)
+- `.h-link.style-NNNN` with champagne bg → **dark text** (`#0f0c08`)
+
+This bit us twice on 2026-04-20 (Go Back button + Get The Golden Account button). Verify button visibility with the scanner after ANY button CSS change.
+
+### RULE 4 — SSH deploy pattern (CANONICAL — do not improvise).
+
+```bash
+SSH="ssh -p 65002 -i ~/.ssh/id_ed25519 u100747640@145.79.20.24"
+WP="wp --path=/home/u100747640/domains/rivegosh-concierge.com/public_html"
+MUP="/home/u100747640/domains/rivegosh-concierge.com/public_html/wp-content/mu-plugins"
+LSCSS="/home/u100747640/domains/rivegosh-concierge.com/public_html/wp-content/litespeed/css"
+
+# 1. SCP to /tmp
+scp -P 65002 -i ~/.ssh/id_ed25519 /tmp/plugin.php u100747640@145.79.20.24:/tmp/
+
+# 2. Lint + move + purge — ALL in one SSH call
+$SSH "php -l /tmp/plugin.php && mv /tmp/plugin.php $MUP/plugin.php && $WP litespeed-purge all && rm -rf $LSCSS/*"
+```
+
+**Why `rm -rf $LSCSS/*`:** `wp litespeed-purge all` invalidates the HTML cache but NOT the combined CSS cache. If you only run `litespeed-purge all`, your CSS change will appear to not work on the live site — you'll chase a phantom bug. **Always clear `wp-content/litespeed/css/` manually.**
+
+**Why lint first:** A PHP syntax error in a mu-plugin crashes the entire site. `php -l` catches it before the `mv`.
+
+### RULE 5 — LiteSpeed is protected by `rg-litespeed-amelia-guard.php`. Don't flip it.
+
+Amelia uses webpack dynamic imports. If LiteSpeed has `optm-js_min=1` or `optm-js_defer=1`, those imports 404 and the booking wizard goes blank. The guard plugin re-locks `optm-js_min=0` + `optm-js_defer=0` on every `admin_init`. If you think you need to enable JS minification, you don't. Leave it alone.
+
+### RULE 6 — `amelia_stash` is a SEPARATE cache from LiteSpeed.
+
+After any write to `wp_amelia_custom_fields`, `wp_amelia_services`, or `wp_amelia_events`, run the stash rebuild:
+
+```bash
+$SSH "$WP eval-file /tmp/rg-rebuild-stash-customfields.php"
+```
+
+Purging LiteSpeed does NOT update the stash. The wizard will serve stale field definitions until you rebuild.
+
+**Format rule for custom fields stash:** `customFields` must use `services:[{id:N}]`, NOT `serviceIds:[N]`. The v1 shape breaks the wizard silently.
+
+### RULE 7 — Coming Soon mode blocks guest access to wizards.
+
+WooCommerce "Coming Soon — Store pages only" mode redirects non-admin users from `/appointment/`, `/booking-pro-panel/`, `/booking-vip/` to home. This means:
+
+- **You cannot live-verify the Amelia wizard as a guest via Chrome MCP.**
+- **The curl of `/appointment/` will return home HTML, not the wizard.**
+- **Only a logged-in admin can see and test the wizard.**
+
+Options when you need to verify:
+1. Ask Daniel to screenshot the broken state (fastest)
+2. Ask Roderic to disable Coming Soon temporarily (risky — public reveal)
+3. Trust the CSS selector specificity and rely on scanner-before/after diff on pages you CAN reach (home, catalog, cart)
+
+**Never claim "the wizard is fixed" without admin-session verification.** State what you verified and what you couldn't.
+
+### RULE 8 — Colibri page scoping: use `body#colibri.page-id-N` (SAME ELEMENT).
+
+Per KB #49: Colibri puts the numeric page ID on `<body id="colibri" class="page-id-N ...">`. Use the compound selector on the SAME element:
+
+```css
+/* CORRECT — same element, both selectors */
+body#colibri.page-id-14 .woocommerce-cart-form { ... }
+
+/* WRONG — these look similar but descendant-combine differently */
+body#colibri .page-id-14 .woocommerce-cart-form { ... }
+body.page-id-14 .woocommerce-cart-form { ... }  /* sometimes works, sometimes doesn't */
+```
+
+### RULE 9 — Protected mu-plugins are SEALED. New fixes = new files.
+
+Any mu-plugin with `╔══ DO NOT DELETE — SIGNED-OFF FIX ══╗` banner is frozen. If you think the behavior is wrong:
+
+1. Open a GH issue explaining the regression risk
+2. Wait for Roderic's explicit approval
+3. Only then bump version, redeploy, re-verify
+
+**Do NOT edit a sealed mu-plugin in-place.** If you need a counter-fix, create a NEW mu-plugin that loads later (higher wp_footer priority number fires later in the CSS cascade).
+
+See "Protected mu-plugins" table below for the current list and reasoning.
+
+### RULE 10 — PHP lint + HEREDOC are mandatory for mu-plugin CSS.
+
+When embedding CSS via `add_action('wp_footer', ...)`:
+
+- Use `<?php ... ?>` wrapped around `<style>` blocks with raw CSS inside — do NOT put CSS inside a PHP string.
+- Run `php -l` on every file before `mv`. A syntax error 500s the whole site.
+- Keep `if ( ! defined( 'ABSPATH' ) ) exit;` as the first non-comment line.
+- Scope every CSS rule — zero bleed is the rule, not an aspiration.
+
+### RULE 11 — LiteSpeed CSS Combine creates stale cascades.
+
+If a style change appears to not take effect even after `litespeed-purge all`, the combined CSS file in `wp-content/litespeed/css/*.css` is stale. The fix is always `rm -rf wp-content/litespeed/css/*`. This is rolled into Rule 4's canonical deploy sequence — NEVER skip it.
+
+### RULE 12 — Always verify with a cache-busting query param.
+
+Browser cache + LiteSpeed CDN cache + service worker cache = three layers that can each serve stale content. When testing in Chrome MCP, use `?cb=YYYYMMDD-NN` or `?cb=verify-01` query strings. Each load should use a NEW cb value.
+
+### RULE 13 — Read the file. Trust nothing.
+
+Memory says "file exists" is not "file exists NOW." Before any SSH deploy, `ls -la $MUP/filename.php` to confirm current state. Before editing, `Read` the file. Claims like "I already deployed this" are worthless — verify.
+
+---
+
+## 🔧 KNOWN-BROKEN PATTERNS (what NOT to do)
+
+| Anti-pattern | Why it breaks | What to do instead |
+|--------------|---------------|---------------------|
+| `color: #CCC593` on `.am-button--filled` | Champagne text on champagne bg = invisible | Dark text (`#0f0c08`) on filled buttons |
+| `wp litespeed-purge all` without `rm -rf litespeed/css/*` | Combined CSS cache stays stale | Always run both (Rule 4) |
+| `body.page-id-N` alone | Sometimes matches, sometimes not | Use `body#colibri.page-id-N` (Rule 8) |
+| Editing a `DO NOT DELETE` mu-plugin | Breaks a signed-off fix | Open GH issue, wait for approval (Rule 9) |
+| Claiming "the wizard works" without admin-session test | Guest is redirected by Coming Soon | Ask Daniel to screenshot (Rule 7) |
+| Putting CSS inside a PHP string | Escaping hell + no syntax highlighting | Use `<?php ... ?>` around raw `<style>` (Rule 10) |
+| Writing inline `color: rgb(7,7,7)` | Carried over from light-bg era, invisible now | Run contrast scanner and override (Rule 1) |
+| Minifying or deferring Amelia JS | Webpack dynamic imports 404 | Keep LiteSpeed JS off (Rule 5) |
+| Using `serviceIds:[N]` in custom_fields | Breaks wizard silently | Use `services:[{id:N}]` (Rule 6) |
+| Using SVG logos | No Safe SVG plugin | PNG-24 with transparency (see Conventions) |
+
+---
+
+## 🧰 REUSABLE SCRIPTS
+
+| Script | Purpose | Where |
+|--------|---------|-------|
+| Contrast audit | Find all text with <4.5:1 ratio | Rule 1 above, inline |
+| amelia_stash rebuild | Resync custom field cache | `/tmp/rg-rebuild-stash-customfields.php` on server |
+| Plugin status snapshot | Active plugin list | `$SSH "$WP plugin list --status=active --format=csv"` |
+| mu-plugin listing | Confirm current mu-plugins | `$SSH "ls -la $MUP"` |
+
+---
+
 ## Project Overview
 
 WordPress + WooCommerce marketplace migration. Rebranding "Top VIP Driver" (VTC/luxury transport booking platform) to "Rive Gosh."
@@ -149,6 +365,10 @@ Each of these is a **frozen, signed-off fix** with a `DO NOT DELETE` banner in i
 | `mu-plugins/rg-appointment-redesign.php` | 1.2.3 | [68c2e5f](https://github.com/rivegosh/concierge-rivegosh/commit/68c2e5f) | [#80](https://github.com/rivegosh/concierge-rivegosh/issues/80) | Skins /appointment/ page (ID 44401) — vertical stepper (number + label + representative SVG icon) + 11 destination cards with champagne-gold hairline + centered airplane icons. Missed by #68 Amelia reskin (targeted 61860-c2 home, not 44401-*). Scope-guarded via is_page( 44401 ) — zero bleed. |
 | `mu-plugins/rg-appointment-gallery-hide.php` | 1.3.0 | [5577325](https://github.com/rivegosh/concierge-rivegosh/commit/5577325) | [#82](https://github.com/rivegosh/concierge-rivegosh/issues/82) | Hides .am-fcis__gallery-btn + .am-fcis__gallery-thumb__wrapper on /appointment/ (ID 44401). Keeps gallery container + hero (car photo). Nuclear CSS specificity (1,3,1) + JS MutationObserver with `style.setProperty('display','none','important')` — immune to all CSS battles. |
 | `mu-plugins/rg-catalog-luxury-reskin.php` | 2.0.0 | [8ee8645](https://github.com/rivegosh/concierge-rivegosh/commit/8ee8645) | [#82](https://github.com/rivegosh/concierge-rivegosh/issues/82) | Dark luxury for Amelia catalog + destination sub-pages. Covers: body dark (#1A1A1A) via body:has(.amelia-v2-booking) + body.page-id-44401, Colibri h-text paras white+680px centered, am-fcil__item-name white, am-fcis__header-name champagne gold (3-class specificity), Service badge champagne. CRITICAL: --am-c-main-bgr stays #0f0c08 — changing it kills car gallery images (b3a11ac incident). |
+| `mu-plugins/rg-mail-reply-to-guard.php` | 1.1.0 | — (pending commit) | [#88](https://github.com/rivegosh/concierge-rivegosh/issues/88) | Hooks `wp_mail` filter at priority 9999. Strips any `Reply-To:` header whose address is NOT on `rivegosh-concierge.com` or `rivegosh.com`. Fixes Hostinger inbound filter silently soft-bouncing every vendor notification (WCFM sets Reply-To = buyer email; Hostinger rejects external domains). Admin email on user 1 stays as `gracevincentstripe@gmail.com` (Stripe/vendor records safe). Verified TEST 7 (gmail Reply-To stripped → delivered) + TEST 8 (rivegosh.com Reply-To kept → delivered). |
+| `mu-plugins/rg-checkout-luxury-skin.php` | 1.0.0 | — (pending commit) | — | Counter-skin for /checkout/ page — dark luxury coupon bar + billing form + order review + Stripe card box + place-order button. Priority 99999 (after base checkout skin). Scoped `body.woocommerce-checkout` — zero bleed. |
+| `mu-plugins/rg-order-received-billing-fix.php` | 1.0.0 | — (pending commit) | — | Counter-skin for /checkout/order-received/ — catches white Billing Address card + Thank You paragraph + email pill missed by base order-received luxury mu-plugin. Priority 99999. Scoped `body.woocommerce-order-received` — zero bleed. |
+| `mu-plugins/rg-home-contrast-fix.php` | 1.0.0 | — (pending commit) | — | Counter-skin for home page (id 61860) — overrides migrated inline `color: rgb(7,7,7)` / `rgb(26,25,24)` dark-on-dark h-text paras. Forces "Get The Golden Account" champagne-on-champagne button to dark text. Priority 99998. Scoped `body#colibri.home.page-id-61860` — zero bleed. |
 
 **Protocol for modifying a banner-protected file:**
 1. Open a GH issue describing the proposed change and the regression risk
