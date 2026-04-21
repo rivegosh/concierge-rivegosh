@@ -196,6 +196,42 @@ Browser cache + LiteSpeed CDN cache + service worker cache = three layers that c
 
 Memory says "file exists" is not "file exists NOW." Before any SSH deploy, `ls -la $MUP/filename.php` to confirm current state. Before editing, `Read` the file. Claims like "I already deployed this" are worthless — verify.
 
+### RULE 14 — `is_checkout()` returns `true` on `/checkout/order-received/`. Always add the endpoint guard.
+
+WooCommerce's `is_checkout()` returns `true` for the checkout page AND all its sub-endpoints — including `/checkout/order-received/{id}/` (the Thank You page). Any `wp_footer` hook guarded only by `is_checkout()` will fire CSS on the Thank You page too.
+
+**Always add the exclusion guard immediately after `is_checkout()`:**
+
+```php
+add_action( 'wp_footer', function () {
+    if ( ! is_checkout() && ! is_page( 15 ) ) return;
+    if ( function_exists( 'is_wc_endpoint_url' ) && is_wc_endpoint_url( 'order-received' ) ) return; // ← MANDATORY
+    ?>
+```
+
+Failure to add this caused `rg-checkout-luxury.php` to inject H2 sizing + `#payment` background rules on the Thank You page, undermining the order-received counter-skin plugins. Fixed in commit `f3031d3`. Every checkout mu-plugin must have this guard — see `rg-checkout-luxury-skin.php` line 33 as the canonical pattern.
+
+### RULE 15 — Every mu-plugin deployment = lint + deploy + commit (in that order). Never split them.
+
+The pattern `scp → php -l → mv → purge` (Rule 4) covers the server side. But the git side is equally mandatory:
+
+```
+scp file.php server:/tmp/
+ssh "php -l /tmp/file.php && mv /tmp/file.php $MUP/file.php && wp litespeed-purge all && rm -rf $LSCSS/*"
+# THEN IMMEDIATELY:
+git add mu-plugins/file.php && git commit -m "..."
+```
+
+**Why:** Any session that deploys via SSH without committing creates server↔git drift. The 2026-04-21 audit found 15 plugins on server that had never been committed across multiple prior sessions. Drift is invisible until an audit; it causes confusion, risks overwriting production with outdated git pulls, and defeats the purpose of version control.
+
+**CTO ratification checklist for any mu-plugin commit:**
+- [ ] `if ( ! defined( 'ABSPATH' ) ) exit;` present as first executable line
+- [ ] `php -l` clean on server (PHP 8.3)
+- [ ] CSS scoped to specific page — no global bleed
+- [ ] `is_checkout()` plugins have `is_wc_endpoint_url('order-received')` exclusion
+- [ ] No sealed plugin was edited in-place (Rule 9)
+- [ ] `git add` + `git commit` immediately after deploy
+
 ---
 
 ## 🔧 KNOWN-BROKEN PATTERNS (what NOT to do)
@@ -212,6 +248,10 @@ Memory says "file exists" is not "file exists NOW." Before any SSH deploy, `ls -
 | Minifying or deferring Amelia JS | Webpack dynamic imports 404 | Keep LiteSpeed JS off (Rule 5) |
 | Using `serviceIds:[N]` in custom_fields | Breaks wizard silently | Use `services:[{id:N}]` (Rule 6) |
 | Using SVG logos | No Safe SVG plugin | PNG-24 with transparency (see Conventions) |
+| `is_checkout()` only guard on `wp_footer` | Also fires on `/checkout/order-received/` (Thank You page) | Add `is_wc_endpoint_url('order-received')` exclusion (Rule 14) |
+| Missing `if ( ! defined( 'ABSPATH' ) ) exit;` in mu-plugin | Security gate absent — direct PHP execution possible | First non-comment executable line — no exceptions (Rule 10/15) |
+| Deploying via SSH without committing to git | Server↔git drift — silent, dangerous, hard to audit | Always `git add + commit` immediately after every SSH deploy (Rule 15) |
+| Contrast scanner violations on hidden/tooltip elements | False-positives: scanner finds `inViewport: false` elements with white card bg | Check `inViewport` + `nearestBg` before acting on scanner results — invisible elements don't need fixing |
 
 ---
 
@@ -365,10 +405,11 @@ Each of these is a **frozen, signed-off fix** with a `DO NOT DELETE` banner in i
 | `mu-plugins/rg-appointment-redesign.php` | 1.2.3 | [68c2e5f](https://github.com/rivegosh/concierge-rivegosh/commit/68c2e5f) | [#80](https://github.com/rivegosh/concierge-rivegosh/issues/80) | Skins /appointment/ page (ID 44401) — vertical stepper (number + label + representative SVG icon) + 11 destination cards with champagne-gold hairline + centered airplane icons. Missed by #68 Amelia reskin (targeted 61860-c2 home, not 44401-*). Scope-guarded via is_page( 44401 ) — zero bleed. |
 | `mu-plugins/rg-appointment-gallery-hide.php` | 1.3.0 | [5577325](https://github.com/rivegosh/concierge-rivegosh/commit/5577325) | [#82](https://github.com/rivegosh/concierge-rivegosh/issues/82) | Hides .am-fcis__gallery-btn + .am-fcis__gallery-thumb__wrapper on /appointment/ (ID 44401). Keeps gallery container + hero (car photo). Nuclear CSS specificity (1,3,1) + JS MutationObserver with `style.setProperty('display','none','important')` — immune to all CSS battles. |
 | `mu-plugins/rg-catalog-luxury-reskin.php` | 2.0.0 | [8ee8645](https://github.com/rivegosh/concierge-rivegosh/commit/8ee8645) | [#82](https://github.com/rivegosh/concierge-rivegosh/issues/82) | Dark luxury for Amelia catalog + destination sub-pages. Covers: body dark (#1A1A1A) via body:has(.amelia-v2-booking) + body.page-id-44401, Colibri h-text paras white+680px centered, am-fcil__item-name white, am-fcis__header-name champagne gold (3-class specificity), Service badge champagne. CRITICAL: --am-c-main-bgr stays #0f0c08 — changing it kills car gallery images (b3a11ac incident). |
-| `mu-plugins/rg-mail-reply-to-guard.php` | 1.1.0 | — (pending commit) | [#88](https://github.com/rivegosh/concierge-rivegosh/issues/88) | Hooks `wp_mail` filter at priority 9999. Strips any `Reply-To:` header whose address is NOT on `rivegosh-concierge.com` or `rivegosh.com`. Fixes Hostinger inbound filter silently soft-bouncing every vendor notification (WCFM sets Reply-To = buyer email; Hostinger rejects external domains). Admin email on user 1 stays as `gracevincentstripe@gmail.com` (Stripe/vendor records safe). Verified TEST 7 (gmail Reply-To stripped → delivered) + TEST 8 (rivegosh.com Reply-To kept → delivered). |
-| `mu-plugins/rg-checkout-luxury-skin.php` | 1.0.0 | — (pending commit) | — | Counter-skin for /checkout/ page — dark luxury coupon bar + billing form + order review + Stripe card box + place-order button. Priority 99999 (after base checkout skin). Scoped `body.woocommerce-checkout` — zero bleed. |
-| `mu-plugins/rg-order-received-billing-fix.php` | 1.0.0 | — (pending commit) | — | Counter-skin for /checkout/order-received/ — catches white Billing Address card + Thank You paragraph + email pill missed by base order-received luxury mu-plugin. Priority 99999. Scoped `body.woocommerce-order-received` — zero bleed. |
-| `mu-plugins/rg-home-contrast-fix.php` | 1.0.0 | — (pending commit) | — | Counter-skin for home page (id 61860) — overrides migrated inline `color: rgb(7,7,7)` / `rgb(26,25,24)` dark-on-dark h-text paras. Forces "Get The Golden Account" champagne-on-champagne button to dark text. Priority 99998. Scoped `body#colibri.home.page-id-61860` — zero bleed. |
+| `mu-plugins/rg-mail-reply-to-guard.php` | 1.1.0 | [abd6c6f](https://github.com/rivegosh/concierge-rivegosh/commit/abd6c6f) | [#88](https://github.com/rivegosh/concierge-rivegosh/issues/88) | Hooks `wp_mail` filter at priority 9999. Strips any `Reply-To:` header whose address is NOT on `rivegosh-concierge.com` or `rivegosh.com`. Fixes Hostinger inbound filter silently soft-bouncing every vendor notification (WCFM sets Reply-To = buyer email; Hostinger rejects external domains). Admin email on user 1 stays as `gracevincentstripe@gmail.com` (Stripe/vendor records safe). Verified TEST 7 (gmail Reply-To stripped → delivered) + TEST 8 (rivegosh.com Reply-To kept → delivered). Logic audited 2026-04-21: 10/10 checks pass. |
+| `mu-plugins/rg-checkout-luxury.php` | 1.0.0 | [f3031d3](https://github.com/rivegosh/concierge-rivegosh/commit/f3031d3) | — | Base luxury skin for /checkout/ (page-id-15) — hero H2 sizing, coupon toggle bg, payment-request buttons, place-order button. Has `is_wc_endpoint_url('order-received')` exclusion guard (line 36) — MUST remain or CSS fires on Thank You page too (see Rule 14). |
+| `mu-plugins/rg-checkout-luxury-skin.php` | 1.0.0 | [abd6c6f](https://github.com/rivegosh/concierge-rivegosh/commit/abd6c6f) | — | Counter-skin for /checkout/ page — dark luxury coupon bar + billing form + order review + Stripe card box + place-order button. Priority 99999 (after base checkout skin). Has `is_wc_endpoint_url('order-received')` exclusion guard (line 33). Scoped `body.woocommerce-checkout`. |
+| `mu-plugins/rg-order-received-billing-fix.php` | 1.0.0 | [abd6c6f](https://github.com/rivegosh/concierge-rivegosh/commit/abd6c6f) | — | Counter-skin for /checkout/order-received/ — catches white Billing Address card + Thank You paragraph + email pill missed by base order-received luxury mu-plugin. Priority 99999. Scoped `body.woocommerce-order-received` — zero bleed. |
+| `mu-plugins/rg-home-contrast-fix.php` | 1.0.0 | [abd6c6f](https://github.com/rivegosh/concierge-rivegosh/commit/abd6c6f) | — | Counter-skin for home page (id 61860) — overrides migrated inline `color: rgb(7,7,7)` / `rgb(26,25,24)` dark-on-dark h-text paras. Forces "Get The Golden Account" champagne-on-champagne button to dark text. Priority 99998. Scoped `body#colibri.home.page-id-61860` — zero bleed. |
 
 **Protocol for modifying a banner-protected file:**
 1. Open a GH issue describing the proposed change and the regression risk
