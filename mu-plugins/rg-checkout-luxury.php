@@ -33,6 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 add_action( 'wp_footer', function () {
 	if ( ! is_checkout() && ! is_page( 15 ) ) return;
+	if ( function_exists( 'is_wc_endpoint_url' ) && is_wc_endpoint_url( 'order-received' ) ) return;
 	?>
 	<style id="rg-checkout-luxury">
 	/* ==================================================================

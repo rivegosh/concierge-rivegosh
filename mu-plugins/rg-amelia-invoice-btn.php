@@ -12,6 +12,8 @@
  * Only loads on pages containing the ameliacustomerpanel shortcode.
  */
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 add_action('wp_footer', 'rg_amelia_invoice_btn', 100010);
 function rg_amelia_invoice_btn() {
     if (is_admin()) return;
