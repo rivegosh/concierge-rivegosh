@@ -14,13 +14,23 @@
  *   (D) Gold Account "Secret of Success" Layout Fix — page 64453 invisible text +
  *       column swap + image size. (was rg-gold-account-secret-of-success.php v1.3.0)
  *
- * Version: 1.0.0 (2026-04-20)
+ * Version: 1.1.0 (2026-04-21)
  * GitHub: rivegosh/concierge-rivegosh#65
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 add_action( 'wp_footer', function () {
+
+	// =========================================================================
+	// (E) GLOBAL BOTTOM BREATHING ROOM — scroll 600px past last content element
+	//     Without this the page locks at the viewport edge on catalog + most pages.
+	// =========================================================================
+	?>
+	<style id="rg-bottom-breathing-room">
+	body { padding-bottom: 600px !important; }
+	</style>
+	<?php
 
 	// =========================================================================
 	// (A) LEGACY CONTRAST FIXES
