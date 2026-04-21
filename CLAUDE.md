@@ -232,6 +232,59 @@ git add mu-plugins/file.php && git commit -m "..."
 - [ ] No sealed plugin was edited in-place (Rule 9)
 - [ ] `git add` + `git commit` immediately after deploy
 
+### RULE 16 — Amelia `mailService` MUST be `'wp_mail'` (not `'wp'`).
+
+`MailerFactory::create()` uses strict string comparisons: `=== 'smtp'`, `=== 'mailgun'`, `=== 'wp_mail'`, `=== 'outlook'`. The value `'wp'` matches NOTHING and falls through to `PHPMailService` (PHP native `mail()` function directly). Consequences:
+1. Amelia booking emails bypass WP Mail SMTP → hit Hostinger MTA → subject to 100/day rate cap
+2. Emails not logged in WP Mail SMTP log (invisible to debugging)
+3. `rg-mail-reply-to-guard.php` hook on `wp_mail` has **zero effect** on Amelia emails
+
+**Verify/fix from WP-CLI:**
+```bash
+SSH="ssh -p 65002 -i ~/.ssh/id_ed25519 u100747640@145.79.20.24"
+WP="wp --path=/home/u100747640/domains/rivegosh-concierge.com/public_html"
+# Check current value:
+$SSH "$WP eval 'echo json_decode(get_option(\"amelia_settings\"),true)[\"notifications\"][\"mailService\"];'"
+# Fix (must use json_encode — see Rule 17):
+# Write a PHP eval-file that does $wpdb->update('wp_options', ['option_value' => json_encode($data)], ...)
+```
+
+### RULE 17 — `amelia_settings` is stored as raw JSON. Never use `update_option()` with an array.
+
+`SettingsStorage::getSavedSettings()` calls `json_decode(get_option('amelia_settings'), true)`. If you call `update_option('amelia_settings', $phpArray)`, WordPress PHP-serializes the array. On next Amelia load: `TypeError: json_decode(): Argument #1 must be of type string, array given` → Amelia crashes site-wide.
+
+**Correct pattern:** Always read, decode, patch, re-encode, write via `$wpdb->update()`:
+```php
+global $wpdb;
+$raw = $wpdb->get_var("SELECT option_value FROM {$wpdb->options} WHERE option_name='amelia_settings'");
+$data = json_decode($raw, true);
+$data['notifications']['mailService'] = 'wp_mail'; // patch the field
+$wpdb->update($wpdb->options, ['option_value' => json_encode($data)], ['option_name' => 'amelia_settings']);
+```
+
+### RULE 18 — `runInstantPostBookingActions` must be `true` for CLI smoke tests.
+
+`AddBookingCommandHandler::handle()` only calls `runPostBookingActions()` (which sends notifications) if:
+- `general.runInstantPostBookingActions === true` in Amelia settings, OR
+- `runInstantPostBookingActions: true` is set on the command object
+
+Default is `false` (defers to background cron). In CLI smoke tests via `wp eval`, explicitly set:
+```php
+$command->setField('runInstantPostBookingActions', true);
+```
+Without this, the booking is created but zero notification emails are sent — you'll think Amelia is broken when it's just deferred.
+
+### RULE 19 — WC Coming Soon blocks `wcfm_vendor` users from cart/checkout.
+
+`woocommerce_coming_soon=yes` + `woocommerce_store_pages_only=yes` redirects any user without `manage_woocommerce` capability away from `/your-booking/` and `/checkout/`. The `wcfm_vendor` role does NOT have this capability → vendor accounts like `daniel@rivegosh-concierge.com` (user 462) are blocked from completing Amelia bookings via WC payment.
+
+**When ready to launch:**
+```bash
+$SSH "$WP option update woocommerce_coming_soon no"
+```
+
+**Do NOT disable prematurely** — site is not launch-ready yet. This is intentional testing mode.
+
 ---
 
 ## 🔧 KNOWN-BROKEN PATTERNS (what NOT to do)
@@ -252,6 +305,10 @@ git add mu-plugins/file.php && git commit -m "..."
 | Missing `if ( ! defined( 'ABSPATH' ) ) exit;` in mu-plugin | Security gate absent — direct PHP execution possible | First non-comment executable line — no exceptions (Rule 10/15) |
 | Deploying via SSH without committing to git | Server↔git drift — silent, dangerous, hard to audit | Always `git add + commit` immediately after every SSH deploy (Rule 15) |
 | Contrast scanner violations on hidden/tooltip elements | False-positives: scanner finds `inViewport: false` elements with white card bg | Check `inViewport` + `nearestBg` before acting on scanner results — invisible elements don't need fixing |
+| `amelia_settings.mailService = 'wp'` | Falls through MailerFactory to PHPMailService — bypasses WP Mail SMTP, Reply-To guard, rate-limit protection | Must be `'wp_mail'` (exact string) — see Rule 16 |
+| `update_option('amelia_settings', $phpArray)` | WordPress PHP-serializes it; `SettingsStorage::getSavedSettings()` calls `json_decode()` → crashes Amelia site-wide | Use `$wpdb->update()` with `json_encode($data)` directly — see Rule 17 |
+| CLI smoke test shows 0 notifications | `runInstantPostBookingActions` defaults to `false` — defers to cron | Set `$command->setField('runInstantPostBookingActions', true)` — see Rule 18 |
+| Testing Amelia flow as `wcfm_vendor` user | WC Coming Soon blocks non-admin (no `manage_woocommerce`) from cart/checkout | Test as administrator, or disable Coming Soon when ready to launch (Rule 19) |
 
 ---
 
@@ -410,6 +467,7 @@ Each of these is a **frozen, signed-off fix** with a `DO NOT DELETE` banner in i
 | `mu-plugins/rg-checkout-luxury-skin.php` | 1.0.0 | [abd6c6f](https://github.com/rivegosh/concierge-rivegosh/commit/abd6c6f) | — | Counter-skin for /checkout/ page — dark luxury coupon bar + billing form + order review + Stripe card box + place-order button. Priority 99999 (after base checkout skin). Has `is_wc_endpoint_url('order-received')` exclusion guard (line 33). Scoped `body.woocommerce-checkout`. |
 | `mu-plugins/rg-order-received-billing-fix.php` | 1.0.0 | [abd6c6f](https://github.com/rivegosh/concierge-rivegosh/commit/abd6c6f) | — | Counter-skin for /checkout/order-received/ — catches white Billing Address card + Thank You paragraph + email pill missed by base order-received luxury mu-plugin. Priority 99999. Scoped `body.woocommerce-order-received` — zero bleed. |
 | `mu-plugins/rg-home-contrast-fix.php` | 1.0.0 | [abd6c6f](https://github.com/rivegosh/concierge-rivegosh/commit/abd6c6f) | — | Counter-skin for home page (id 61860) — overrides migrated inline `color: rgb(7,7,7)` / `rgb(26,25,24)` dark-on-dark h-text paras. Forces "Get The Golden Account" champagne-on-champagne button to dark text. Priority 99998. Scoped `body#colibri.home.page-id-61860` — zero bleed. |
+| `mu-plugins/rg-cart-coming-soon-fix.php` | 1.0.0 | [47d7383](https://github.com/rivegosh/concierge-rivegosh/commit/47d7383) | — | Three CSS fixes for /your-booking/ (page-id-14) and global nav: (1) WC Coming Soon block black text → champagne on dark body, (2) Amelia cart item meta (transfer type/date/airport/passengers) black text → champagne, (3) nav `.sub-menu` links `rgb(0,0,0)` global → champagne. Priority 100000 (fires after rg-cart-luxury.php at 99999). |
 
 **Protocol for modifying a banner-protected file:**
 1. Open a GH issue describing the proposed change and the regression risk
