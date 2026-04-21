@@ -13,7 +13,7 @@
  *              dark text. Stability via min-width prevents width jitter between
  *              steps. Footer is position:absolute;bottom:0 (Amelia built-in) —
  *              we preserve that and don't touch top/bottom anchoring.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Created: 2026-04-21
  *
  * ╔══════════════════════════════════════════════════════════════════╗
@@ -51,6 +51,7 @@ add_action( 'wp_footer', function () {
 		font-weight: 700 !important;
 		color: #0a0a0a !important;
 		letter-spacing: 0.03em !important;
+		margin-left: auto !important;
 	}
 	.amelia-v2-booking #amelia-container .am-fs__main-footer .am-button-continue .am-button__inner,
 	.amelia-v2-booking #amelia-container .am-fs__main-footer .am-button-continue .am-button__inner span {
