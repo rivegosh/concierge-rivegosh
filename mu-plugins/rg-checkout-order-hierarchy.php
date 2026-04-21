@@ -11,7 +11,7 @@
  *                 look identical to field labels.
  *              Fix: pin price to top + bigger; dt labels → small-caps champagne;
  *              dd values → 13px white; product name → 15px; Total row prominent.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Created: 2026-04-21
  *
  * ╔══════════════════════════════════════════════════════════════════╗
@@ -62,13 +62,13 @@ add_action( 'wp_footer', function () {
 
 	/* ==================================================================
 	 * 3. BOOKING META BLOCK — separator + breathing room
-	 *    dl.variation is WooCommerce's item meta container (Amelia puts
-	 *    all booking details here as dt/dd pairs).
+	 *    More top-margin so "APPOINTMENT INFO:" breathes away from the
+	 *    product name line above it.
 	 * ================================================================== */
 	body.woocommerce-checkout .woocommerce-checkout-review-order-table dl.variation {
-		margin-top: 10px !important;
-		padding-top: 10px !important;
-		border-top: 1px solid rgba(204, 197, 147, 0.12) !important;
+		margin-top: 18px !important;
+		padding-top: 14px !important;
+		border-top: 1px solid rgba(204, 197, 147, 0.15) !important;
 	}
 
 	/* ==================================================================
@@ -90,9 +90,11 @@ add_action( 'wp_footer', function () {
 		padding: 0 !important;
 		width: 100% !important;
 	}
-	/* First dt (APPOINTMENT INFO) gets a bit more breathing room */
+	/* First dt (APPOINTMENT INFO) — tight bottom to close gap to first field */
 	body.woocommerce-checkout .woocommerce-checkout-review-order-table dl.variation dt:first-child {
 		margin-top: 0 !important;
+		margin-bottom: 4px !important;
+		line-height: 1.2 !important;
 		color: rgba(204, 197, 147, 0.85) !important;
 		font-size: 11px !important;
 	}
@@ -115,6 +117,29 @@ add_action( 'wp_footer', function () {
 	/* Empty dd after section headers — collapse */
 	body.woocommerce-checkout .woocommerce-checkout-review-order-table dl.variation dd:empty {
 		display: none !important;
+	}
+
+	/* ==================================================================
+	 * 5b. dd INNER CONTENT — p and strong inside each booking field
+	 *     rg-checkout-review-polish sets dd p → 12px, dd strong → 11px.
+	 *     Override to +2pt each. text-transform:capitalize on strong
+	 *     fixes "service:" → "Service:" without touching other labels.
+	 * ================================================================== */
+	/* td in path matches rg-checkout-review-polish specificity (it uses td dl.variation)
+	   so with equal specificity our later priority (100008 > 100001) wins */
+	body.woocommerce-checkout .woocommerce-checkout-review-order-table td dl.variation dd p,
+	body.woocommerce-checkout .woocommerce-checkout-review-order-table td dl.variation p {
+		font-size: 14px !important;
+		color: rgba(230, 225, 195, 0.92) !important;
+		line-height: 1.5 !important;
+		margin: 0 0 3px 0 !important;
+	}
+	body.woocommerce-checkout .woocommerce-checkout-review-order-table td dl.variation dd strong,
+	body.woocommerce-checkout .woocommerce-checkout-review-order-table td dl.variation p strong {
+		font-size: 13px !important;
+		font-weight: 600 !important;
+		color: rgba(204, 197, 147, 0.78) !important;
+		text-transform: capitalize !important;
 	}
 
 	/* ==================================================================
