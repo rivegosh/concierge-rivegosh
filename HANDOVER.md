@@ -3,7 +3,7 @@
 
 ---
 
-## Current State — 2026-04-21 (end of session)
+## Current State — 2026-04-21 (session 2 — checkout CSS + suitcase dropdown fix)
 
 ### Work completed this session
 
@@ -18,10 +18,21 @@
 | Master Index #34 updated | GH issue #34 | Added #88, #90, #91 to Amelia Email section | ✅ |
 | Issue #90 closed | GH issue #90 | mailService fix verified — closed with evidence | ✅ |
 
+### Additional fixes (session 2 — 2026-04-21)
+
+| Fix | File | Change | Verified |
+|-----|------|--------|----------|
+| Checkout billing wrapper dark | `mu-plugins/rg-checkout-billing-dark.php` v1.0.0 (commit 262c92a) | `#customer_details.col2-set` white bg → dark. dt opacity 0.5→0.72. Payment logo badge contrast fixed. Priority 100002. Scanner: 23→2 violations | ✅ CSS scanner on live checkout |
+| Checkout billing form polish | `mu-plugins/rg-checkout-review-polish.php` v1.0.0 (commit 66285fd) | ::placeholder visible, dl.variation dt block layout, meta labels 11px. Priority 100001 | ✅ deployed + committed |
+| Suitcase/passenger dropdown selected value | `mu-plugins/rg-amelia-select-value-fix.php` v1.0.0 (commit ecff0a0) | Overrides `--am-c-select-text` at `.am-select` scope + directly targets span child. Sealed plugin missed span child (Amelia's own rule had higher specificity). Priority 100003 | ✅ style tag confirmed on live page — needs Daniel to test booking flow |
+| CLAUDE.md protected table | `CLAUDE.md` | Added rg-checkout-review-polish, rg-checkout-billing-dark, rg-amelia-select-value-fix | ✅ |
+
 ### What still needs Daniel to verify
 
-- **Full Amelia → cart → checkout flow** as `daniel@rivegosh-concierge.com` (wcfm_vendor) — was blocked by Coming Soon, should now work end-to-end
-- **Cart page visuals** — confirm cart item meta (transfer type, date, airport, passengers) is readable champagne text (fixed by rg-cart-coming-soon-fix.php)
+- **Full Amelia → cart → checkout flow** — booking wizard suitcase/passenger dropdown: confirm selected value is now readable (rg-amelia-select-value-fix.php)
+- **Checkout left panel** — confirm billing form is dark-skinned with readable champagne labels (rg-checkout-billing-dark.php)
+- **Checkout right panel** — confirm Appointment Info / Local Time now stacks as blocks (not inline), meta labels are compact (rg-checkout-review-polish.php)
+- **Cart page visuals** — confirm cart item meta (transfer type, date, airport, passengers) is readable champagne text (rg-cart-coming-soon-fix.php)
 - **Nav sub-menus** — confirm dropdown nav links are visible champagne text (not black-on-dark)
 - **Google Maps autocomplete + route map** — still waiting on Daniel to enable Maps JS API + Directions API on GCP project "Rive Gosh" (gen-lang-client-0317106618)
 
