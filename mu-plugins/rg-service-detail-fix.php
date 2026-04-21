@@ -9,7 +9,7 @@
  *                 100005 restores champagne-gold fill for .am-button--filled in header.
  *              2. Gallery hero black void — adds min-height safety net and img fallback
  *                 in case padding-top:42% resolves to zero on first render.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Created: 2026-04-21
  *
  * ╔══════════════════════════════════════════════════════════════════╗
@@ -65,22 +65,27 @@ add_action( 'wp_footer', function () {
 	}
 
 	/* ==================================================================
-	 * 2. GALLERY HERO — min-height safety net + img fallback
-	 *    Gallery container and hero both get min-height so a first-render
-	 *    width=0 race condition can't produce a zero-height black void.
-	 *    img rule covers Amelia versions that render <img> instead of
-	 *    CSS background-image inside the gallery-hero div.
+	 * 2. GALLERY HERO — correct aspect ratio + height + img fallback
+	 *    Sealed §5 uses padding-top:42% (tuned for an old image).
+	 *    Cadillac PNG is 662×337 (51% tall); Sprinter is 480×484 (101%).
+	 *    54% padding-top fits the widest landscape car fully; nearly-
+	 *    square vehicles (Sprinter) scale down to fit within contain.
+	 *    Min-height 200px is a floor for narrow viewports.
 	 * ================================================================== */
-	.amelia-v2-booking #amelia-container .am-fcis__gallery {
-		min-height: 180px !important;
+	.amelia-v2-booking #amelia-container .am-fcis__gallery,
+	.amelia-v2-booking #amelia-container .am-fcip__gallery {
+		min-height: 200px !important;
 	}
-	.amelia-v2-booking #amelia-container .am-fcis__gallery-hero {
-		min-height: 180px !important;
+	.amelia-v2-booking #amelia-container .am-fcis__gallery-hero,
+	.amelia-v2-booking #amelia-container .am-fcip__gallery-hero {
+		padding-top: 54% !important;
+		min-height: 200px !important;
 	}
-	.amelia-v2-booking #amelia-container .am-fcis__gallery-hero img {
+	.amelia-v2-booking #amelia-container .am-fcis__gallery-hero img,
+	.amelia-v2-booking #amelia-container .am-fcip__gallery-hero img {
 		width: 100% !important;
 		height: auto !important;
-		max-height: 420px !important;
+		max-height: 440px !important;
 		object-fit: contain !important;
 		display: block !important;
 	}
