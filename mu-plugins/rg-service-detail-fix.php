@@ -9,7 +9,7 @@
  *                 100005 restores champagne-gold fill for .am-button--filled in header.
  *              2. Gallery hero black void — adds min-height safety net and img fallback
  *                 in case padding-top:42% resolves to zero on first render.
- * Version: 1.4.0
+ * Version: 1.6.0
  * Created: 2026-04-21
  *
  * ╔══════════════════════════════════════════════════════════════════╗
@@ -105,5 +105,82 @@ add_action( 'wp_footer', function () {
 	}
 
 	</style>
+	<!--noptimize--><script id="rg-gallery-hero-restore">
+	/* ==================================================================
+	 * 3. GALLERY HERO IMAGE RESTORE — anti-regression guard
+	 *    rg-catalog-luxury-reskin.php has [class*="fcis__gallery"] {
+	 *    background-image: initial !important } which beats Vue's inline
+	 *    style="background-image:url(...)". CSS cannot fix this — inline
+	 *    style without !important loses to stylesheet !important.
+	 *    Fix: MutationObserver watches for new nodes (childList) AND
+	 *    style attribute changes. Vue inserts the hero node with style
+	 *    already set, so childList is the primary trigger. setTimeout
+	 *    fallbacks catch any render that fires after observer attaches.
+	 * ================================================================== */
+	(function () {
+		function restoreHero(el) {
+			var url = el.style.backgroundImage;
+			if (url && url !== 'none' && url !== 'initial' && url !== '') {
+				el.style.setProperty('background-image', url, 'important');
+			}
+		}
+		function restoreAll() {
+			var heroes = document.querySelectorAll(
+				'.am-fcis__gallery-hero, .am-fcip__gallery-hero'
+			);
+			for (var i = 0; i < heroes.length; i++) restoreHero(heroes[i]);
+		}
+		/* Run once on load + timed fallbacks for Vue async render */
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', restoreAll);
+		} else {
+			restoreAll();
+		}
+		setTimeout(restoreAll, 400);
+		setTimeout(restoreAll, 1200);
+		setTimeout(restoreAll, 3000);
+
+		/* Watch for Vue rendering: NEW nodes (childList) + style changes (attributes) */
+		var root = document.querySelector('#amelia-container') ||
+		           document.querySelector('.amelia-v2-booking') ||
+		           document.body;
+		new MutationObserver(function (mutations) {
+			for (var i = 0; i < mutations.length; i++) {
+				var m = mutations[i];
+				/* New elements inserted by Vue */
+				if (m.type === 'childList') {
+					for (var j = 0; j < m.addedNodes.length; j++) {
+						var node = m.addedNodes[j];
+						if (node.nodeType !== 1) continue;
+						if (node.classList &&
+						    (node.classList.contains('am-fcis__gallery-hero') ||
+						     node.classList.contains('am-fcip__gallery-hero'))) {
+							restoreHero(node);
+						}
+						/* Hero may be deeper in the added subtree */
+						var sub = node.querySelectorAll && node.querySelectorAll(
+							'.am-fcis__gallery-hero, .am-fcip__gallery-hero'
+						);
+						if (sub) for (var k = 0; k < sub.length; k++) restoreHero(sub[k]);
+					}
+				}
+				/* Style attribute changed on existing hero */
+				if (m.type === 'attributes' && m.attributeName === 'style') {
+					var t = m.target;
+					if (t.classList &&
+					    (t.classList.contains('am-fcis__gallery-hero') ||
+					     t.classList.contains('am-fcip__gallery-hero'))) {
+						restoreHero(t);
+					}
+				}
+			}
+		}).observe(root, {
+			childList: true,
+			subtree: true,
+			attributes: true,
+			attributeFilter: ['style']
+		});
+	})();
+	</script><!--/noptimize-->
 	<?php
 }, 100005 );
