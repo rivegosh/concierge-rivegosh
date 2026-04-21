@@ -1,175 +1,120 @@
 # HANDOVER — Rive Gosh Concierge
-**Date:** 2026-04-20 | **Session:** Google Maps route panel + select dropdown contrast + GCP blocked
+**Date:** 2026-04-21 | **Session:** Amelia smoke test + mailService fix + cart CSS + Coming Soon
 
 ---
 
-## Current State — 2026-04-20 (end of session, fourth pass)
+## Current State — 2026-04-21 (end of session)
 
 ### Work completed this session
 
-| Fix | File | Change | Verified |
-|-----|------|--------|----------|
-| Address fields 20/21/27 wrong type | DB + stash | `type=text` → `type=address` in `wp_amelia_custom_fields` + stash rebuild. Vue was rendering plain `<input>` not Google Maps autocomplete | ✅ `window.ameliaEntities` shows type=address for all 3 fields |
-| Google Maps route panel | `rg-booking-maps-display.php` (new) | MutationObserver on `.amelia-v2-booking` → detects `.am-fs__info` (InfoStep) → injects dark `#rg-map-panel` → DirectionsService renders pickup→destination route. Debounced input listener + body MutationObserver for dropdown removal | ✅ script loads, Amelia class guard passes |
-| Map fallback mode | `rg-booking-maps-display.php` | MutationObserver on map panel detects `.gm-err-container` instantly → switches to dark luxury fallback panel with "View Route on Google Maps" link. Fires before route update event. | ✅ code-verified |
-| Vehicle image gone again | `rg-amelia-contrast.php` | `background:` shorthand → `background-color:` longhand on `[class*="fcis__gallery"]` | ✅ screenshot |
-| Suitcase/passenger dropdown invisible — open popper | `rg-amelia-select-dropdown-contrast.php` v1.1.0 (new) | Dark luxury for Element Plus v2 teleported popper + COLLAPSED trigger. `el-select-dropdown__item` + `el-select__selected-item` / `__placeholder` all champagne/cream. | ✅ CSS deployed; Daniel visual confirm pending |
-| Nav dropdowns broken on WC pages | `rg-misc-css.php` | `position:relative` on `li.menu-item-has-children` so `top:100%` anchors to nav item | ✅ screenshot |
-| 3 black pills on cart | `rg-misc-css.php` | `.h-hamburger-button` hidden `≥992px` | ✅ screenshot |
-| Cart page blank | SSH WP option | `woocommerce_coming_soon=no` | ✅ screenshot |
-| Git sync — 2 server-only files | git commit 2932d94 | Pulled `rg-amelia-select-dropdown-contrast.php` + `rg-colibri-fonts-trim.php` from server into git | ✅ committed |
+| Fix | File / Location | Change | Verified |
+|-----|-----------------|--------|----------|
+| Amelia mailService `'wp'` → `'wp_mail'` | DB `wp_options.amelia_settings` | `notifications.mailService` corrected via `$wpdb->update()` with `json_encode()`. Was falling through `MailerFactory` to PHP `mail()` directly, bypassing WP Mail SMTP | ✅ WP-CLI + wpmailsmtp_emails_log entries 1487-1489 (sendinblue) |
+| Amelia booking smoke test | SSH + WP-CLI `eval-file` | Appointments 145 + 146 created via `AddBookingCommandHandler`. Customer + provider notification emails both delivered via Brevo | ✅ appointment IDs confirmed, email log verified |
+| WC Coming Soon mode OFF | `wp option update woocommerce_coming_soon no` | Was blocking `wcfm_vendor` users (incl. `daniel@rivegosh-concierge.com`) from accessing cart/checkout | ✅ WP-CLI: `no` |
+| Cart CSS — 3 targeted fixes | `mu-plugins/rg-cart-coming-soon-fix.php` v1.0.0 (new, commit 47d7383) | (1) WC Coming Soon block black text → champagne, (2) Amelia cart item meta black → champagne, (3) nav `.sub-menu` links global black → champagne. Priority 100000 | ✅ deployed + purged + git committed |
+| CLAUDE.md Rules 16–19 | `CLAUDE.md` (commit dd1057d) | Added rules for: Amelia mailService, amelia_settings JSON storage, runInstantPostBookingActions CLI gate, WC Coming Soon vendor block | ✅ pushed to GitHub |
+| KB #49 updated | GH issue #49 | Added §"WC Coming Soon blocks non-admin users" | ✅ |
+| Master Index #34 updated | GH issue #34 | Added #88, #90, #91 to Amelia Email section | ✅ |
+| Issue #90 closed | GH issue #90 | mailService fix verified — closed with evidence | ✅ |
 
 ### What still needs Daniel to verify
-- **Google Maps autocomplete + route map visible** in "Your Information" step — log in as customer → advance through wizard → confirm Pickup/Destination show Google autocomplete + map renders route below (currently shows fallback because Maps JS API not enabled — see GCP blocker below)
-- **Suitcase dropdown numbers (1–8) visible in white/cream** — select a value (e.g. "2"), close dropdown, confirm collapsed trigger shows "2" in cream text (not dark/invisible)
-- **Cart after real booking** — test full wizard → click "Continue to Payment" → confirm cart shows correctly
 
-### ⚠️ GCP BLOCKER — Daniel must do this
-Maps tile rendering and autocomplete require Google Cloud APIs enabled. **Must use Daniel's Google account, NOT Roderic's** (Roderic's account hit billing project limit).
+- **Full Amelia → cart → checkout flow** as `daniel@rivegosh-concierge.com` (wcfm_vendor) — was blocked by Coming Soon, should now work end-to-end
+- **Cart page visuals** — confirm cart item meta (transfer type, date, airport, passengers) is readable champagne text (fixed by rg-cart-coming-soon-fix.php)
+- **Nav sub-menus** — confirm dropdown nav links are visible champagne text (not black-on-dark)
+- **Google Maps autocomplete + route map** — still waiting on Daniel to enable Maps JS API + Directions API on GCP project "Rive Gosh" (gen-lang-client-0317106618)
 
-Daniel steps:
-1. Go to `console.cloud.google.com` — sign in with **your own Google account**
-2. Switch project to **"Rive Gosh"** (ID: `gen-lang-client-0317106618`)
-3. APIs & Services → Library → search and enable **"Maps JavaScript API"**
-4. Same place → enable **"Directions API"**
-5. When prompted, link your billing account to the project
+### ⚠️ Key discovery: wcfm_vendor role + WC Coming Soon
 
-Once done: map tiles render automatically (no code change needed). Also needed for Phase B: enable **"Distance Matrix API"** (for surcharge calculation).
+`woocommerce_coming_soon=yes` + `woocommerce_store_pages_only=yes` blocks ANY user without `manage_woocommerce` capability from `/your-booking/` and `/checkout/`. The `wcfm_vendor` role does NOT have this capability → `daniel@rivegosh-concierge.com` (user 462, wcfm_vendor) was silently blocked from completing Amelia→WooCommerce payment flow.
 
-### ⚠️ Key facts: address fields + map injection
-- Custom fields #20 (Pickup), #21 (Destination), #27 (Pickup — secondary service set) MUST stay `type=address` in DB. If Amelia plugin update resets them to `text`, the autocomplete breaks AND the map panel won't fire (input IDs only exist for address-type fields).
-- After any Amelia update: run `wp eval-file /tmp/rg-rebuild-stash-customfields.php` AND check field types.
-- Map panel selector chain: `.amelia-v2-booking` → MutationObserver → `.am-fs__info` → inject `#rg-map-panel` → DirectionsService on address field input + body dropdown removal events.
+**Now fixed:** `woocommerce_coming_soon=no`. `woocommerce_store_pages_only` is still `yes` (inert).
 
-### ⚠️ Anti-forget: WC coming-soon was silently killing cart
-`woocommerce_coming_soon = yes` + `woocommerce_store_pages_only = yes` were active. This replaces all WC store pages (cart, checkout, shop) with "Great things are on the horizon" placeholder. Root cause: WooCommerce admin setting, not a plugin/theme conflict. Now OFF.
+### ⚠️ Amelia mailService — never revert
 
-### ⚠️ Stash rebuild maintenance
-If Amelia plugin updates or any process clears `amelia_stash`, the `customFields` must be rebuilt:
-```bash
-ssh -p 65002 -i ~/.ssh/id_ed25519 u100747640@145.79.20.24
-wp --path=/home/u100747640/domains/rivegosh-concierge.com/public_html eval-file /tmp/rg-rebuild-stash-customfields.php
-# Script is in /tmp — recreate from local /tmp/rg-rebuild-stash-customfields.php if lost
-```
-**Key fact:** stash `customFields` must use `services:[{id:N}]` NOT `serviceIds:[N]`. Amelia Vue does `r.services.map(i => i.id)` — wrong format = blank "Your Information" step.
+`amelia_settings.notifications.mailService` MUST be `'wp_mail'` (exact string). If set to `'wp'`, Amelia falls through `MailerFactory` to PHP `mail()` directly:
+- Bypasses WP Mail SMTP → Brevo
+- Bypasses `rg-mail-reply-to-guard.php`  
+- Hostinger 100/day rate cap applies
+- No email logging visible in WP Mail SMTP
 
-### Phase B (NOT started)
-- `mu-plugins/rg-booking-maps-distance.php` — distance surcharge on booking
-- Hook: `amelia_before_appointment_added_filter($appointmentData, $service->toArray(), $paymentData)`
-- **Blocked on:** (1) Daniel visual confirm of Phase A, (2) Daniel enables Distance Matrix API on GCP for key `AIzaSyDvUqJXEAcikf4OjoyWwgbiuZX0iTwlrsw`
+If Amelia plugin update resets this: fix via `$wpdb->update()` with `json_encode()` — NEVER `update_option()` with a PHP array (crashes Amelia).
+
+### ⚠️ rg-mail-reply-to-guard.php — the "keep Daniel at Rivegosh Concierge" script
+
+`mu-plugins/rg-mail-reply-to-guard.php` v1.1.0 (sealed, commit abd6c6f) strips any `Reply-To` header not on `@rivegosh-concierge.com` or `@rivegosh.com`. Hostinger's inbound filter soft-bounces every email with an external `Reply-To` — WCFM sets `Reply-To` to the buyer's email (gmail, yahoo, etc.) → all vendor notifications bounced silently before this fix. Verified via Brevo events API TEST 2–8. See GH issue #88.
 
 ---
 
-## Previous State — 2026-04-20 (Google Maps session)
+## Previous State — 2026-04-20 (end of session, Google Maps + CSS pass)
 
 ### Work completed that session
 
-| Fix | Issue | Change | Verified |
-|-----|-------|--------|----------|
-| Google Maps API key replaced | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | `amelia_settings.general.gMapApiKey` → `AIzaSyDvUqJXEAcikf4OjoyWwgbiuZX0iTwlrsw` | ✅ PHP runtime |
-| DB custom fields #20/#21/#27 → address type | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | `wp_amelia_custom_fields` `type` column | ✅ SSH |
-| amelia_stash rebuilt from DB | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | 13 custom fields, correct `services:[{id:N}]` format | ✅ JS in-browser |
-| Vue crash fixed (iye TypeError) | [#85](https://github.com/rivegosh/concierge-rivegosh/issues/85) | stash had `serviceIds:[N]`, Vue needed `services:[{id:N}]` | ✅ code-verified |
+| Fix | File | Change | Verified |
+|-----|------|--------|----------|
+| Address fields 20/21/27 wrong type | DB + stash | `type=text` → `type=address` in `wp_amelia_custom_fields` + stash rebuild | ✅ `window.ameliaEntities` |
+| Google Maps route panel | `rg-booking-maps-display.php` (new) | MutationObserver → InfoStep → injects dark `#rg-map-panel` → DirectionsService route | ✅ script loads |
+| Map fallback mode | `rg-booking-maps-display.php` | Detects `.gm-err-container` → dark luxury fallback + "View Route on Google Maps" link | ✅ code-verified |
+| Suitcase/passenger dropdown invisible | `rg-amelia-select-dropdown-contrast.php` v1.1.0 (new) | Dark luxury for teleported Element Plus popper + collapsed trigger | ✅ CSS deployed |
+| Nav dropdowns broken on WC pages | `rg-misc-css.php` | `position:relative` on `li.menu-item-has-children` | ✅ screenshot |
+| Vendor notifications silently bouncing | `rg-mail-reply-to-guard.php` v1.1.0 (new) | Strip external `Reply-To` headers on `wp_mail` | ✅ Brevo TEST 7+8 |
+| Checkout luxury skin | `rg-checkout-luxury.php` v1.0.0, `rg-checkout-luxury-skin.php` v1.0.0 | Dark luxury for /checkout/ with `is_wc_endpoint_url('order-received')` guard | ✅ |
+| git sync — 15 server-only files | commit abd6c6f | Pulled all server-deployed plugins into git | ✅ committed |
 
----
+### ⚠️ GCP BLOCKER — Daniel must do this
 
-## Previous State — 2026-04-19 (end of session)
+Maps tile rendering and autocomplete require Google Cloud APIs. **Must use Daniel's Google account, NOT Roderic's.**
 
-### Work completed this session
+Daniel steps:
+1. `console.cloud.google.com` → sign in with **your own Google account**
+2. Switch project to **"Rive Gosh"** (ID: `gen-lang-client-0317106618`)
+3. APIs & Services → Library → enable **"Maps JavaScript API"** + **"Directions API"**
+4. Link billing account when prompted
 
-| Fix | Issue | File | Verified |
-|-----|-------|------|----------|
-| Affiliate Dashboard restored as 3rd top-level nav + 2 children | — | DB (menu items 74053/74057/74058) | ✅ |
-| Header menu lock guard | [#78](https://github.com/rivegosh/concierge-rivegosh/issues/78) ✅ | `mu-plugins/rg-header-menu-lock.php` v1.0.0 | ✅ |
-| VIP Client → /my-orders/ redirect fixed | [#79](https://github.com/rivegosh/concierge-rivegosh/issues/79) ✅ | `mu-plugins/rg-booking-vip-guest-redirect.php` v1.0.0 | ✅ |
-| /login-2/ spacing tighten + dark luxury to /register/ + /my-orders/ | [#81](https://github.com/rivegosh/concierge-rivegosh/issues/81) ✅ | `mu-plugins/rg-login-page-tighten.php` v1.2.0 | ✅ |
-| /appointment/ gallery hide v1.3.0 | [#82](https://github.com/rivegosh/concierge-rivegosh/issues/82) ✅ | `mu-plugins/rg-appointment-gallery-hide.php` v1.3.0 | ✅ |
-| Catalog luxury reskin v2.0.0 — full dark luxury, all contrast issues resolved | [#82](https://github.com/rivegosh/concierge-rivegosh/issues/82) ✅ | `mu-plugins/rg-catalog-luxury-reskin.php` v2.0.0 | ✅ DOM-verified |
-
-### What v2.0.0 covers (all DOM-verified on Florida destination page)
-
-| Element | Fix | DOM result |
-|---------|-----|-----------|
-| Body background | `body:has(.amelia-v2-booking)` + `body.page-id-44401` | `#1A1A1A` dark |
-| Colibri description paragraphs | `.h-text p` → white 15px 680px centered | `rgb(255,255,255)` |
-| Service card titles | `.am-fcil__item-name` → white | `rgb(255,255,255)` |
-| Service detail title | `.am-fcis .am-fcis__header-name` (3-class spec) → champagne | `rgb(204,197,147)` |
-| Service/Package badge | `.am-fcis .el-tag` + `.am-fcil__item .el-tag` → champagne | verified |
-| Gallery hero | `padding-top: 42%`, `background-size: contain` | car fully visible |
-
-### CRITICAL anti-pattern documented (b3a11ac incident)
-
-**Never change `--am-c-main-bgr` from `#0f0c08`.** Amelia uses this CSS custom property for the gallery-hero background. The dark car cutout photos need a dark field to be visible. When b3a11ac changed it to `#1A1A1A` (page-body grey), the cars vanished. Reverted via dba1649.
-
-### Root causes documented
-- **Gallery hide v1.0.0–v1.2.0 wrong**: Hid `.am-fcis__gallery` (container) → removed car photo. v1.3.0 targets only btn + thumb.
-- **Dark luxury gone (white background)**: Concurrent CC sessions deleted prior catalog mu-plugins. LiteSpeed cache masked absence until cache purge.
-- **Colibri h-text text dark**: Description paragraphs live in Colibri h-text blocks (NOT Amelia). Required `body:has(.amelia-v2-booking) .h-text p` — Amelia selectors never reached it.
-- **am-fcis__header-name still dark**: Amelia's own rule uses `color: var(--am-c-main-text)` with higher specificity. Fix: 3-class selector `.am-fcis .am-fcis__header-name`.
-- **body.page-id-44401 white below cards**: /appointment/ page has no `.amelia-v2-booking` so `:has()` rule missed it. Added explicit `body.page-id-44401` selector.
-
----
-
-## MU-Plugins on server (state as of 2026-04-19)
-
-**Protected (DO NOT DELETE):**
-See CLAUDE.md Protected mu-plugins table — 9 frozen files with banners.
-
-**Other active files on server (not in git — do not touch without reading first):**
-- `rg-amelia-contrast.php` — 880+ lines, 6 wp_footer functions (catalog, wizard, WCFM dark CSS etc.)
-- `rg-drawer-override.php` — LOCKED mobile drawer (DO NOT MODIFY)
-- `rg-v52-card-icons.php` — LOCKED (DO NOT DELETE per auto-memory)
-- `rg-amelia-capf-fix.php`, `rg-amelia-invoice-patch.php`, `rg-amelia-invoice-btn.php`
-- `rg-invoices-page.php`, `rg-order-view.php`, `rg-email-as-username.php`
-- `rg-login-page-guard.php` — redirects logged-IN users from /login-2/ → /booking-vip/
-- `rg-health-check.php`, `rg-wcusage-login-reskin.php`, `rg-wcusage-register-reskin.php`
-- `rg-pro-login-refinements.php`, `rg-v53-nav-fixes.php`
-- `rg-category-page-tweaks.php` — hides `.am-fcil__filter` (Amelia search input)
-- `rg-legacy-contrast-fixes.php` — v1.1.1, JS Pass 3 only fires on woocommerce-page class
-- `rg-account-layout.php`, `rg-gold-account-secret-of-success.php`
-
----
-
-## Header Menu Structure (as of 2026-04-18)
-
-| Position | Parent | Children |
-|----------|--------|----------|
-| 1 | VIP Client (63536) → /booking-vip/ | Login, Register, Account, Reservations, Invoices, Members, FAQ |
-| 2 | Professional (64806) → /vendor-membership/ | Become a Partner, Professional Account, Professional Booking Dashboard, Be an Affiliate |
-| 3 | Affiliate Dashboard (74053) → /affiliate-dashboard/ | Affiliate Registration (74057), Multi Level Affiliate (74058) |
-
-Guard `rg-header-menu-lock.php` auto-restores item 3 + its 2 children if deleted.
+Phase B also needs: **"Distance Matrix API"** (for surcharge calculation).
 
 ---
 
 ## Next Session: Start Here
 
-1. **Pending Daniel/Roderic decisions** (blocking launch):
-   - Stripe account (#23) ← most critical
-   - Grace Vincent offboard (#22)
-   - Amelia vs OVA (#19)
-   - PayPal email (#24)
-   - Real SMTP mailbox (#25)
-   - GA4 Measurement ID (#14)
-2. **Remaining in-progress**: #7 invoices sidebar, #9 wizard persons, #10 home grid
-3. **Professional nav #69**: Daniel must test with driver account — still redirects to /my-orders/?
-4. **VIP Client post-login**: Daniel must log in via VIP Client → confirm lands on /booking-vip/
+1. **Daniel visual confirms needed:**
+   - Full Amelia → cart → checkout payment flow as wcfm_vendor user (now unblocked)
+   - Cart item meta text readable (rg-cart-coming-soon-fix.php)
+   - Nav sub-menu links visible
+   - Google Maps autocomplete (after GCP blocker resolved)
+
+2. **Pending decisions blocking launch:**
+   - Stripe account ownership — [#23](https://github.com/rivegosh/concierge-rivegosh/issues/23) ← most critical
+   - Grace Vincent offboard — [#22](https://github.com/rivegosh/concierge-rivegosh/issues/22)
+   - Amelia vs OVA booking system — [#19](https://github.com/rivegosh/concierge-rivegosh/issues/19)
+   - Real SMTP mailbox — [#25](https://github.com/rivegosh/concierge-rivegosh/issues/25)
+   - GA4 Measurement ID — [#14](https://github.com/rivegosh/concierge-rivegosh/issues/14)
+
+3. **In progress:** #7 invoices sidebar, #9 wizard persons, #10 home grid
+
+4. **Professional nav #69**: Daniel must test with driver account
 
 ---
 
 ## SSH Access (ready, passwordless)
 ```bash
 ssh -p 65002 -i ~/.ssh/id_ed25519 u100747640@145.79.20.24
-WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
+WP="wp --path=/home/u100747640/domains/rivegosh-concierge.com/public_html"
+MUP="/home/u100747640/domains/rivegosh-concierge.com/public_html/wp-content/mu-plugins"
+LSCSS="/home/u100747640/domains/rivegosh-concierge.com/public_html/wp-content/litespeed/css"
 ```
 
-## Site State (verified 2026-04-19)
+## Site State (verified 2026-04-21)
 - WordPress 6.x | WooCommerce | Colibri WP + rivegosh-child
-- **Coming Soon: OFF** ✅
+- **Coming Soon: OFF** ✅ (`woocommerce_coming_soon=no`)
+- **Amelia mailService: wp_mail** ✅ → routes through WP Mail SMTP → Brevo
+- LiteSpeed JS Minify/Defer: LOCKED OFF (`rg-litespeed-amelia-guard.php`)
 - Header menu: 3 top-level items + submenus (locked)
-- VIP Client → guests go to /login-2/?redirect_to=/booking-vip/ ✅
-- LiteSpeed JS Minify/Defer: LOCKED OFF (rg-litespeed-amelia-guard.php)
-- Catalog/destination pages: full dark luxury ✅ (rg-catalog-luxury-reskin.php v2.0.0)
+- Catalog/destination pages: full dark luxury ✅ (`rg-catalog-luxury-reskin.php` v2.0.0)
+- VIP Client → guests → `/login-2/?redirect_to=/booking-vip/` ✅
+- Reply-To guard active ✅ (`rg-mail-reply-to-guard.php` v1.1.0)
+- Protected mu-plugins: 15 sealed files (full list in CLAUDE.md)
 
 ---
 
@@ -183,19 +128,24 @@ WP=/home/u100747640/domains/rivegosh-concierge.com/public_html
 ### WooCommerce / UM
 - WC myaccount page = page ID 16, slug `/my-orders/`
 - UM login page = page ID 73396, slug `/login-2/`
-- WC overrides `wp_login_url()` → /my-orders/ (hence rg-booking-vip-guest-redirect.php exists)
-- UM reads `$_REQUEST['redirect_to']` from login form — passes through post-login
+- WC overrides `wp_login_url()` → /my-orders/ (hence `rg-booking-vip-guest-redirect.php`)
+- `wcfm_vendor` role does NOT have `manage_woocommerce` — affects WC Coming Soon access
+
+### Key User IDs
+| ID | Email | Role |
+|----|-------|------|
+| 1 | gracevincentstripe@gmail.com | administrator (original — Stripe owner, DO NOT TOUCH) |
+| 81 | myvipcab2025@gmail.com (Daniel) | administrator |
+| 462 | daniel@rivegosh-concierge.com | wcfm_vendor |
 
 ### Amelia CSS battle rules (hard-won)
 - `--am-c-main-bgr: #0f0c08` — NEVER change. Gallery hero uses this var; dark cars need dark field.
 - Service detail title uses `color: var(--am-c-main-text) !important` — beat it with 3-class selector.
 - Colibri h-text blocks are NOT inside `.amelia-v2-booking` — scope `.h-text` separately.
 - `body.page-id-44401` needed explicitly — /appointment/ page has no `.amelia-v2-booking`.
-- `rg-catalog-luxury-reskin.php` loads after all `rg-a*` files (alphabetical) — source-order advantage.
 
 ### Protected mu-plugins (full list in CLAUDE.md)
-Never delete, never modify without explicit Roderic approval:
-`rg-litespeed-amelia-guard.php` · `rg-pro-panel-unnest-card.php` · `rg-header-menu-lock.php` · `rg-booking-vip-guest-redirect.php` · `rg-v52-card-icons.php` · `rg-login-page-tighten.php` · `rg-appointment-redesign.php` · `rg-appointment-gallery-hide.php` · `rg-catalog-luxury-reskin.php`
+15 sealed files — never delete, never modify without explicit Roderic approval.
 
 ### Launch Readiness
-~70% — blocked on Roderic/Daniel decisions (Stripe, Grace, Amelia vs OVA, PayPal, SMTP)
+~75% — blocked on Daniel decisions (Stripe, Grace, Amelia vs OVA, SMTP) + GCP Maps API
