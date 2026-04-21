@@ -4,13 +4,28 @@
  * Description: Adds "Other Destinations on Demand" button below the destination grid
  *              on /appointment/ (page-id-44401). Links to /transfer-request/ (page 72053).
  *              Chicago card removed per Daniel request (2026-04-23).
+ * Author: RG
  * Version: 1.1.0
  * Created: 2026-04-23
  *
  * ╔══════════════════════════════════════════════════════════════════╗
- * ║ DO NOT DELETE — SIGNED-OFF FIX                                   ║
- * ║ Scope: body.page-id-44401 ONLY.                                  ║
- * ║ Revert: delete this file.                                        ║
+ * ║  🛑 DO NOT DELETE. DO NOT MODIFY WITHOUT ASKING RODERIC.         ║
+ * ║  ─────────────────────────────────────────────────────────────── ║
+ * ║  Frozen gold-standard fix. Verified visually via Chrome          ║
+ * ║  screenshot on 2026-04-23 and signed off.                        ║
+ * ║                                                                   ║
+ * ║  If the /appointment/ destination grid looks wrong later, FIX    ║
+ * ║  THE CAUSE (another mu-plugin, plugin update, theme override) —  ║
+ * ║  do NOT gut or rewrite this file. Ship additive overrides in a   ║
+ * ║  NEW mu-plugin if adjustment is genuinely needed.                ║
+ * ║                                                                   ║
+ * ║  WHY THIS FILE EXISTS: The destination grid on /appointment/ had ║
+ * ║  no "Other Destinations" CTA for custom routes. JS injection     ║
+ * ║  appends the button after the .h-section grid; Chicago removed   ║
+ * ║  per Daniel's explicit 2026-04-23 request.                       ║
+ * ║                                                                   ║
+ * ║  GitHub: rivegosh/concierge-rivegosh#80                          ║
+ * ║  Commit of record: 5f546b6                                       ║
  * ╚══════════════════════════════════════════════════════════════════╝
  */
 

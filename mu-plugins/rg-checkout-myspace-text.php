@@ -7,15 +7,28 @@
  *              block rather than running into surrounding meta rows.
  *              Target: all dd > p after the LAST dt in dl.variation
  *              (which is always the MY SPACE section header).
+ * Author: RG
  * Version: 1.0.0
  * Created: 2026-04-23
  *
  * ╔══════════════════════════════════════════════════════════════════╗
- * ║ DO NOT DELETE — SIGNED-OFF FIX                                   ║
- * ║ Scope: body.woocommerce-checkout dl.variation ONLY.              ║
- * ║ Priority 100010 — fires after rg-checkout-order-hierarchy        ║
- * ║ (100008) which sets the base 14px / line-height:1.5.             ║
- * ║ Revert: delete this file.                                        ║
+ * ║  🛑 DO NOT DELETE. DO NOT MODIFY WITHOUT ASKING RODERIC.         ║
+ * ║  ─────────────────────────────────────────────────────────────── ║
+ * ║  Frozen gold-standard fix. Verified visually via Chrome          ║
+ * ║  screenshot on 2026-04-23 and signed off.                        ║
+ * ║                                                                   ║
+ * ║  If the MY SPACE section in the /checkout/ order review looks    ║
+ * ║  wrong later, FIX THE CAUSE — do NOT gut or rewrite this file.   ║
+ * ║  Ship additive overrides in a NEW mu-plugin if needed.           ║
+ * ║                                                                   ║
+ * ║  WHY THIS FILE EXISTS: rg-checkout-order-hierarchy (100008) sets ║
+ * ║  all dd p to 14px/1.5 line-height. The MY SPACE free-text note   ║
+ * ║  (customer's special instructions) needed to stand out visually  ║
+ * ║  as a distinct block — 16px/1.25 achieves this without breaking  ║
+ * ║  other meta rows. dt:last-of-type targets MY SPACE reliably.     ║
+ * ║                                                                   ║
+ * ║  GitHub: rivegosh/concierge-rivegosh (checkout sprint)           ║
+ * ║  Commit of record: 1d0d47a                                       ║
  * ╚══════════════════════════════════════════════════════════════════╝
  */
 

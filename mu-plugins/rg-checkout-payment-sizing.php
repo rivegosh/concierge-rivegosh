@@ -9,15 +9,28 @@
  *              4. Privacy notice 16px — larger than it needs to be.
  *              Fix: inputs scale(1.5) with margin compensation; labels 15px;
  *              T&C text 14px; privacy notice 13px.
+ * Author: RG
  * Version: 1.0.0
  * Created: 2026-04-21
  *
  * ╔══════════════════════════════════════════════════════════════════╗
- * ║ DO NOT DELETE — SIGNED-OFF FIX                                   ║
- * ║ Scope: body.woocommerce-checkout #payment ONLY.                  ║
- * ║ Priority 100009 — fires after rg-checkout-order-hierarchy        ║
- * ║ (100008).                                                        ║
- * ║ Revert: delete this file.                                        ║
+ * ║  🛑 DO NOT DELETE. DO NOT MODIFY WITHOUT ASKING RODERIC.         ║
+ * ║  ─────────────────────────────────────────────────────────────── ║
+ * ║  Frozen gold-standard fix. Verified visually via Chrome          ║
+ * ║  screenshot on 2026-04-23 and signed off.                        ║
+ * ║                                                                   ║
+ * ║  If the /checkout/ payment section looks wrong later, FIX THE    ║
+ * ║  CAUSE (another mu-plugin, plugin update, theme override) — do   ║
+ * ║  NOT gut or rewrite this file. Ship additive overrides in a NEW  ║
+ * ║  mu-plugin if adjustment is genuinely needed.                    ║
+ * ║                                                                   ║
+ * ║  WHY THIS FILE EXISTS: WooCommerce default radio/checkboxes were  ║
+ * ║  ~13px and hard to tap on mobile. T&C must stay UN-TICKED by     ║
+ * ║  default (GDPR Planet49 active-consent ruling). scale(1.5) on    ║
+ * ║  inputs enlarges visually without disrupting layout flow.        ║
+ * ║                                                                   ║
+ * ║  GitHub: rivegosh/concierge-rivegosh (checkout sprint)           ║
+ * ║  Commit of record: 5182f62                                       ║
  * ╚══════════════════════════════════════════════════════════════════╝
  */
 
