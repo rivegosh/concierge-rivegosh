@@ -9,7 +9,7 @@
  *                 100005 restores champagne-gold fill for .am-button--filled in header.
  *              2. Gallery hero black void — adds min-height safety net and img fallback
  *                 in case padding-top:42% resolves to zero on first render.
- * Version: 1.3.0
+ * Version: 1.4.0
  * Created: 2026-04-21
  *
  * ╔══════════════════════════════════════════════════════════════════╗
@@ -52,7 +52,7 @@ add_action( 'wp_footer', function () {
 	 * ================================================================== */
 	.amelia-v2-booking #amelia-container .am-fcil__item-hero {
 		background-color: #0a0a0a !important;
-		background-size: contain !important;
+		background-size: cover !important;
 		background-position: center center !important;
 	}
 
