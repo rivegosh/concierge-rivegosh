@@ -3,7 +3,7 @@
 
 ---
 
-## Current State — 2026-04-21 (session 2 — checkout CSS + suitcase dropdown fix)
+## Current State — 2026-04-21 (session 3 — image white bg fix + select2 dropdown)
 
 ### Work completed this session
 
@@ -18,7 +18,7 @@
 | Master Index #34 updated | GH issue #34 | Added #88, #90, #91 to Amelia Email section | ✅ |
 | Issue #90 closed | GH issue #90 | mailService fix verified — closed with evidence | ✅ |
 
-### Additional fixes (session 2 — 2026-04-21)
+### Additional fixes (session 3 — 2026-04-21)
 
 | Fix | File | Change | Verified |
 |-----|------|--------|----------|
@@ -26,9 +26,15 @@
 | Checkout billing form polish | `mu-plugins/rg-checkout-review-polish.php` v1.0.0 (commit 66285fd) | ::placeholder visible, dl.variation dt block layout, meta labels 11px. Priority 100001 | ✅ deployed + committed |
 | Suitcase/passenger dropdown selected value | `mu-plugins/rg-amelia-select-value-fix.php` v1.0.0 (commit ecff0a0) | Overrides `--am-c-select-text` at `.am-select` scope + directly targets span child. Sealed plugin missed span child (Amelia's own rule had higher specificity). Priority 100003 | ✅ style tag confirmed on live page — needs Daniel to test booking flow |
 | CLAUDE.md protected table | `CLAUDE.md` | Added rg-checkout-review-polish, rg-checkout-billing-dark, rg-amelia-select-value-fix | ✅ |
+| Service detail Book Now button | `mu-plugins/rg-service-detail-fix.php` v1.3.0 | Sealed §8 beats §6 in specificity tie → button was dark invisible. New plugin at (1,4,0) + priority 100005. Also fixes gallery hero height (54%). | ✅ deployed — needs Daniel to confirm |
+| Checkout Country dropdown dark | `mu-plugins/rg-checkout-select2-dropdown.php` v1.0.0 (commit 1113a90) | select2 teleports to `body` — scoped via `body.woocommerce-checkout`. Dark panel + search + options. Priority 100006 | ✅ deployed |
+| Cadillac + Sprinter white background | Server images in `uploads/2025/07/` + `uploads/2025/11/` | Root cause: semi-transparent white fringe pixels from background-removal tool. Fix: ImageMagick `-flatten` onto `#0a0a0a` — dark background baked directly into PNG. Renamed to `*-dark.png` to bust all caches. DB updated (18 services + 18 galleries each). | ⚠️ Needs Daniel to confirm — hard refresh required on first view |
 
 ### What still needs Daniel to verify
 
+- **Cadillac + Sprinter card images** — open `/appointment/` page, do a **hard refresh (Ctrl+Shift+R)** to bypass browser image cache. Cadillac and Sprinter service cards should now show cars on dark background (no white box)
+- **Service detail Book Now button** — click any service → confirm "Book Now" button is champagne gold (not invisible dark)
+- **Checkout Country dropdown** — open `/checkout/`, click Country dropdown → dropdown panel should be dark (not white)
 - **Full Amelia → cart → checkout flow** — booking wizard suitcase/passenger dropdown: confirm selected value is now readable (rg-amelia-select-value-fix.php)
 - **Checkout left panel** — confirm billing form is dark-skinned with readable champagne labels (rg-checkout-billing-dark.php)
 - **Checkout right panel** — confirm Appointment Info / Local Time now stacks as blocks (not inline), meta labels are compact (rg-checkout-review-polish.php)
