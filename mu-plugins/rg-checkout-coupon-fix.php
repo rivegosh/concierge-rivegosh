@@ -45,19 +45,22 @@ add_action( 'wp_footer', function () {
 	 *    rg-checkout-luxury.php applied padding + bg to both outer and
 	 *    inner, causing the outer to double-pad to 127px.
 	 * ================================================================== */
-	body.woocommerce-checkout .woocommerce-form-coupon-toggle,
-	body.page-id-15 .woocommerce-form-coupon-toggle {
+	/* Match the specificity of rg-checkout-luxury.php (body#colibri.page-id-15)
+	   so our !important beats its !important in same-specificity tie via load order */
+	body#colibri.page-id-15 .woocommerce-form-coupon-toggle,
+	body.woocommerce-checkout.page-id-15 .woocommerce-form-coupon-toggle {
 		padding: 0 !important;
 		background: transparent !important;
 		border: none !important;
 		border-radius: 0 !important;
-		margin-bottom: 16px !important;
+		margin: 0 0 16px 0 !important;
+		overflow: hidden !important;
 	}
 	/* Kill WooCommerce's default thick blue left border on .woocommerce-info */
-	body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info,
-	body.woocommerce-checkout .woocommerce-info,
-	body.page-id-15 .woocommerce-form-coupon-toggle .woocommerce-info,
-	body.page-id-15 .woocommerce-info {
+	body#colibri.page-id-15 .woocommerce-form-coupon-toggle .woocommerce-info,
+	body#colibri.page-id-15 .woocommerce-info,
+	body.woocommerce-checkout.page-id-15 .woocommerce-form-coupon-toggle .woocommerce-info,
+	body.woocommerce-checkout.page-id-15 .woocommerce-info {
 		background-color: rgba(20, 16, 10, 0.88) !important;
 		border: 1px solid rgba(204, 197, 147, 0.25) !important;
 		border-left: 3px solid #CCC593 !important;
@@ -65,10 +68,10 @@ add_action( 'wp_footer', function () {
 		padding: 10px 16px !important;
 		border-radius: 3px !important;
 		margin: 0 !important;
-		/* Ensure no WC icon pseudo-element bleeds */
 		display: flex !important;
 		align-items: center !important;
 		gap: 6px !important;
+		min-height: unset !important;
 	}
 	/* WC injects a ::before icon — kill or keep neutral */
 	body.woocommerce-checkout .woocommerce-info::before,
@@ -81,11 +84,10 @@ add_action( 'wp_footer', function () {
 	/* ==================================================================
 	 * 2. showcoupon LINK — champagne gold, higher specificity
 	 * ================================================================== */
-	body.woocommerce-checkout .woocommerce-form-coupon-toggle a.showcoupon,
-	body.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info a,
-	body.woocommerce-checkout .woocommerce-info a.showcoupon,
-	body.page-id-15 .woocommerce-form-coupon-toggle a,
-	body.page-id-15 .woocommerce-info a {
+	body#colibri.page-id-15 .woocommerce-form-coupon-toggle a,
+	body#colibri.page-id-15 .woocommerce-info a,
+	body.woocommerce-checkout.page-id-15 .woocommerce-form-coupon-toggle a,
+	body.woocommerce-checkout.page-id-15 .woocommerce-info a {
 		color: #CCC593 !important;
 		text-decoration: underline !important;
 		text-underline-offset: 3px !important;
