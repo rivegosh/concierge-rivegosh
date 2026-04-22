@@ -12,7 +12,7 @@
  *              Uses woocommerce_thankyou_order_received_text filter for the
  *              copy and priority 100011 CSS for all layout.
  * Author: RG
- * Version: 1.0.0
+ * Version: 1.1.0
  * Created: 2026-04-22
  *
  * WHY THIS FILE EXISTS:
@@ -56,22 +56,22 @@ add_action( 'wp_footer', function () {
 	body.woocommerce-order-received .woocommerce-notice,
 	body.woocommerce-order-received .woocommerce-thankyou-order-received,
 	body.woocommerce-order-received .woocommerce-notice--info {
-		background: rgba(95, 184, 138, 0.06) !important;
-		border-left: 4px solid #5fb88a !important;
-		padding: 28px 32px !important;
+		background: rgba(122, 167, 128, 0.06) !important;
+		border-left: 4px solid #7aa780 !important;
+		padding: 24px 28px !important;
 		border-radius: 4px !important;
 		color: rgba(230, 225, 195, 0.95) !important;
-		margin: 24px 0 32px !important;
+		margin: 24px 0 24px !important;
 	}
 
 	body.woocommerce-order-received .rg-success-title {
 		display: block !important;
-		font-size: 32px !important;
+		font-size: 24px !important;
 		font-weight: 700 !important;
-		letter-spacing: 0.18em !important;
-		color: #5fb88a !important;
-		line-height: 1.1 !important;
-		margin: 0 0 12px 0 !important;
+		letter-spacing: 0.08em !important;
+		color: #7aa780 !important;
+		line-height: 1.15 !important;
+		margin: 0 0 10px 0 !important;
 		text-transform: uppercase !important;
 	}
 
@@ -91,6 +91,87 @@ add_action( 'wp_footer', function () {
 		font-style: italic !important;
 		line-height: 1.5 !important;
 		margin: 0 !important;
+	}
+
+	/* ==================================================================
+	 * 1b. TIGHTEN GAP between order-overview strip and the details/billing
+	 *     cards below it. Default WC + Colibri spacing creates a ~80-100px
+	 *     dead zone around the Amelia QR-code paragraph. Keep breathing
+	 *     room but halve the wasted space.
+	 * ================================================================== */
+	body.woocommerce-order-received .woocommerce-order-overview,
+	body.woocommerce-order-received ul.woocommerce-order-overview.woocommerce-thankyou-order-details {
+		margin: 16px 0 20px 0 !important;
+	}
+	body.woocommerce-order-received .woocommerce-order-details,
+	body.woocommerce-order-received section.woocommerce-order-details,
+	body.woocommerce-order-received .woocommerce-customer-details,
+	body.woocommerce-order-received section.woocommerce-customer-details {
+		margin-top: 24px !important;
+	}
+	/* Amelia's "Thank you for your order! Your QR code..." paragraph */
+	body.woocommerce-order-received .woocommerce > p,
+	body.woocommerce-order-received .entry-content > p,
+	body.woocommerce-order-received .page-content > p {
+		margin: 12px 0 !important;
+		line-height: 1.5 !important;
+	}
+
+	/* ==================================================================
+	 * 1c. BILLING ADDRESS — dark luxury. The sealed
+	 *     rg-order-received-billing-fix.php catches some cases but misses
+	 *     the outer white card and the inner gray address box seen on
+	 *     order #74131. Force dark on all billing containers + address
+	 *     block, champagne text, champagne hairline.
+	 * ================================================================== */
+	body.woocommerce-order-received .woocommerce-customer-details,
+	body.woocommerce-order-received section.woocommerce-customer-details,
+	body.woocommerce-order-received .woocommerce-column,
+	body.woocommerce-order-received .woocommerce-column--billing-address,
+	body.woocommerce-order-received .woocommerce-column--shipping-address {
+		background: transparent !important;
+		background-color: transparent !important;
+		box-shadow: none !important;
+	}
+	body.woocommerce-order-received .woocommerce-customer-details address,
+	body.woocommerce-order-received .woocommerce-column address {
+		background: rgba(20, 16, 10, 0.4) !important;
+		border: 1px solid rgba(204, 197, 147, 0.18) !important;
+		color: rgba(230, 225, 195, 0.95) !important;
+		padding: 20px 22px !important;
+		border-radius: 4px !important;
+		font-style: normal !important;
+		line-height: 1.6 !important;
+	}
+	body.woocommerce-order-received .woocommerce-customer-details address p,
+	body.woocommerce-order-received .woocommerce-column address p {
+		color: rgba(230, 225, 195, 0.95) !important;
+		margin: 0 0 4px 0 !important;
+	}
+	body.woocommerce-order-received .woocommerce-customer-details address a,
+	body.woocommerce-order-received .woocommerce-column address a {
+		color: rgba(230, 225, 195, 0.95) !important;
+		text-decoration: none !important;
+		background: transparent !important;
+	}
+	body.woocommerce-order-received .woocommerce-customer-details h2,
+	body.woocommerce-order-received .woocommerce-column h2 {
+		color: rgba(204, 197, 147, 0.85) !important;
+		background: transparent !important;
+		font-size: 13px !important;
+		font-weight: 600 !important;
+		text-transform: uppercase !important;
+		letter-spacing: 0.12em !important;
+		margin: 0 0 14px 0 !important;
+		padding: 0 !important;
+	}
+	/* Icons inside the address block (phone/email icons) — champagne tint */
+	body.woocommerce-order-received .woocommerce-customer-details address svg,
+	body.woocommerce-order-received .woocommerce-column address svg,
+	body.woocommerce-order-received .woocommerce-customer-details address i,
+	body.woocommerce-order-received .woocommerce-column address i {
+		color: rgba(204, 197, 147, 0.70) !important;
+		fill: rgba(204, 197, 147, 0.70) !important;
 	}
 
 	/* ==================================================================
