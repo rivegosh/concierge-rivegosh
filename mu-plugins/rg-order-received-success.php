@@ -109,12 +109,24 @@ add_action( 'wp_footer', function () {
 	body.woocommerce-order-received section.woocommerce-customer-details {
 		margin-top: 24px !important;
 	}
-	/* Amelia's "Thank you for your order! Your QR code..." paragraph */
+	/* Amelia's "Thank you for your order! Your QR code..." wrapper
+	   (WC/Amelia renders this as an unclassed <div>, not <p>). Plus
+	   strip the 64px-total-margin <hr> separator that WooCommerce
+	   inserts between the overview strip and the order-details section. */
+	body.woocommerce-order-received .woocommerce-order > div,
+	body.woocommerce-order-received .woocommerce-order > p,
 	body.woocommerce-order-received .woocommerce > p,
 	body.woocommerce-order-received .entry-content > p,
 	body.woocommerce-order-received .page-content > p {
-		margin: 12px 0 !important;
+		margin: 8px 0 !important;
 		line-height: 1.5 !important;
+	}
+	body.woocommerce-order-received .woocommerce-order > hr,
+	body.woocommerce-order-received .woocommerce > hr {
+		margin: 12px 0 !important;
+		border: 0 !important;
+		border-top: 1px solid rgba(204, 197, 147, 0.15) !important;
+		height: 0 !important;
 	}
 
 	/* ==================================================================
