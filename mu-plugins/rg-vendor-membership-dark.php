@@ -348,6 +348,206 @@ add_action( 'wp_footer', function () {
 		color: rgba(230, 225, 195, 0.95) !important;
 	}
 
+	/* ==================================================================
+	 * 12. CONFIRMATION STEP (?vmstep=confirmation)
+	 *     Stock WCFM renders: (a) left "Review your plan" card with
+	 *     bright cyan bg (rgb(99,194,222)), (b) right "Confirmation"
+	 *     card with near-white bg, (c) "FREE Plan!!!" message in medium
+	 *     grey inset. All catastrophically off-brand. Force dark luxury.
+	 * ================================================================== */
+	html body.page-id-3918 .wcfm_membership_thankyou_content_wrapper,
+	html body.page-id-3918 .wcfmvm_membership_confirmation_wrapper,
+	html body.page-id-3918 .wcfmvm_membership_review_wrapper,
+	html body.page-id-3918 .wcfmvm_membership_plan_wrapper,
+	html body.page-id-3918 .wcfm_membership_plan_wrapper,
+	html body.page-id-3918 div[class*="thankyou_content"],
+	html body.page-id-3918 div[class*="membership_review"],
+	html body.page-id-3918 div[class*="membership_confirmation"] {
+		background: rgba(20, 16, 10, 0.75) !important;
+		background-color: rgba(20, 16, 10, 0.75) !important;
+		border: 1px solid rgba(204, 197, 147, 0.18) !important;
+		color: rgba(230, 225, 195, 0.95) !important;
+		border-radius: 4px !important;
+	}
+
+	/* Review your plan / Confirmation labels */
+	html body.page-id-3918 .wcfmvm_review_label,
+	html body.page-id-3918 .wcfmvm_confirmation_label,
+	html body.page-id-3918 u,
+	html body.page-id-3918 [class*="review"] u,
+	html body.page-id-3918 [class*="confirmation"] u {
+		color: rgba(204, 197, 147, 0.85) !important;
+		text-decoration: none !important;
+	}
+
+	/* "Be a Gold Partner" plan title on review card */
+	html body.page-id-3918 .wcfm_membership_thankyou_content_wrapper h1,
+	html body.page-id-3918 .wcfm_membership_thankyou_content_wrapper h2,
+	html body.page-id-3918 .wcfm_membership_thankyou_content_wrapper h3,
+	html body.page-id-3918 .wcfm_membership_thankyou_content_wrapper strong,
+	html body.page-id-3918 div[class*="membership_review"] h1,
+	html body.page-id-3918 div[class*="membership_review"] h2,
+	html body.page-id-3918 div[class*="membership_review"] h3,
+	html body.page-id-3918 div[class*="membership_review"] strong {
+		color: #CCC593 !important;
+	}
+
+	/* Free plan message box */
+	html body.page-id-3918 .wcfmvm_free_message,
+	html body.page-id-3918 .wcfmvm_no_payment_message,
+	html body.page-id-3918 .wcfmvm_confirmation_message,
+	html body.page-id-3918 div[class*="free_message"],
+	html body.page-id-3918 div[class*="no_payment"] {
+		background: rgba(8, 6, 4, 0.6) !important;
+		border: 1px solid rgba(204, 197, 147, 0.20) !important;
+		color: rgba(230, 225, 195, 0.90) !important;
+		padding: 20px !important;
+		border-radius: 3px !important;
+	}
+
+	/* Generic fallback — any div inside membership container with a
+	   bright non-dark background gets forced transparent to reveal the
+	   dark page bg beneath. Scoped tight to avoid bleed. */
+	html body.page-id-3918 .wcfm-membership-wrapper > div,
+	html body.page-id-3918 .wcfm-membership-wrapper section > div,
+	html body.page-id-3918 form.wcfm > div {
+		background-color: transparent;
+	}
+
 	</style>
 	<?php
 }, 100012 );
+
+/**
+ * WCFM Store Setup Wizard — the page vendors land on AFTER
+ * subscribing. URL pattern: /?store-setup=yes, body.wcfm-store-setup.
+ * Stock WCFM ships this with a light-grey body bg + cyan accents —
+ * completely off-brand. Scope via body class to avoid any bleed.
+ *
+ * Uses wp_head (not wp_footer) because WC Setup Wizard uses a minimal
+ * template that doesn't always call wp_footer. Rules are scoped to
+ * body.wcfm-store-setup so zero bleed to other pages.
+ */
+add_action( 'wp_head', function () {
+	?>
+	<style id="rg-wcfm-store-setup-dark">
+
+	/* Body + wizard card */
+	html body.wcfm-store-setup {
+		background: #0f0c08 !important;
+		background-color: #0f0c08 !important;
+		color: rgba(230, 225, 195, 0.95) !important;
+	}
+	html body.wcfm-store-setup #wc-logo,
+	html body.wcfm-store-setup .wc-setup-content,
+	html body.wcfm-store-setup .wcfm-store-setup-content,
+	html body.wcfm-store-setup .wc-setup-steps {
+		background: rgba(20, 16, 10, 0.75) !important;
+		background-color: rgba(20, 16, 10, 0.75) !important;
+		border: 1px solid rgba(204, 197, 147, 0.18) !important;
+		color: rgba(230, 225, 195, 0.95) !important;
+	}
+	html body.wcfm-store-setup .wc-setup-content,
+	html body.wcfm-store-setup .wcfm-store-setup-content {
+		padding: 32px !important;
+	}
+
+	/* Store Setup heading (was cyan) */
+	html body.wcfm-store-setup h1,
+	html body.wcfm-store-setup h2,
+	html body.wcfm-store-setup h3,
+	html body.wcfm-store-setup #logo,
+	html body.wcfm-store-setup .wc-logo {
+		color: #CCC593 !important;
+	}
+
+	/* Stepper labels (Store, Payment, Ready!) */
+	html body.wcfm-store-setup .wc-setup-steps li {
+		color: rgba(204, 197, 147, 0.75) !important;
+	}
+	html body.wcfm-store-setup .wc-setup-steps li.active {
+		color: #CCC593 !important;
+		border-color: #CCC593 !important;
+	}
+	html body.wcfm-store-setup .wc-setup-steps li.done {
+		color: rgba(204, 197, 147, 0.85) !important;
+		border-color: rgba(204, 197, 147, 0.85) !important;
+	}
+	html body.wcfm-store-setup .wc-setup-steps li::before,
+	html body.wcfm-store-setup .wc-setup-steps li::after {
+		border-color: rgba(204, 197, 147, 0.30) !important;
+		background: transparent !important;
+	}
+
+	/* Body text + labels inside wizard */
+	html body.wcfm-store-setup .wc-setup-content p,
+	html body.wcfm-store-setup .wc-setup-content label,
+	html body.wcfm-store-setup .wc-setup-content span,
+	html body.wcfm-store-setup .wc-setup-content td,
+	html body.wcfm-store-setup .wc-setup-content th {
+		color: rgba(230, 225, 195, 0.95) !important;
+	}
+
+	/* Input fields — WHITE bg, BLACK text (consistent with vendor-membership) */
+	html body.wcfm-store-setup input[type="text"],
+	html body.wcfm-store-setup input[type="email"],
+	html body.wcfm-store-setup input[type="tel"],
+	html body.wcfm-store-setup input[type="url"],
+	html body.wcfm-store-setup input[type="number"],
+	html body.wcfm-store-setup input[type="password"],
+	html body.wcfm-store-setup select,
+	html body.wcfm-store-setup textarea {
+		background: #ffffff !important;
+		color: #0a0a0a !important;
+		border: 1px solid rgba(204, 197, 147, 0.55) !important;
+		border-radius: 3px !important;
+		padding: 10px 12px !important;
+	}
+	html body.wcfm-store-setup input::placeholder {
+		color: rgba(10, 10, 10, 0.45) !important;
+	}
+
+	/* Primary button (Let's go!, Next, Continue) */
+	html body.wcfm-store-setup .button-primary,
+	html body.wcfm-store-setup .button.button-next,
+	html body.wcfm-store-setup .wcfm_submit_button,
+	html body.wcfm-store-setup a.button-primary {
+		background: rgba(204, 197, 147, 0.92) !important;
+		background-color: rgba(204, 197, 147, 0.92) !important;
+		color: #0a0a0a !important;
+		border: 0 !important;
+		border-radius: 3px !important;
+		padding: 11px 22px !important;
+		font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+		font-weight: 600 !important;
+		text-transform: uppercase !important;
+		letter-spacing: 0.1em !important;
+		text-decoration: none !important;
+		text-shadow: none !important;
+	}
+	html body.wcfm-store-setup .button-primary:hover {
+		background: #CCC593 !important;
+		color: #0a0a0a !important;
+	}
+
+	/* Secondary / "Not right now" / skip button */
+	html body.wcfm-store-setup .button:not(.button-primary),
+	html body.wcfm-store-setup .wc-setup-actions a:not(.button-primary) {
+		background: transparent !important;
+		color: rgba(204, 197, 147, 0.85) !important;
+		border: 1px solid rgba(204, 197, 147, 0.40) !important;
+		border-radius: 3px !important;
+		padding: 11px 22px !important;
+		text-transform: uppercase !important;
+		letter-spacing: 0.08em !important;
+		text-decoration: none !important;
+	}
+
+	/* Links */
+	html body.wcfm-store-setup a {
+		color: #CCC593 !important;
+	}
+
+	</style>
+	<?php
+}, 100013 );
