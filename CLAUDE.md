@@ -285,6 +285,34 @@ $SSH "$WP option update woocommerce_coming_soon no"
 
 **Do NOT disable prematurely** — site is not launch-ready yet. This is intentional testing mode.
 
+### RULE 20 — Runtime verification required. File existence ≠ functionality.
+
+Static verification (file exists, syntax correct, grep matches) is NEVER sufficient for claiming a change works. Every assertion requires executed evidence: command + stdout, or Chrome DOM/network capture. Added 2026-04-22 after an `imagesrcset`-on-preload change passed static verification (attribute present in rendered HTML ✓) but caused a duplicate fetch regression on the hero image, only caught by Chrome `performance.getEntriesByType('resource')` measurement.
+
+**Apply to all three layers:**
+- **Server layer:** deploy a mu-plugin → `php -l` pass + `grep` presence ≠ "it works." Curl the page, read the response, confirm the expected header/attribute is emitted.
+- **DOM layer:** attribute in rendered HTML ≠ "it works." Measure the network effect via `performance.getEntriesByType('resource')` — count duplicate fetches, check `transferSize`, check `initiatorType`.
+- **Functional layer:** render without errors ≠ "the feature works." Walk the user flow; for checkout, submit a test order.
+
+**Canonical runtime-check sequence for mu-plugin changes:**
+```bash
+# 1. Deploy (Rule 4)
+scp -P 65002 -i ~/.ssh/id_ed25519 plugin.php u100747640@145.79.20.24:/tmp/
+$SSH "php -l /tmp/plugin.php && mv /tmp/plugin.php $MUP/plugin.php && $WP litespeed-purge all && rm -rf $LSCSS/*"
+
+# 2. STATIC check (server grep — necessary but not sufficient)
+$SSH "grep -n 'expected-string' $MUP/plugin.php"
+
+# 3. RUNTIME check (browser measurement — REQUIRED)
+# - Chrome MCP: navigate → javascript_tool to read DOM + resource timing
+# - Confirm the expected network effect happened, not just that the attribute is present
+# - If change is hero/LCP-related: verify single fetch, not duplicate
+```
+
+**Anti-pattern (what this rule prevents):**
+> "I added `imagesrcset` to the preload link. Chrome DOM shows the attribute. Shipped."
+> → Reality: CSS `background-image` doesn't consume `imagesrcset`. Browser fetched both the srcset variant AND the CSS-referenced URL. Net +376 KB regression. Caught only by runtime resource-timing measurement (commits `14fdae2` ship → `a87a531` revert).
+
 ---
 
 ## 🔧 KNOWN-BROKEN PATTERNS (what NOT to do)
@@ -309,6 +337,8 @@ $SSH "$WP option update woocommerce_coming_soon no"
 | `update_option('amelia_settings', $phpArray)` | WordPress PHP-serializes it; `SettingsStorage::getSavedSettings()` calls `json_decode()` → crashes Amelia site-wide | Use `$wpdb->update()` with `json_encode($data)` directly — see Rule 17 |
 | CLI smoke test shows 0 notifications | `runInstantPostBookingActions` defaults to `false` — defers to cron | Set `$command->setField('runInstantPostBookingActions', true)` — see Rule 18 |
 | Testing Amelia flow as `wcfm_vendor` user | WC Coming Soon blocks non-admin (no `manage_woocommerce`) from cart/checkout | Test as administrator, or disable Coming Soon when ready to launch (Rule 19) |
+| `imagesrcset` on `<link rel="preload">` for a CSS `background-image` hero | CSS `background-image: url(...)` requests the literal URL — doesn't consume `imagesrcset`. Browser fetches the srcset variant AND the CSS URL (duplicate fetch, +376 KB desktop / +70 KB mobile). | Either (a) match preload `href` exactly to the CSS URL (single fetch, no srcset), or (b) convert the hero to a real `<img srcset>` element. Never mix CSS bg-image + imagesrcset preload — see Rule 20 |
+| Claiming a mu-plugin change "works" because the file exists + PHP lint passes | Static verification catches syntax, not semantic correctness. File-on-disk ≠ effect-in-browser. | Deploy → then Chrome MCP measurement or curl proof of the expected runtime effect — see Rule 20 |
 
 ---
 
