@@ -14,8 +14,14 @@
  * ║ 1) preconnect to fonts.gstatic.com, fonts.googleapis.com,         ║
  * ║    use.fontawesome.com, i0.wp.com (saves TLS handshake time)      ║
  * ║ 2) preload the first-rendered hero slide, homepage-only           ║
- * ║ 3) imagesrcset + imagesizes for responsive hero preload           ║
- * ║    (2026-04-22: mobile gets 640w, desktop gets 2048w)             ║
+ * ║                                                                   ║
+ * ║ Note (2026-04-22): imagesrcset was attempted and reverted —       ║
+ * ║ Colibri slideshow uses CSS background-image (not <img>), which    ║
+ * ║ does not consume imagesrcset. Adding srcset caused the browser    ║
+ * ║ to fetch the srcset variant AND the CSS-referenced scaled.jpg     ║
+ * ║ (double fetch, net +376 KB desktop). href must match the exact    ║
+ * ║ URL referenced by CSS background-image to satisfy that request    ║
+ * ║ from the preload cache.                                           ║
  * ║                                                                   ║
  * ║ Revert: delete this file.                                         ║
  * ╚══════════════════════════════════════════════════════════════════╝
@@ -30,12 +36,7 @@ add_action( 'wp_head', function() {
 	echo "<link rel='preconnect' href='https://i0.wp.com' crossorigin>\n";
 
 	if ( is_front_page() ) {
-		$base   = 'https://rivegosh-concierge.com/wp-content/uploads/2025/10/vitesse-de-voiture-de-luxe-par-un-batiment-moderne-au-crepuscule-ai-generative';
-		$hero   = $base . '-scaled.jpg';
-		$srcset = $base . '-640x480.jpg 640w, ' .
-		          $base . '-1024x683.jpg 1024w, ' .
-		          $base . '-1536x1024.jpg 1536w, ' .
-		          $base . '-2048x1365.jpg 2048w';
-		echo "<link rel='preload' as='image' fetchpriority='high' href='" . esc_url( $hero ) . "' imagesrcset='" . esc_attr( $srcset ) . "' imagesizes='100vw'>\n";
+		$hero = 'https://rivegosh-concierge.com/wp-content/uploads/2025/10/vitesse-de-voiture-de-luxe-par-un-batiment-moderne-au-crepuscule-ai-generative-scaled.jpg';
+		echo "<link rel='preload' as='image' fetchpriority='high' href='" . esc_url( $hero ) . "'>\n";
 	}
 }, 1 );
