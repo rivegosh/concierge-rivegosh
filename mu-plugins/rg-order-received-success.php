@@ -12,7 +12,7 @@
  *              Uses woocommerce_thankyou_order_received_text filter for the
  *              copy and priority 100011 CSS for all layout.
  * Author: RG
- * Version: 1.1.0
+ * Version: 1.2.0
  * Created: 2026-04-22
  *
  * WHY THIS FILE EXISTS:
@@ -39,7 +39,7 @@ add_filter( 'woocommerce_thankyou_order_received_text', function ( $text, $order
 	return
 		'<span class="rg-success-title">SUCCESS</span>'
 		. '<span class="rg-success-msg">Thank you. Your order has been received.</span>'
-		. '<span class="rg-success-next">Your chauffeur service will confirm your booking by email shortly.</span>';
+		. '<span class="rg-success-next">Your QR code will be generated and sent to you via email shortly.</span>';
 }, 20, 2 );
 
 add_action( 'wp_footer', function () {
@@ -109,11 +109,16 @@ add_action( 'wp_footer', function () {
 	body.woocommerce-order-received section.woocommerce-customer-details {
 		margin-top: 24px !important;
 	}
-	/* Amelia's "Thank you for your order! Your QR code..." wrapper
-	   (WC/Amelia renders this as an unclassed <div>, not <p>). Plus
-	   strip the 64px-total-margin <hr> separator that WooCommerce
-	   inserts between the overview strip and the order-details section. */
-	body.woocommerce-order-received .woocommerce-order > div,
+	/* Hide Amelia's duplicate "Thank you for your order! Your QR code…"
+	   line entirely. It renders as a bare unclassed <div> that (a)
+	   has black-on-black contrast (invisible / accessibility fail)
+	   and (b) duplicates the new SUCCESS banner 3rd line. Removing
+	   it also lets ORDER DETAILS + BILLING ADDRESS cards move up. */
+	body.woocommerce-order-received .woocommerce-order > div:not([class]),
+	body.woocommerce-order-received .woocommerce-order > div[class=""] {
+		display: none !important;
+	}
+	/* Defensive paragraph margin cleanup (if WC ever wraps in <p> again) */
 	body.woocommerce-order-received .woocommerce-order > p,
 	body.woocommerce-order-received .woocommerce > p,
 	body.woocommerce-order-received .entry-content > p,
@@ -261,6 +266,34 @@ add_action( 'wp_footer', function () {
 	}
 
 	/* ==================================================================
+	 * 5b. WCFM Support button (td.actions > a.wcfm-support-action) —
+	 *     uppercase sans-serif, champagne chip (matches site buttons)
+	 *     instead of the default blue Open Sans pill.
+	 * ================================================================== */
+	body.woocommerce-order-received a.wcfm-support-action,
+	body.woocommerce-order-received a.order-actions-button {
+		text-transform: uppercase !important;
+		letter-spacing: 0.1em !important;
+		font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+		font-weight: 600 !important;
+		font-size: 12px !important;
+		background: rgba(204, 197, 147, 0.92) !important;
+		background-color: rgba(204, 197, 147, 0.92) !important;
+		color: #0a0a0a !important;
+		border: 0 !important;
+		padding: 10px 22px !important;
+		border-radius: 4px !important;
+		text-decoration: none !important;
+		box-shadow: none !important;
+	}
+	body.woocommerce-order-received a.wcfm-support-action:hover,
+	body.woocommerce-order-received a.order-actions-button:hover {
+		background: #CCC593 !important;
+		background-color: #CCC593 !important;
+		color: #0a0a0a !important;
+	}
+
+	/* ==================================================================
 	 * 6. wc-item-meta list (My Space) — tighter spacing, champagne label
 	 * ================================================================== */
 	body.woocommerce-order-received table.shop_table td.product-name ul.wc-item-meta {
@@ -280,5 +313,23 @@ add_action( 'wp_footer', function () {
 	}
 
 	</style>
+	<script id="rg-order-received-support-mailto">
+	(function () {
+		var rewrite = function () {
+			var a = document.querySelector('a.wcfm-support-action');
+			if ( ! a ) return;
+			var order = (document.querySelector('.woocommerce-order-overview__order strong, .woocommerce-order-overview li strong') || {}).textContent || '';
+			order = order.trim();
+			var subject = 'Booking Support - Order #' + order;
+			a.href = 'mailto:daniel@rivegosh-concierge.com?subject=' + encodeURIComponent(subject);
+			a.removeAttribute('target');
+		};
+		if ( document.readyState === 'loading' ) {
+			document.addEventListener('DOMContentLoaded', rewrite);
+		} else {
+			rewrite();
+		}
+	})();
+	</script>
 	<?php
 }, 100011 );
