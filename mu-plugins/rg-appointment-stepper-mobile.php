@@ -5,7 +5,7 @@
  *              (page 44401). Hides text labels, keeps number + icon. Reduces
  *              vertical space from ~400px stacked to ~110px horizontal strip.
  *              Desktop unaffected. Scoped to page-id-44401 only.
- * Version: 1.4.1
+ * Version: 1.4.2
  * Created: 2026-04-23
  *
  * Rollback: delete this file. Stepper reverts to vertical stack on mobile.
@@ -61,7 +61,7 @@ add_action( 'wp_footer', function () {
 		/* Each step: push group down with bigger top padding, wider gap */
 		body#colibri.page-id-44401 [data-colibri-id="44401-c6"] .h-column__inner {
 			padding: 30px 4px 16px 4px !important;
-			gap: 36px !important;
+			gap: 56px !important;
 			align-items: center !important;
 			justify-content: flex-start !important;
 			flex-direction: column !important;
