@@ -5,13 +5,16 @@
  *              (page 44401). Hides text labels, keeps number + icon. Reduces
  *              vertical space from ~400px stacked to ~60px horizontal strip.
  *              Desktop unaffected. Scoped to page-id-44401 only.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Created: 2026-04-23
  *
  * Rollback: delete this file. Stepper reverts to vertical stack on mobile.
  *
- * Priority 100000 (after sealed rg-appointment-redesign.php at default 10)
- * — our CSS appears later in HTML, wins on equal-specificity tiebreak.
+ * v1.0.0 → v1.1.0 fix: v1.0 used `body.page-id-44401 #colibri` selector —
+ * WRONG per CLAUDE.md Rule 8. Body has id=colibri, so descendant selector
+ * matched nothing. v1.1 uses `body#colibri.page-id-44401` (SAME element).
+ * Also switched from .style-865-outer to .h-column direct child (c16-outer
+ * uses style-869-outer — would have been missed).
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -21,38 +24,38 @@ add_action( 'wp_footer', function () {
 	?>
 	<style id="rg-appointment-stepper-mobile">
 	@media (max-width: 767px) {
-		/* Force stepper row to stay horizontal on mobile (Colibri default: stack) */
-		body.page-id-44401 #colibri [data-colibri-id="44401-c6"] .h-row {
+		/* Force stepper row to stay horizontal on mobile */
+		body#colibri.page-id-44401 [data-colibri-id="44401-c6"] .h-row {
 			flex-direction: row !important;
 			flex-wrap: nowrap !important;
 			justify-content: space-between !important;
 			align-items: center !important;
 		}
-		/* Each of the 4 step-column wrappers → 25% width (no full-width stack) */
-		body.page-id-44401 #colibri [data-colibri-id="44401-c6"] .style-865-outer {
+		/* All 4 step-column wrappers → 25% width (targets .h-column direct child) */
+		body#colibri.page-id-44401 [data-colibri-id="44401-c6"] .h-row > .h-column {
 			flex: 0 0 25% !important;
 			max-width: 25% !important;
 			min-width: 0 !important;
 		}
-		/* Hide text labels (CHOOSE DESTINATION / SELECT YOUR CAR / etc) */
-		body.page-id-44401 #colibri [data-colibri-id="44401-c9"],
-		body.page-id-44401 #colibri [data-colibri-id="44401-c12"],
-		body.page-id-44401 #colibri [data-colibri-id="44401-c15"],
-		body.page-id-44401 #colibri [data-colibri-id="44401-c18"] {
+		/* Hide text labels */
+		body#colibri.page-id-44401 [data-colibri-id="44401-c9"],
+		body#colibri.page-id-44401 [data-colibri-id="44401-c12"],
+		body#colibri.page-id-44401 [data-colibri-id="44401-c15"],
+		body#colibri.page-id-44401 [data-colibri-id="44401-c18"] {
 			display: none !important;
 		}
-		/* Compact the stepper container */
-		body.page-id-44401 #colibri [data-colibri-id="44401-c6"] {
+		/* Compact stepper container */
+		body#colibri.page-id-44401 [data-colibri-id="44401-c6"] {
 			padding: 8px 6px !important;
 			margin-bottom: 24px !important;
 		}
-		/* Tighten internal spacing within each step column */
-		body.page-id-44401 #colibri [data-colibri-id="44401-c6"] .h-column__inner {
+		/* Tighten step-column internal spacing */
+		body#colibri.page-id-44401 [data-colibri-id="44401-c6"] .h-column__inner {
 			padding: 4px !important;
 			gap: 6px !important;
 		}
 		/* Slightly smaller number-circle + icon */
-		body.page-id-44401 #colibri [data-colibri-id="44401-c6"] .h-icon {
+		body#colibri.page-id-44401 [data-colibri-id="44401-c6"] .h-icon {
 			width: 22px !important;
 			height: 22px !important;
 		}
