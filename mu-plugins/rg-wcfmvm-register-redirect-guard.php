@@ -12,7 +12,7 @@
  *              parses the response, and if status=true + redirect URL present, forces
  *              window.location after a 1200ms delay (to let the legitimate slideDown
  *              callback run first if it works).
- * Version: 1.2.0
+ * Version: 1.3.0
  * Revision: 1.0.0 was broken — searched for "wcfmvm-memberships-registration" but
  *           actual controller value is "wcfm-memberships-registration" (no vm).
  *           Also settings.data is FormData object not string. v1.1.0 uses
@@ -58,15 +58,15 @@ add_action( 'wp_head', function () {
 					var r = JSON.parse(xhr.responseText);
 					console.log("[RG-Guard] WCFM register response:", r);
 					if ( r && (r.status === true || r.status === "true") && r.redirect ) {
-						console.log("[RG-Guard] scheduling force-redirect to:", r.redirect);
+						console.log("[RG-Guard] force-redirect NOW to:", r.redirect);
+						// v1.3.0: was 1200ms — reduced to 150ms after DEFCON0 report that
+						// the "white screen" was actually the transition delay. Now near-instant.
 						setTimeout(function() {
 							if ( window.location.href !== r.redirect ) {
-								console.log("[RG-Guard] forcing navigation — WCFM slideDown callback did not fire");
+								console.log("[RG-Guard] forcing navigation");
 								window.location.assign(r.redirect);
-							} else {
-								console.log("[RG-Guard] skipped — WCFM already navigated to target");
 							}
-						}, 1200);
+						}, 150);
 					} else {
 						console.log("[RG-Guard] no redirect action — status/redirect missing");
 					}
