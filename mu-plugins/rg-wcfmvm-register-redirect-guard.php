@@ -8,15 +8,20 @@
  *              chain, display:none !important, or DOM edge), slideDown() runs on nothing
  *              and the callback NEVER fires — user account is created but UI freezes and
  *              redirect never happens. This plugin adds a safety net: listens for ANY
- *              ajaxComplete whose payload contains "wcfmvm-memberships-registration",
+ *              ajaxComplete whose payload contains "wcfm-memberships-registration",
  *              parses the response, and if status=true + redirect URL present, forces
- *              window.location after a 1500ms delay (to let the legitimate slideDown
+ *              window.location after a 1200ms delay (to let the legitimate slideDown
  *              callback run first if it works).
- * Version: 1.1.0
+ * Version: 1.2.0
  * Revision: 1.0.0 was broken — searched for "wcfmvm-memberships-registration" but
  *           actual controller value is "wcfm-memberships-registration" (no vm).
  *           Also settings.data is FormData object not string. v1.1.0 uses
  *           FormData.get('controller') + correct name.
+ *           v1.2.0 fixes LiteSpeed delay-JS race — inline script was rewritten to
+ *           type="litespeed/javascript" and deferred until user interaction. Race
+ *           condition: submit XHR could complete before the handler registered.
+ *           Fix: data-no-optimize="1" + output BEFORE wp_footer via wp_print_scripts
+ *           priority, plus boot/per-ajax diagnostic logs so we can observe in console.
  * Created: 2026-04-23
  *
  * Rollback: delete this file. Form reverts to WCFM default behavior (frozen UI).
@@ -24,40 +29,54 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-add_action( 'wp_footer', function () {
+// Output as early as possible in <head> via wp_head (priority 1) so jQuery
+// ajaxComplete handler is bound before ANY XHR fires on the page.
+// data-no-optimize="1" + data-cfasync="false" tell LiteSpeed + Cloudflare
+// to skip delay/defer processing. Script id kept for revert-grep.
+add_action( 'wp_head', function () {
 	if ( ! is_page( 3918 ) ) return;
 	?>
-	<script id="rg-wcfmvm-register-redirect-guard">
-	(function($){
-		$(document).ajaxComplete(function(event, xhr, settings) {
-			if ( ! settings || ! settings.data ) return;
-			// WCFM submits with FormData — read controller field directly
-			var isRegistration = false;
-			try {
-				if ( typeof settings.data === "string" ) {
-					isRegistration = settings.data.indexOf("wcfm-memberships-registration") !== -1;
-				} else if ( settings.data instanceof FormData ) {
-					isRegistration = ( settings.data.get("controller") === "wcfm-memberships-registration" );
-				}
-			} catch(e) {}
-			if ( ! isRegistration ) return;
-			try {
-				var r = JSON.parse(xhr.responseText);
-				if ( r && (r.status === true || r.status === "true") && r.redirect ) {
-					// Wait 1.5s — lets legitimate slideDown callback redirect first if it works.
-					// If still on same page after that, force the redirect.
-					setTimeout(function() {
-						if ( window.location.href.indexOf(r.redirect) === -1 ) {
-							console.log("[RG-Guard] WCFM register redirect trap detected — forcing navigation to:", r.redirect);
-							window.location = r.redirect;
+	<script id="rg-wcfmvm-register-redirect-guard" data-no-optimize="1" data-cfasync="false">
+	(function(){
+		function arm() {
+			if ( typeof window.jQuery === "undefined" ) { setTimeout(arm, 50); return; }
+			var $ = window.jQuery;
+			console.log("[RG-Guard v1.2.0] armed on /vendor-membership/");
+			$(document).ajaxComplete(function(event, xhr, settings) {
+				try {
+					var ctrl = "";
+					if ( settings && settings.data ) {
+						if ( typeof settings.data === "string" ) {
+							var m = settings.data.match(/controller=([^&]+)/);
+							if ( m ) ctrl = decodeURIComponent(m[1]);
+						} else if ( settings.data instanceof FormData ) {
+							ctrl = settings.data.get("controller") || "";
 						}
-					}, 1500);
+					}
+					console.log("[RG-Guard] ajaxComplete — controller:", ctrl, "status:", xhr.status);
+					if ( ctrl !== "wcfm-memberships-registration" ) return;
+					var r = JSON.parse(xhr.responseText);
+					console.log("[RG-Guard] WCFM register response:", r);
+					if ( r && (r.status === true || r.status === "true") && r.redirect ) {
+						console.log("[RG-Guard] scheduling force-redirect to:", r.redirect);
+						setTimeout(function() {
+							if ( window.location.href !== r.redirect ) {
+								console.log("[RG-Guard] forcing navigation — WCFM slideDown callback did not fire");
+								window.location.assign(r.redirect);
+							} else {
+								console.log("[RG-Guard] skipped — WCFM already navigated to target");
+							}
+						}, 1200);
+					} else {
+						console.log("[RG-Guard] no redirect action — status/redirect missing");
+					}
+				} catch(e) {
+					console.log("[RG-Guard] handler error:", e, "responseText first 200:", (xhr && xhr.responseText) ? xhr.responseText.substring(0,200) : "(none)");
 				}
-			} catch(e) {
-				console.log("[RG-Guard] WCFM register response parse error:", e);
-			}
-		});
-	})(jQuery);
+			});
+		}
+		arm();
+	})();
 	</script>
 	<?php
-}, 100000 );
+}, 1 );
